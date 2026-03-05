@@ -312,26 +312,33 @@ impl InMemoryNetwork {
     ) -> anyhow::Result<(Duration, Duration)> {
         let peers = [(host_a, host_b), (host_b, host_a)];
 
-        // Send a packet both ways
+        // Send 100 packets both ways
+        //
+        // Note: This ensures that in case of packet loss on the network path the connectivity check still completes.
+        // To avoid spamming the console, we mute warnings for dropped packets.
+        *self.tracer.mute_warnings.lock() = true;
         for (source, target) in peers {
-            let data = self.in_transit_data(
-                source,
-                OwnedTransmit {
-                    destination: target.udp_endpoint.as_ref().unwrap().addr,
-                    ecn: None,
-                    contents: vec![42].into(),
-                    segment_size: None,
-                },
-            );
+            for _ in 0..100 {
+                let data = self.in_transit_data(
+                    source,
+                    OwnedTransmit {
+                        destination: target.udp_endpoint.as_ref().unwrap().addr,
+                        ecn: None,
+                        contents: vec![42].into(),
+                        segment_size: None,
+                    },
+                );
 
-            self.forward(source.clone(), data);
+                self.forward(source.clone(), data);
+            }
         }
+        *self.tracer.mute_warnings.lock() = false;
 
         // Wait for 90 days for the packets to arrive
         let days = 90;
         let timeout = Duration::from_secs(3600 * 24 * days);
 
-        // Ensure the packets arrived at each host
+        // Ensure the packets arrived at each host (1 succesfull delivery is sufficient)
         let a_to_b = async_rt::time::timeout(
             timeout,
             InboundQueue::receive(host_b.udp_endpoint.as_ref().unwrap().inbound.clone(), 1),
