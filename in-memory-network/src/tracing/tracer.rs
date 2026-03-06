@@ -20,6 +20,7 @@ pub struct SimulationStepTracer {
     recorded_steps: Mutex<SimulationStepper>,
     network_spec: NetworkSpec,
     already_warned_dropped_from_buffer: Mutex<HashSet<Arc<str>>>,
+    pub mute_warnings: Mutex<bool>,
 }
 
 impl SimulationStepTracer {
@@ -29,6 +30,7 @@ impl SimulationStepTracer {
             recorded_steps: Default::default(),
             network_spec: spec,
             already_warned_dropped_from_buffer: Mutex::default(),
+            mute_warnings: Mutex::new(false),
         }
     }
 
@@ -80,12 +82,14 @@ impl SimulationStepTracer {
             injected: true,
         }));
 
-        println!(
-            "{:.2}s WARN {} packet lost (#{})!",
-            self.simulation_start.elapsed().as_secs_f64(),
-            data.source_id,
-            data.number,
-        );
+        if !*self.mute_warnings.lock() {
+            println!(
+                "{:.2}s WARN {} packet lost (#{})!",
+                self.simulation_start.elapsed().as_secs_f64(),
+                data.source_id,
+                data.number,
+            );
+        }
     }
 
     pub fn track_dropped_from_buffer(&self, data: &InTransitData, current_node: &Node) {
