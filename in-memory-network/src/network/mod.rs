@@ -314,9 +314,8 @@ impl InMemoryNetwork {
 
         // Send 100 packets both ways
         //
-        // Note: This ensures that in case of packet loss on the network path the connectivity check still completes.
-        // To avoid spamming the console, we mute warnings for dropped packets.
-        *self.tracer.mute_warnings.lock() = true;
+        // Note: This ensures that in case of packet loss on the network path the connectivity check
+        // still completes.
         for (source, target) in peers {
             for _ in 0..100 {
                 let data = self.in_transit_data(
@@ -332,7 +331,6 @@ impl InMemoryNetwork {
                 self.forward(source.clone(), data);
             }
         }
-        *self.tracer.mute_warnings.lock() = false;
 
         // Wait for 90 days for the packets to arrive
         let days = 90;

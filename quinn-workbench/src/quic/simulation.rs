@@ -70,10 +70,13 @@ impl QuicSimulation {
                 .collect(),
             &network_spec.links,
         );
-        let network = InMemoryNetwork::initialize(
+        // Mute warnings during the connectivity check to avoid spamming the console
+        let connectivity_check_tracer =
+            SimulationStepTracer::new(network_spec.clone()).mute_warnings();
+        let connectivity_check_network = InMemoryNetwork::initialize(
             network_spec.clone(),
             network_events.clone(),
-            Arc::new(SimulationStepTracer::new(network_spec.clone())),
+            Arc::new(connectivity_check_tracer),
             Arc::new(NoOpPcapExporterFactory),
             Rng::with_seed(simulated_network_rng_seed),
             start,
@@ -82,13 +85,13 @@ impl QuicSimulation {
         println!("--- Network ---");
         println!("* Initial link statuses (derived from events):");
         for link_spec in &network_spec.links {
-            let status = network.get_link_status(&link_spec.id);
+            let status = connectivity_check_network.get_link_status(&link_spec.id);
             println!("  * {}: {}", link_spec.id, status);
         }
         println!("* Running connectivity check...");
-        let server_node = network.host(quic_options.network.server_ip_address);
-        let client_node = network.host(quic_options.network.client_ip_address);
-        let (arrived1, arrived2) = network
+        let server_node = connectivity_check_network.host(quic_options.network.server_ip_address);
+        let client_node = connectivity_check_network.host(quic_options.network.client_ip_address);
+        let (arrived1, arrived2) = connectivity_check_network
             .assert_connectivity_between_hosts(server_node, client_node)
             .await?;
         println!(
@@ -96,7 +99,7 @@ impl QuicSimulation {
             arrived1.as_millis(),
             arrived2.as_millis()
         );
-        drop(network);
+        drop(connectivity_check_network);
 
         let start = Instant::now();
 
