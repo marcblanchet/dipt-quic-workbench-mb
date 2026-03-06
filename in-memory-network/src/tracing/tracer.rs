@@ -20,7 +20,7 @@ pub struct SimulationStepTracer {
     recorded_steps: Mutex<SimulationStepper>,
     network_spec: NetworkSpec,
     already_warned_dropped_from_buffer: Mutex<HashSet<Arc<str>>>,
-    pub mute_warnings: Mutex<bool>,
+    enable_warnings: bool,
 }
 
 impl SimulationStepTracer {
@@ -30,7 +30,21 @@ impl SimulationStepTracer {
             recorded_steps: Default::default(),
             network_spec: spec,
             already_warned_dropped_from_buffer: Mutex::default(),
-            mute_warnings: Mutex::new(false),
+            enable_warnings: true,
+        }
+    }
+
+    pub fn mute_warnings(mut self) -> Self {
+        self.enable_warnings = false;
+        self
+    }
+
+    fn warn(&self, message: &str) {
+        if self.enable_warnings {
+            println!(
+                "{:.2}s WARN {message}",
+                self.simulation_start.elapsed().as_secs_f64(),
+            );
         }
     }
 
@@ -82,14 +96,10 @@ impl SimulationStepTracer {
             injected: true,
         }));
 
-        if !*self.mute_warnings.lock() {
-            println!(
-                "{:.2}s WARN {} packet lost (#{})!",
-                self.simulation_start.elapsed().as_secs_f64(),
-                data.source_id,
-                data.number,
-            );
-        }
+        self.warn(&format!(
+            "{} packet lost (#{})!",
+            data.source_id, data.number,
+        ));
     }
 
     pub fn track_dropped_from_buffer(&self, data: &InTransitData, current_node: &Node) {
@@ -104,12 +114,11 @@ impl SimulationStepTracer {
             .lock()
             .insert(current_node.id.clone());
         if first_dropped {
-            println!(
-                "{:.2}s WARN packet #{} dropped by node `{}` because its outbound buffer is full! (Note: further warnings for this link will be omitted to avoid cluttering the output)",
-                self.simulation_start.elapsed().as_secs_f64(),
+            self.warn(&format!(
+                "packet #{} dropped by node `{}` because its outbound buffer is full! (Note: further warnings for this link will be omitted to avoid cluttering the output)",
                 data.number,
                 current_node.id(),
-            );
+            ));
         }
     }
 
@@ -146,12 +155,11 @@ impl SimulationStepTracer {
                 node_id: current_node.id().clone(),
             }));
 
-            println!(
-                "{:.2}s WARN {} sent duplicate packet (#{})!",
+            self.warn(&format!(
+                "{} sent duplicate packet (#{})!",
                 current_node.id(),
-                self.simulation_start.elapsed().as_secs_f64(),
                 data.number,
-            );
+            ));
         }
 
         if congestion_experienced {
@@ -164,12 +172,11 @@ impl SimulationStepTracer {
                 },
             ));
 
-            println!(
-                "{:.2}s WARN {} marked packet with CE ECN (#{})!",
+            self.warn(&format!(
+                "{} marked packet with CE ECN (#{})!",
                 current_node.id(),
-                self.simulation_start.elapsed().as_secs_f64(),
                 data.number,
-            );
+            ));
         }
     }
 
