@@ -336,7 +336,7 @@ impl InMemoryNetwork {
         let days = 90;
         let timeout = Duration::from_secs(3600 * 24 * days);
 
-        // Ensure the packets arrived at each host (1 succesfull delivery is sufficient)
+        // Ensure the packets arrived at each host (one successful delivery is sufficient)
         let a_to_b = async_rt::time::timeout(
             timeout,
             InboundQueue::receive(host_b.udp_endpoint.as_ref().unwrap().inbound.clone(), 1),
