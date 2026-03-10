@@ -9,7 +9,6 @@ use crate::config::cli::{Command, NetworkOpt};
 use crate::config::network::NetworkEventsJson;
 use crate::udp::{ping, throughput};
 use anyhow::Context;
-use cfg_if::cfg_if;
 use clap::Parser;
 use config::cli::CliOpt;
 use in_memory_network::async_rt;
@@ -42,16 +41,7 @@ fn main() -> anyhow::Result<()> {
             rt.block_on(throughput::run(throughput_opt, network_config))
         }
         Command::Rt => {
-            cfg_if! {
-                if #[cfg(feature = "rt-tokio")] {
-                    println!("tokio");
-                } else if #[cfg(feature = "rt-custom")] {
-                    println!("custom");
-                } else {
-                    compile_error!("unknown async runtime");
-                }
-            }
-
+            println!("tokio");
             Ok(())
         }
     }
