@@ -41,6 +41,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
         Arc::new(FileBasedPcapExporterFactory),
         Rng::with_seed(ping_opt.network.network_rng_seed),
         simulation_start,
+        false,
     )?;
 
     println!("--- Network ---");

@@ -47,6 +47,7 @@ pub async fn run(
         Arc::new(FileBasedPcapExporterFactory),
         Rng::with_seed(throughput_opt.network.network_rng_seed),
         simulation_start,
+        false,
     )?;
 
     println!("--- Network ---");

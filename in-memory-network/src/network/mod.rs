@@ -68,13 +68,17 @@ impl InMemoryNetwork {
         pcap_exporter_factory: Arc<dyn PcapExporterFactory>,
         rng: Rng,
         start: Instant,
+        disable_time_warping: bool,
     ) -> anyhow::Result<Arc<Self>> {
-        if !tracer.is_fresh() {
-            bail!("attempted to initialize network with an old tracer");
-        }
+        if !disable_time_warping {
+            // Time warping is enabled, so the start instant should be zero
+            if !tracer.is_fresh() {
+                bail!("attempted to initialize network with an old tracer");
+            }
 
-        if !start.elapsed().is_zero() {
-            bail!("attempted to initialize network with an old start instant");
+            if !start.elapsed().is_zero() {
+                bail!("attempted to initialize network with an old start instant");
+            }
         }
 
         let mut routes_by_addr = HashMap::new();
