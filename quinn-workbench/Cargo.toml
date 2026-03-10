@@ -3,17 +3,9 @@ name = "quinn-workbench"
 version = "0.1.0"
 edition = "2024"
 
-[features]
-default = ["rt-tokio"]
-rt-tokio = ["in-memory-network/rt-tokio"]
-
-# Note: this async runtime is highly experimental and not guaranteed to return correct results
-rt-custom = ["in-memory-network/rt-custom"]
-
 [dependencies]
 anyhow.workspace = true
 async-lock.workspace = true
-cfg-if.workspace = true
 clap.workspace = true
 event-listener.workspace = true
 fastrand.workspace = true

@@ -250,8 +250,7 @@ mod test {
         ClientConfig::new(Arc::new(QuicClientConfig::try_from(crypto).unwrap()))
     }
 
-    #[cfg_attr(feature = "rt-custom", sittard::test)]
-    #[cfg_attr(feature = "rt-tokio", tokio::test(start_paused = true))]
+    #[tokio::test(start_paused = true)]
     async fn test_quic_handshake_and_bidi_stream_works() {
         let rt = async_rt::active_rt();
 
@@ -311,8 +310,7 @@ mod test {
         server_handle.await.unwrap();
     }
 
-    #[cfg_attr(feature = "rt-custom", sittard::test)]
-    #[cfg_attr(feature = "rt-tokio", tokio::test(start_paused = true))]
+    #[tokio::test(start_paused = true)]
     async fn test_packet_arrives_at_expected_time() {
         // Sanity check
         let network = default_network().call();
@@ -367,8 +365,7 @@ mod test {
         }
     }
 
-    #[cfg_attr(feature = "rt-custom", sittard::test)]
-    #[cfg_attr(feature = "rt-tokio", tokio::test(start_paused = true))]
+    #[tokio::test(start_paused = true)]
     async fn test_packet_is_delayed_by_buffering() {
         let bandwidths_and_delays = [
             (BANDWIDTH_100_MBPS, Duration::from_millis(1)),
@@ -431,8 +428,7 @@ mod test {
         }
     }
 
-    #[cfg_attr(feature = "rt-custom", sittard::test)]
-    #[cfg_attr(feature = "rt-tokio", tokio::test(start_paused = true))]
+    #[tokio::test(start_paused = true)]
     async fn test_packet_is_buffered_when_link_down() {
         // Let one of the links be down for 10 seconds
         let network = default_network()
