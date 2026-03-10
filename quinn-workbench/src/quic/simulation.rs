@@ -80,6 +80,7 @@ impl QuicSimulation {
             Arc::new(NoOpPcapExporterFactory),
             Rng::with_seed(simulated_network_rng_seed),
             start,
+            quic_options.disable_time_warping,
         )?;
 
         println!("--- Network ---");
@@ -88,17 +89,23 @@ impl QuicSimulation {
             let status = connectivity_check_network.get_link_status(&link_spec.id);
             println!("  * {}: {}", link_spec.id, status);
         }
-        println!("* Running connectivity check...");
-        let server_node = connectivity_check_network.host(quic_options.network.server_ip_address);
-        let client_node = connectivity_check_network.host(quic_options.network.client_ip_address);
-        let (arrived1, arrived2) = connectivity_check_network
-            .assert_connectivity_between_hosts(server_node, client_node)
-            .await?;
-        println!(
-            "* Connectivity check passed (packets arrived after {} ms and {} ms)",
-            arrived1.as_millis(),
-            arrived2.as_millis()
-        );
+        if quic_options.disable_time_warping {
+            println!("* Connectivity check skipped to save time (time warping is disabled)");
+        } else {
+            println!("* Running connectivity check...");
+            let server_node =
+                connectivity_check_network.host(quic_options.network.server_ip_address);
+            let client_node =
+                connectivity_check_network.host(quic_options.network.client_ip_address);
+            let (arrived1, arrived2) = connectivity_check_network
+                .assert_connectivity_between_hosts(server_node, client_node)
+                .await?;
+            println!(
+                "* Connectivity check passed (packets arrived after {} ms and {} ms)",
+                arrived1.as_millis(),
+                arrived2.as_millis()
+            );
+        }
         drop(connectivity_check_network);
 
         let start = Instant::now();
@@ -112,6 +119,7 @@ impl QuicSimulation {
             Arc::new(FileBasedPcapExporterFactory),
             Rng::with_seed(simulated_network_rng_seed),
             start,
+            quic_options.disable_time_warping,
         )?;
         self.tracer_and_network = Some((tracer.clone(), network.clone()));
 

@@ -12,6 +12,7 @@ use anyhow::Context;
 use clap::Parser;
 use config::cli::CliOpt;
 use in_memory_network::async_rt;
+use in_memory_network::async_rt::DelayMode;
 use serde::de::DeserializeOwned;
 use std::fs::File;
 use std::path::Path;
@@ -29,15 +30,24 @@ fn main() -> anyhow::Result<()> {
     unsafe { std::env::set_var("SSLKEYLOGFILE", "keylog.key") };
     let opt = CliOpt::parse();
 
-    let rt = async_rt::new_rt();
     match &opt.command {
-        Command::Quic(quic_opt) => rt.block_on(quic::run_and_report_stats(quic_opt)),
+        Command::Quic(quic_opt) => {
+            let delay_mode = if quic_opt.disable_time_warping {
+                DelayMode::Wait
+            } else {
+                DelayMode::TimeWarp
+            };
+            let rt = async_rt::new_rt(delay_mode);
+            rt.block_on(quic::run_and_report_stats(quic_opt))
+        }
         Command::Ping(ping_opt) => {
             let network_config = load_network_config(&ping_opt.network)?;
+            let rt = async_rt::new_rt(DelayMode::TimeWarp);
             rt.block_on(ping::run(ping_opt, network_config))
         }
         Command::Throughput(throughput_opt) => {
             let network_config = load_network_config(&throughput_opt.network)?;
+            let rt = async_rt::new_rt(DelayMode::TimeWarp);
             rt.block_on(throughput::run(throughput_opt, network_config))
         }
         Command::Rt => {

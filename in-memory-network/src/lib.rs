@@ -217,6 +217,7 @@ mod test {
             Arc::new(NoOpPcapExporterFactory),
             Rng::with_seed(42),
             async_rt::time::Instant::now(),
+            false,
         )
         .unwrap()
     }
