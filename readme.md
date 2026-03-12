@@ -1,9 +1,7 @@
 QUIC Workbench
 ==============
 
-A command-line application to simulate QUIC connections in different scenarios (network topology and
-QUIC parameters). The simulation creates one or more connections, issues a fixed number of requests
-from the client to the server, and streams the server's responses back to the client.
+A command-line application written in Rust to simulate QUIC connections in different scenarios by specifying the network topology and QUIC parameters. The simulation creates one or more connections, issues a configurable number of requests from the client to the server, and streams the server's responses back to the client. The network topology consists of hosts, routers and links specified in a JSON file. Events in the network such as link down/up, which corresponds to intermittence in deep space orbiter links, are also specified in a JSON file. While its initial goal was for deep space IP simulations, it can be used for any other scenario.
 
 ## Features
 
@@ -12,7 +10,7 @@ from the client to the server, and streams the server's responses back to the cl
   simulation complete in an instant (even in the presence of deep-space-like RTTs).
 - Deterministic. Two runs with the same parameters yield the same output.
 - Inspectable. Next to informative command-line output and statistics, the application generates a
-  synthetic pcap file, so you can examine the traffic in more detail using Wireshark.
+  synthetic pcap file, so one can examine the traffic in more detail using Wireshark. The QUIC keylog is provided to decrypt the QUIC trafic.
 - Configurable network settings and QUIC parameters through reusable JSON config files (see
   `test-data` and [JSON config details](#json-config-details)).
 - Configurable simulation behavior through command-line arguments (see `cargo run --release --
@@ -72,40 +70,28 @@ cargo run --release --bin quinn-workbench -- \
 
 #### Network topology config
 
-The topology configuration is fairly self-documenting. See for instance
+The topology configuration defines each node and each link of the network. It shall be self-documenting. See for instance
 [networkgraph-fullmars.json](test-data/earth-mars/networkgraph-fullmars.json) and
 [networkgraph-5nodes.json](test-data/earth-mars/networkgraph-5nodes.json)
 
-Note that links are uni-directional, so two entries are necessary to describe a bidirectional link.
-Also, links can be configured individually with the following parameters:
+###### Meta Information
+The top JSON object has a property "type" which must be set to "NetworkGraph" to identify a network topology configuration file. It also contains an array of "nodes" and an array of "links", as described below.
 
-- `link.delay_ms` (required): The delay of the link in milliseconds (i.e. time it takes for a packet
-  to arrive to its destination).
-- `link.bandwidth_bps` (required): The bandwidth of the link in bits per second.
-- `link.extra_delay_ms`: The additional delay of the link in milliseconds, applied randomly
-  according to `extra_delay_ratio`.
-- `link.extra_delay_ratio`: The ratio of packets that will have an extra delay applied, used to
-  artificially introduce packet reordering (the value must be between 0 and 1).
-- `link.congestion_event_ratio`: The ratio of packets that will be marked with a CE ECN codepoint
-  (the value must be between 0 and 1).
+###### Nodes 
+Each node is defined with the following properties:
 
-Next to links, nodes can be configured with the following parameters too:
+- `id` (required): a unique identifier string. 
+- `type` (required): either "host" or "router". "router" means multiple interfaces and forwarding between those interfaces.
+- `bufferSizeBytes` (required): is the storage size of packets in transit while waiting for a link up event. This implements IP the store and forward capability as defined in [draft-many-tiptop-ip-architecture](https://datatracker.ietf.org/doc/draft-many-tiptop-ip-architecture/). Mandatory property.
+- `interfaces` (required): is an array of network interfaces of this node. Each interface has an array of IP addresses and an array of routes. Mandatory property.
+- `quic` (optional): for "type" = "host" nodes, their QUIC stack configuration as described below. Optional property.
+- `packet_duplication_ratio`: The ratio of ingress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0. 
+- `packet_loss_ratio`: The ratio of ingress lost packets (the
+  value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0. 
 
-- `node.packet_duplication_ratio`: The ratio of packets that will be duplicated upon arrival to the
-  node, (the value must be between 0 and 1).
-- `node.packet_loss_ratio`: The ratio of packets that will be lost upon arrival to the node (the
-  value must be between 0 and 1).
-
-#### Network events config
-
-Network events are used to bring links up and down at different times of the simulation (e.g. to
-simulate an orbiter being unreachable at specific intervals). The format is fairly self-documenting,
-as you can see in [events.json](test-data/earth-mars/events.json).
-
-#### QUIC config
-
-Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
-parameters used by that node. All fields are optional and fall back to the QUIC implementation's defaults (documented below). **Important**: defaults assume a terrestrial communication scenario, so you will most likely want to change them!
+###### QUIC config
+This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
+parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](quinn-proto/src/config/transport.rs). **Important**: defaults assume a terrestrial communication scenario, so you will most likely want to change them!
 
 Consider the following example in which all parameters are specified:
 
@@ -154,6 +140,43 @@ Here's the meaning of the different parameters:
   times the base datagram size (1200 bytes). The default depends on the congestion control
   algorithm. For `no_cc`, the default is effectively unlimited. For other algorithms, the default is
   a value suitable for terrestrial communication.
+
+###### Links
+Links are uni-directional, so two entries are necessary to describe a bidirectional link.
+Each link is defined with the following properties:
+
+- `id` (required): a unique identifier string. The suggested id is the name of the two hosts of this link with a '-'.
+- `source` (required): The source IP address of the uni-directional link. This must correspond to a defined address on one of the nodes.
+- `target` (required): The destination IP address of the uni-directional link. This must correspond to a defined address on one of the nodes.
+- `delay_ms` (required): The delay of the link in milliseconds (i.e. time it takes for a packet
+  to arrive to the next hop).
+- `bandwidth_bps` (required): The bandwidth of the link in bits per second.
+- `extra_delay_ms`: The additional delay of the link in milliseconds, applied randomly
+  according to `extra_delay_ratio`. Default is 0. This is similar to [tc netem delay parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html).
+- `extra_delay_ratio`: The ratio of packets that will have an extra delay applied, used to
+  artificially introduce packet reordering (the value must be between 0 and 1). Default is 0. This is similar to [tc netem reorder parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html).
+- `congestion_event_ratio`: The ratio of packets that will be marked with a CE ECN codepoint
+  (the value must be between 0 and 1). Default is 0.
+
+
+## Network events config
+
+Network events are used to bring links up and down at different times of the simulation (e.g. to
+simulate an orbiter being unreachable at specific intervals). The format is fairly self-documenting,
+as you can see in [events.json](test-data/earth-mars/events.json). If no link up/down events are necessary, specify an empty events file like [events.json](test-data/events-empty.json)
+
+###### Meta Information
+The top JSON object has a property "type" which must be set to "NetworkEvents" to identify a network events configuration file. It also contains an array of "events", as described below.
+
+###### Events
+Each event is defined with the following properties:
+
+- `relative_time_ms` (required): The time (in ms) at which the event is happening, relative to the start of the simulation.
+- `link` (required):
+   - `id` (required): the identifier of the link. This must correspond to a link id in the topology file.
+   - `status` (required): the target state of the link at the time of the event. Possible values are "up" or "down".
+
+Note that it is planned to support more types of events such as node up/down or modifying properties of links such as delays or bandwidth. 
 
 ## Command line arguments
 
