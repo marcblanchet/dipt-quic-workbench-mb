@@ -19,7 +19,7 @@ impl NetworkSpecJson {
         let mut configs = HashMap::new();
         for node in &self.nodes {
             if let NetworkNodeKindJson::Host { quic } = &node.kind {
-                configs.insert(node.id.clone(), quic.clone());
+                configs.insert(node.id.clone(), quic.clone().unwrap_or_default());
             }
         }
 
@@ -50,7 +50,7 @@ struct NetworkNodeJson {
 #[serde(rename_all = "camelCase")]
 enum NetworkNodeKindJson {
     Router,
-    Host { quic: QuinnJsonConfig },
+    Host { quic: Option<QuinnJsonConfig> },
 }
 
 #[derive(Deserialize, Clone)]

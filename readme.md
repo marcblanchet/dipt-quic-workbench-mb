@@ -104,8 +104,10 @@ as you can see in [events.json](test-data/earth-mars/events.json).
 
 #### QUIC config
 
-Each host node in a network graph's json file has a `quic` field, specifying the QUIC parameters
-used by that node. Consider the following example:
+Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
+parameters used by that node. All fields are optional and fall back to the QUIC implementation's defaults (documented below). **Important**: defaults assume a terrestrial communication scenario, so you will most likely want to change them!
+
+Consider the following example in which all parameters are specified:
 
 ```json
 {
@@ -114,8 +116,10 @@ used by that node. Consider the following example:
   "packet_threshold": 4294967295,
   "mtu_discovery": false,
   "maximize_send_and_receive_windows": true,
-  "max_ack_delay_ms": 18446744073709551615,
-  "ack_eliciting_threshold": 10,
+  "ack_frequency_config": {
+    "max_ack_delay_ms": 18446744073709551615,
+    "ack_eliciting_threshold": 10
+  },
   "congestion_controller": "no_cc",
   "initial_congestion_window_packets": 200000
 }
@@ -125,27 +129,31 @@ Here's the meaning of the different parameters:
 
 - `initial_rtt_ms`: The initial Round Trip Time (RTT) of the QUIC connection in milliseconds
   (used before an actual RTT sample is available). For delay-tolerant networking, set this slightly
-  higher than the expected real RTT to avoid unnecessary packet retransmissions.
+  higher than the expected real RTT to avoid unnecessary packet retransmissions. Defaults to 333 milliseconds.
 - `maximum_idle_timeout_ms`: The maximum idle timeout of the QUIC connection in milliseconds.
   For continuous information exchange, use a small value to detect connection loss quickly. For
   delay-tolerant networking, use a very high value to prevent connection loss due to unexpected
-  delays.
+  delays. Defaults to `30000` (30 seconds).
 - `packet_threshold`: Maximum reordering in packet numbers before considering a packet lost.
-  Should not be less than 3, as per RFC5681.
-- `mtu_discovery`: Boolean flag to enable or disable MTU discovery.
+  Should not be less than 3, as per RFC5681. Defaults to `3`.
+- `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `true`.
 - `maximize_send_and_receive_windows`: Boolean flag to maximize send and receive windows,
-  allowing an unlimited number of unacknowledged in-flight packets.
-- `max_ack_delay_ms`: The maximum amount of time, in milliseconds, that an endpoint waits
+  allowing an unlimited number of unacknowledged in-flight packets. Defaults to `false`.
+- `ack_frequency_config`: Configures the ACK Frequency QUIC extension. When omitted, the ACK
+  Frequency extension is disabled. Contains the following sub-fields:
+  - `max_ack_delay_ms`: The maximum amount of time, in milliseconds, that an endpoint waits
   before sending an ACK when the ACK-eliciting threshold hasn't been reached. Setting this to a high
-  value is useful in combination with a high ACK-eliciting threshold.
-- `ack_eliciting_threshold`: The number of ACK-eliciting packets an endpoint may receive
-  without immediately sending an ACK. A high value is useful when expecting long streams of
-  information from the server without sending anything back from the client.
-- `congestion_controller`: The congestion control algorithm to use. 
-  Currently supported options: new_reno, cubic, ecn_reno, no_cc
-- `initial_congestion_window_packets`: If provided, the initial congestion window is set to the value
-  times the base datagram size (1200 bytes). Default configuration is 10.
-  If used in combination with no_cc, this value is used as a fixed congestion window.
+  value is useful in combination with a high ACK-eliciting threshold. When omitted, the
+    peer's original `max_ack_delay` will be used, as obtained from its transport parameters.
+  - `ack_eliciting_threshold`: The number of ACK-eliciting packets an endpoint may receive
+    without immediately sending an ACK. A high value is useful when expecting long streams of
+    information from the server without sending anything back from the client. Defaults to `1`.
+- `congestion_controller`: The congestion control algorithm to use.
+  Currently supported options: new_reno, cubic, ecn_reno, no_cc. Defaults to `cubic`.
+- `initial_congestion_window_packets`: The initial congestion window is set to this value
+  times the base datagram size (1200 bytes). The default depends on the congestion control
+  algorithm. For `no_cc`, the default is effectively unlimited. For other algorithms, the default is
+  a value suitable for terrestrial communication.
 
 ## Command line arguments
 

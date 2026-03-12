@@ -1,71 +1,75 @@
 {
-    "type": "NetworkGraph",
-    "nodes": [
+  "type": "NetworkGraph",
+  "nodes": [
+    {
+      "id": "A",
+      "type": "host",
+      "bufferSizeBytes": 1000000000,
+      "interfaces": [
         {
-            "id": "A",
-            "type": "host",
-            "bufferSizeBytes": 1000000000,
-            "interfaces": [
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.40.1/24"
-                        }
-                    ],
-                    "routes": []
-                }
-            ],
-            "quic": {
-                "initial_rtt_ms": 7920000,
-                "maximum_idle_timeout_ms": 7920000,
-                "packet_threshold": 4294967295,
-                "mtu_discovery": false,
-                "maximize_send_and_receive_windows": true,
-                "max_ack_delay_ms": 23760000,
-                "ack_eliciting_threshold": 10,
-                "congestion_controller": "no_cc"
+          "addresses": [
+            {
+              "address": "192.168.40.1/24"
             }
-        },
-        {
-            "id": "B",
-            "type": "host",
-            "bufferSizeBytes": 1000000000,
-            "interfaces": [
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.40.2/24"
-                        }
-                    ],
-                    "routes": []
-                }
-            ],
-            "quic": {
-                "initial_rtt_ms": 7920000,
-                "maximum_idle_timeout_ms": 7920000,
-                "packet_threshold": 4294967295,
-                "mtu_discovery": false,
-                "maximize_send_and_receive_windows": true,
-                "max_ack_delay_ms": 23760000,
-                "ack_eliciting_threshold": 10,
-                "congestion_controller": "no_cc"
-            }
+          ],
+          "routes": []
         }
-    ],
-    "links": [
-      {
-        "id": "A->B",
-        "source": "192.168.40.1",
-        "target": "192.168.40.2",
-        "delay_ms": 1500,
-        "bandwidth_bps": 10000000
-      },
-      {
-        "id": "B->A",
-        "source": "192.168.40.2",
-        "target": "192.168.40.1",
-        "delay_ms": 1500,
-        "bandwidth_bps": 10000000
+      ],
+      "quic": {
+        "initial_rtt_ms": 7920000,
+        "maximum_idle_timeout_ms": 7920000,
+        "packet_threshold": 4294967295,
+        "mtu_discovery": false,
+        "maximize_send_and_receive_windows": true,
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 23760000,
+          "ack_eliciting_threshold": 10
+        }
       }
-    ]
+    },
+    {
+      "id": "B",
+      "type": "host",
+      "bufferSizeBytes": 1000000000,
+      "interfaces": [
+        {
+          "addresses": [
+            {
+              "address": "192.168.40.2/24"
+            }
+          ],
+          "routes": []
+        }
+      ],
+      "quic": {
+        "initial_rtt_ms": 7920000,
+        "maximum_idle_timeout_ms": 7920000,
+        "packet_threshold": 4294967295,
+        "mtu_discovery": false,
+        "maximize_send_and_receive_windows": true,
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 23760000,
+          "ack_eliciting_threshold": 10
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "A->B",
+      "source": "192.168.40.1",
+      "target": "192.168.40.2",
+      "delay_ms": 1500,
+      "bandwidth_bps": 10000000
+    },
+    {
+      "id": "B->A",
+      "source": "192.168.40.2",
+      "target": "192.168.40.1",
+      "delay_ms": 1500,
+      "bandwidth_bps": 10000000
+    }
+  ]
 }

@@ -14,7 +14,7 @@ pub enum CongestionControlAlgorithm {
     EcnReno,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Default)]
 pub struct QuinnJsonConfig {
     /// The initial RTT of the QUIC connection, in milliseconds (used before an RTT sample is
     /// available).
@@ -22,37 +22,64 @@ pub struct QuinnJsonConfig {
     /// For delay-tolerant networking, it is recommended to set this to a value slightly higher than
     /// the real RTT. If the value is too low, there will be needless retransmissions of packets
     /// until the endpoint is able to infer the real RTT.
-    pub initial_rtt_ms: u64,
+    ///
+    /// Defaults to `333`
+    pub initial_rtt_ms: Option<u64>,
     /// The maximum idle timeout of the QUIC connection, in milliseconds.
     ///
     /// When expecting a continuous exchange of information, a small idle timeout helps to detect
     /// connection loss. In delay-tolerant networking, it is useful to use a very high timeout, to
     /// ensure the connection never gets lost due to unexpected delays.
-    pub maximum_idle_timeout_ms: u64,
+    ///
+    /// Defaults to `30_000` (30 seconds)
+    pub maximum_idle_timeout_ms: Option<u64>,
     /// Maximum reordering in packet numbers before considering a packet lost. Should not be less
     /// than 3, per RFC5681.
-    pub packet_threshold: u32,
+    ///
+    /// Defaults to `3`
+    pub packet_threshold: Option<u32>,
     /// Whether MTU discovery should be enabled
-    pub mtu_discovery: bool,
+    ///
+    /// Defaults to `true`
+    pub mtu_discovery: Option<bool>,
     /// Whether the send and receive windows should be maximized, allowing an unbounded number of
     /// unacknowledged in-flight packets
-    pub maximize_send_and_receive_windows: bool,
+    ///
+    /// Defaults to `false`
+    pub maximize_send_and_receive_windows: Option<bool>,
+    /// Configures the ACK Frequency QUIC extension
+    ///
+    /// Defaults to `None`, meaning that the ACK Frequency extension is disabled
+    pub ack_frequency_config: Option<AckFrequencyConfig>,
+    /// Which congestion control algorithm to use
+    ///
+    /// Defaults to [CongestionControlAlgorithm::Cubic]
+    pub congestion_controller: Option<CongestionControlAlgorithm>,
+    /// The initial congestion window size in multiples of base datagram size.
+    ///
+    /// The default value depends on the congestion control algorithm's. For 'NoCc', that default is
+    /// `u64::MAX`. For other algorithms, the default is a value suitable for terrestrial
+    /// communication.
+    pub initial_congestion_window_packets: Option<u64>,
+}
+
+#[derive(Deserialize, Clone, Default)]
+pub struct AckFrequencyConfig {
     /// The number of ACK-eliciting packets an endpoint may receive without immediately sending an
     /// ACK.
     ///
     /// Setting this threshold to a high value is particularly useful when we expect to receive long
     /// streams of information from the server, without sending anything back from the client.
-    pub ack_eliciting_threshold: u32,
+    ///
+    /// Defaults to `1`
+    pub ack_eliciting_threshold: Option<u32>,
     /// The maximum amount of time that an endpoint waits before sending an ACK when the
     /// ACK-eliciting threshold hasn't been reached.
     ///
     /// Setting this to a high value is particularly useful in combination with a high ACK-eliciting
     /// threshold.
-    pub max_ack_delay_ms: u64,
-    /// Which congestion control algorithm to use
-    pub congestion_controller: CongestionControlAlgorithm,
-    /// The initial congestion window size in multiples of base datagram size. If missing the algorithm's
-    /// default is used.
-    /// For 'NoCc', this value is used as the fixed, constant window. If missing it defaults to u64::MAX.
-    pub initial_congestion_window_packets: Option<u64>,
+    ///
+    /// Defaults to `None`, in which case the peer’s original `max_ack_delay` will be used, as
+    /// obtained from its transport parameters.
+    pub max_ack_delay_ms: Option<u64>,
 }
