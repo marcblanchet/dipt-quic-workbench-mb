@@ -181,8 +181,8 @@ Note that it is planned to support more types of events such as node up/down or 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
 command line arguments.
 
-- cargo run --release --bin quinn-workbench -- --help shows types of simulations
-- cargo run --release --bin quinn-workbench -- quic --help shows arguments for Quic simulation
+- `cargo run --release --bin quinn-workbench -- --help` shows types of simulations
+- `cargo run --release --bin quinn-workbench -- quic --help` shows arguments for Quic simulation
    - `--client-ip-address <CLIENT_IP_ADDRESS>` (required):
           The IP address of the node used as a client
    -  `--server-ip-address <SERVER_IP_ADDRESS>` (required):
