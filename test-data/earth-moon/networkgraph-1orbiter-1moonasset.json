@@ -1,139 +1,143 @@
 {
-    "type": "NetworkGraph",
-    "nodes": [
+  "type": "NetworkGraph",
+  "nodes": [
+    {
+      "id": "Earth1",
+      "type": "host",
+      "bufferSizeBytes": 1000000000,
+      "interfaces": [
         {
-            "id": "Earth1",
-            "type": "host",
-            "bufferSizeBytes": 1000000000,
-            "interfaces": [
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.40.1/24"
-                        }
-                    ],
-                    "routes": [
-                        {
-                            "destination": "192.168.41.0/24",
-                            "next": "192.168.40.2",
-                            "cost": 100
-                        },
-                        {
-                            "destination": "192.168.42.0/24",
-                            "next": "192.168.40.2",
-                            "cost": 100
-                        }
-                    ]
-                }
-            ],
-            "quic": {
-                "initial_rtt_ms": 7920000,
-                "maximum_idle_timeout_ms": 7920000,
-                "packet_threshold": 4294967295,
-                "mtu_discovery": false,
-                "maximize_send_and_receive_windows": true,
-                "max_ack_delay_ms": 23760000,
-                "ack_eliciting_threshold": 10,
-                "congestion_controller": "no_cc"
+          "addresses": [
+            {
+              "address": "192.168.40.1/24"
             }
-        },
-        {
-            "id": "MoonOrbiter1",
-            "type": "router",
-            "bufferSizeBytes": 1000000000,
-            "interfaces": [
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.40.2/24"
-                        }
-                    ],
-                    "routes": []
-                },
-                {
-                  "addresses": [
-                    {
-                      "address": "192.168.41.1/24"
-                    }
-                  ],
-                  "routes": [
-                    {
-                      "destination": "192.168.42.0/24",
-                      "next": "192.168.41.2",
-                      "cost": 100
-                    }
-                ]
-                  }
-            ]
-        },
-        {
-            "id": "MoonAsset1",
-            "type": "host",
-            "bufferSizeBytes": 1000000000,
-            "interfaces": [
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.41.2/24"
-                        }
-                    ],
-                    "routes": [
-                        {
-                            "destination": "192.168.40.0/24",
-                            "next": "192.168.41.1",
-                            "cost": 100
-                        }
-                    ]
-                },
-                {
-                    "addresses": [
-                        {
-                            "address": "192.168.42.1/24"
-                        }
-                    ],
-                    "routes": []
-                }
-            ],
-            "quic": {
-                "initial_rtt_ms": 7920000,
-                "maximum_idle_timeout_ms": 7920000,
-                "packet_threshold": 4294967295,
-                "mtu_discovery": false,
-                "maximize_send_and_receive_windows": true,
-                "max_ack_delay_ms": 23760000,
-                "ack_eliciting_threshold": 10,
-                "congestion_controller": "no_cc"
+          ],
+          "routes": [
+            {
+              "destination": "192.168.41.0/24",
+              "next": "192.168.40.2",
+              "cost": 100
+            },
+            {
+              "destination": "192.168.42.0/24",
+              "next": "192.168.40.2",
+              "cost": 100
             }
+          ]
         }
-    ],
-    "links": [
-      {
-        "id": "Earth1-MoonOrbiter1",
-        "source": "192.168.40.1",
-        "target": "192.168.40.2",
-        "delay_ms": 1500,
-        "bandwidth_bps": 10000000
-      },
-      {
-        "id": "MoonOrbiter1-Earth1",
-        "source": "192.168.40.2",
-        "target": "192.168.40.1",
-        "delay_ms": 1500,
-        "bandwidth_bps": 10000000
-      },
-      {
-        "id": "MoonOrbiter1-MoonAsset1",
-        "source": "192.168.41.1",
-        "target": "192.168.41.2",
-        "delay_ms": 300,
-        "bandwidth_bps": 10000000
-      },
-      {
-        "id": "MoonAsset1-MoonOrbiter1",
-        "source": "192.168.41.2",
-        "target": "192.168.41.1",
-        "delay_ms": 300,
-        "bandwidth_bps": 10000000
+      ],
+      "quic": {
+        "initial_rtt_ms": 7920000,
+        "maximum_idle_timeout_ms": 7920000,
+        "packet_threshold": 4294967295,
+        "mtu_discovery": false,
+        "maximize_send_and_receive_windows": true,
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 23760000,
+          "ack_eliciting_threshold": 10
+        }
       }
-    ]
+    },
+    {
+      "id": "MoonOrbiter1",
+      "type": "router",
+      "bufferSizeBytes": 1000000000,
+      "interfaces": [
+        {
+          "addresses": [
+            {
+              "address": "192.168.40.2/24"
+            }
+          ],
+          "routes": []
+        },
+        {
+          "addresses": [
+            {
+              "address": "192.168.41.1/24"
+            }
+          ],
+          "routes": [
+            {
+              "destination": "192.168.42.0/24",
+              "next": "192.168.41.2",
+              "cost": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MoonAsset1",
+      "type": "host",
+      "bufferSizeBytes": 1000000000,
+      "interfaces": [
+        {
+          "addresses": [
+            {
+              "address": "192.168.41.2/24"
+            }
+          ],
+          "routes": [
+            {
+              "destination": "192.168.40.0/24",
+              "next": "192.168.41.1",
+              "cost": 100
+            }
+          ]
+        },
+        {
+          "addresses": [
+            {
+              "address": "192.168.42.1/24"
+            }
+          ],
+          "routes": []
+        }
+      ],
+      "quic": {
+        "initial_rtt_ms": 7920000,
+        "maximum_idle_timeout_ms": 7920000,
+        "packet_threshold": 4294967295,
+        "mtu_discovery": false,
+        "maximize_send_and_receive_windows": true,
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 23760000,
+          "ack_eliciting_threshold": 10
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "Earth1-MoonOrbiter1",
+      "source": "192.168.40.1",
+      "target": "192.168.40.2",
+      "delay_ms": 1500,
+      "bandwidth_bps": 10000000
+    },
+    {
+      "id": "MoonOrbiter1-Earth1",
+      "source": "192.168.40.2",
+      "target": "192.168.40.1",
+      "delay_ms": 1500,
+      "bandwidth_bps": 10000000
+    },
+    {
+      "id": "MoonOrbiter1-MoonAsset1",
+      "source": "192.168.41.1",
+      "target": "192.168.41.2",
+      "delay_ms": 300,
+      "bandwidth_bps": 10000000
+    },
+    {
+      "id": "MoonAsset1-MoonOrbiter1",
+      "source": "192.168.41.2",
+      "target": "192.168.41.1",
+      "delay_ms": 300,
+      "bandwidth_bps": 10000000
+    }
+  ]
 }

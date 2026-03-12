@@ -27,9 +27,11 @@
         "packet_threshold": 4294967295,
         "mtu_discovery": false,
         "maximize_send_and_receive_windows": true,
-        "max_ack_delay_ms": 18446744073709551615,
-        "ack_eliciting_threshold": 10,
-        "congestion_controller": "no_cc"
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 18446744073709551615,
+          "ack_eliciting_threshold": 10
+        }
       }
     },
     {
@@ -151,9 +153,11 @@
         "packet_threshold": 4294967295,
         "mtu_discovery": false,
         "maximize_send_and_receive_windows": true,
-        "max_ack_delay_ms": 18446744073709551615,
-        "ack_eliciting_threshold": 10,
-        "congestion_controller": "no_cc"
+        "congestion_controller": "no_cc",
+        "ack_frequency_config": {
+          "max_ack_delay_ms": 18446744073709551615,
+          "ack_eliciting_threshold": 10
+        }
       }
     }
   ],
