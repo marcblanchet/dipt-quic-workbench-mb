@@ -81,27 +81,33 @@ fn endpoint_config(rng_seed: [u8; 32]) -> EndpointConfig {
 fn transport_config(quinn_config: &QuinnJsonConfig) -> TransportConfig {
     let mut config = TransportConfig::default();
 
-    if !quinn_config.mtu_discovery {
+    if !quinn_config.mtu_discovery.unwrap_or(false) {
         config.mtu_discovery_config(None);
     }
 
-    config.max_idle_timeout(Some(
-        Duration::from_millis(quinn_config.maximum_idle_timeout_ms)
-            .try_into()
-            .unwrap(),
-    ));
+    if let Some(timeout) = quinn_config.maximum_idle_timeout_ms {
+        config.max_idle_timeout(Some(Duration::from_millis(timeout).try_into().unwrap()));
+    }
 
-    if quinn_config.maximize_send_and_receive_windows {
+    if quinn_config
+        .maximize_send_and_receive_windows
+        .unwrap_or(false)
+    {
         config.receive_window(VarInt::MAX);
         config.stream_receive_window(VarInt::MAX);
         config.send_window(u64::MAX);
     }
 
-    config.packet_threshold(quinn_config.packet_threshold);
+    if let Some(packet_threshold) = quinn_config.packet_threshold {
+        config.packet_threshold(packet_threshold);
+    }
 
     let get_congestion_window_bytes = |packets: u64| packets * BASE_DATAGRAM_SIZE;
     let cc_factory: Arc<dyn quinn_proto::congestion::ControllerFactory + Send + Sync> =
-        match quinn_config.congestion_controller {
+        match quinn_config
+            .congestion_controller
+            .unwrap_or(CongestionControlAlgorithm::Cubic)
+        {
             CongestionControlAlgorithm::Cubic => {
                 let mut cfg = CubicConfig::default();
                 if let Some(packets) = quinn_config.initial_congestion_window_packets {
@@ -137,16 +143,26 @@ fn transport_config(quinn_config: &QuinnJsonConfig) -> TransportConfig {
         };
     config.congestion_controller_factory(cc_factory);
 
-    let mut ack_frequency_config = AckFrequencyConfig::default();
-    ack_frequency_config
-        .ack_eliciting_threshold(VarInt::from_u32(quinn_config.ack_eliciting_threshold));
-    ack_frequency_config.max_ack_delay(Some(Duration::from_millis(quinn_config.max_ack_delay_ms)));
+    if let Some(quinn_config_ack_frequency) = &quinn_config.ack_frequency_config {
+        let mut ack_frequency_config = AckFrequencyConfig::default();
+        if let Some(threshold) = quinn_config_ack_frequency.ack_eliciting_threshold {
+            ack_frequency_config.ack_eliciting_threshold(VarInt::from_u32(threshold));
+        }
 
-    // The docs say the recommended value for this is `packet_threshold - 1`
-    ack_frequency_config.reordering_threshold(VarInt::from_u32(quinn_config.packet_threshold - 1));
-    config.ack_frequency_config(Some(ack_frequency_config));
+        if let Some(delay) = quinn_config_ack_frequency.max_ack_delay_ms {
+            ack_frequency_config.max_ack_delay(Some(Duration::from_millis(delay)));
+        }
 
-    config.initial_rtt(Duration::from_millis(quinn_config.initial_rtt_ms));
+        // The docs say the recommended value for this is `packet_threshold - 1`
+        ack_frequency_config.reordering_threshold(VarInt::from_u32(
+            quinn_config.packet_threshold.unwrap_or(3) - 1,
+        ));
+        config.ack_frequency_config(Some(ack_frequency_config));
+    }
+
+    if let Some(initial_rtt) = quinn_config.initial_rtt_ms {
+        config.initial_rtt(Duration::from_millis(initial_rtt));
+    }
 
     config
 }
