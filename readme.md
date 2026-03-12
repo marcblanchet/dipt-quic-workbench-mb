@@ -89,7 +89,7 @@ Each node is defined with the following properties:
 
 ###### QUIC config
 This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
-parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](quinn-proto/src/config/transport.rs). **Important**: Quinn stack defaults assume a terrestrial communication scenario. For how to configure for deepspace simulation, see [draft-many-tiptop-quic-profile](https://datatracker.ietf.org/doc/draft-many-tiptop-quic-profile/)
+parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](https://github.com/quinn-rs/quinn/blob/main/quinn-proto/src/config/transport.rs). **Important**: Quinn stack defaults assume a terrestrial communication scenario. For how to configure for deepspace simulation, see [draft-many-tiptop-quic-profile](https://datatracker.ietf.org/doc/draft-many-tiptop-quic-profile/)
 
 Consider the following example in which all parameters are specified:
 
