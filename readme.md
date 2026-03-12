@@ -105,8 +105,9 @@ as you can see in [events.json](test-data/earth-mars/events.json).
 #### QUIC config
 
 Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
-parameters used by that node. All fields are optional and fall back to defaults that assume a terrestrial communication scenario. Consider
-the following example in which all parameters are specified:
+parameters used by that node. All fields are optional and fall back to the QUIC implementation's defaults (documented below). **Important**: defaults assume a terrestrial communication scenario, so you will most likely want to change them!
+
+Consider the following example in which all parameters are specified:
 
 ```json
 {
@@ -135,7 +136,7 @@ Here's the meaning of the different parameters:
   delays. Defaults to `30000` (30 seconds).
 - `packet_threshold`: Maximum reordering in packet numbers before considering a packet lost.
   Should not be less than 3, as per RFC5681. Defaults to `3`.
-- `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `false`.
+- `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `true`.
 - `maximize_send_and_receive_windows`: Boolean flag to maximize send and receive windows,
   allowing an unlimited number of unacknowledged in-flight packets. Defaults to `false`.
 - `ack_frequency_config`: Configures the ACK Frequency QUIC extension. When omitted, the ACK

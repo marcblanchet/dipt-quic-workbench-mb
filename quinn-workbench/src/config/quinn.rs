@@ -40,7 +40,7 @@ pub struct QuinnJsonConfig {
     pub packet_threshold: Option<u32>,
     /// Whether MTU discovery should be enabled
     ///
-    /// Defaults to `false`
+    /// Defaults to `true`
     pub mtu_discovery: Option<bool>,
     /// Whether the send and receive windows should be maximized, allowing an unbounded number of
     /// unacknowledged in-flight packets

@@ -81,7 +81,8 @@ fn endpoint_config(rng_seed: [u8; 32]) -> EndpointConfig {
 fn transport_config(quinn_config: &QuinnJsonConfig) -> TransportConfig {
     let mut config = TransportConfig::default();
 
-    if !quinn_config.mtu_discovery.unwrap_or(false) {
+    let mtu_enabled = quinn_config.mtu_discovery.unwrap_or(true);
+    if !mtu_enabled {
         config.mtu_discovery_config(None);
     }
 
