@@ -192,11 +192,11 @@ command line arguments.
     - `--network-events <NETWORK_EVENTS>` (required):
           Path to the JSON file containing the network events
    -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
-   - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]
+   - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
    - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
-          The number of concurrent connections used when making the requests [default: 1]
+          The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then X connections are setup and then X requests are sent on those X connections.
    - `--concurrent-streams-per-connection <CONCURRENT_STREAMS_PER_CONNECTION>`:
-          The number of concurrent streams per connection used when making the requests [default: 1]
+          The number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then X requests are sent in parallel on X streams.
    - `--response-size <RESPONSE_SIZE>`:
           A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
    - `--non-deterministic`:
