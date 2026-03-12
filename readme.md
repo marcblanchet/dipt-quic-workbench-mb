@@ -191,7 +191,6 @@ command line arguments.
           Path to the JSON file containing the network graph
     - `--network-events <NETWORK_EVENTS>` (required):
           Path to the JSON file containing the network events
-   -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
    - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
    - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
           The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then X connections are setup and then X requests are sent on those X connections.
@@ -205,6 +204,7 @@ command line arguments.
           A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
     - `--network-rng-seed <NETWORK_RNG_SEED>`:
           A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
+   -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
 
 ## Forwarding
 
