@@ -181,6 +181,31 @@ Note that it is planned to support more types of events such as node up/down or 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
 command line arguments.
 
+- cargo run --release --bin quinn-workbench -- --help shows types of simulations
+- cargo run --release --bin quinn-workbench -- quic --help shows arguments for Quic simulation
+   - `--client-ip-address <CLIENT_IP_ADDRESS>` (required):
+          The IP address of the node used as a client
+   -  `--server-ip-address <SERVER_IP_ADDRESS>` (required):
+          The IP address of the node used as a server
+   -  `--network-graph <NETWORK_GRAPH>` (required):
+          Path to the JSON file containing the network graph
+    - `--network-events <NETWORK_EVENTS>` (required):
+          Path to the JSON file containing the network events
+   -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
+   - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]
+   - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
+          The number of concurrent connections used when making the requests [default: 1]
+   - `--concurrent-streams-per-connection <CONCURRENT_STREAMS_PER_CONNECTION>`:
+          The number of concurrent streams per connection used when making the requests [default: 1]
+   - `--response-size <RESPONSE_SIZE>`:
+          A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
+   - `--non-deterministic`:
+          Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
+    - `--quinn-rng-seed <QUINN_RNG_SEED>`:
+          A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
+    - `--network-rng-seed <NETWORK_RNG_SEED>`:
+          A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
+
 ## Forwarding
 
 When a node receives a packet that should be forwarded, routing happens as follows: if the node's buffer does not have enough capacity, drop the packet; otherwise, enqueue the packet so it gets sent through the first link that becomes available. Here are some notes to clarify the details:
