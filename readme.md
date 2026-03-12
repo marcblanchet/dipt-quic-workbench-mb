@@ -181,8 +181,13 @@ Note that it is planned to support more types of events such as node up/down or 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
 command line arguments.
 
-- `cargo run --release --bin quinn-workbench -- --help` shows types of simulations
-- `cargo run --release --bin quinn-workbench -- quic --help` shows arguments for Quic simulation
+- `cargo run --release --bin quinn-workbench -- --help` shows types of simulations. Tool arguments include:
+  -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
+  -  `quic`: run a quic simulation. see below for more details
+  -  `ping`: run a ping simulation at UDP level
+  -  `throughput`: run a throughput simulation at the UDP level
+
+- `cargo run --release --bin quinn-workbench -- quic --help` shows arguments for Quic simulation:
    - `--client-ip-address <CLIENT_IP_ADDRESS>` (required):
           The IP address of the node used as a client
    -  `--server-ip-address <SERVER_IP_ADDRESS>` (required):
@@ -193,9 +198,9 @@ command line arguments.
           Path to the JSON file containing the network events
    - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
    - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
-          The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then X connections are setup and then X requests are sent on those X connections.
+          The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
    - `--concurrent-streams-per-connection <CONCURRENT_STREAMS_PER_CONNECTION>`:
-          The number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then X requests are sent in parallel on X streams.
+          The number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
    - `--response-size <RESPONSE_SIZE>`:
           A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
    - `--non-deterministic`:
@@ -204,7 +209,6 @@ command line arguments.
           A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
     - `--network-rng-seed <NETWORK_RNG_SEED>`:
           A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
-   -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
 
 ## Forwarding
 
