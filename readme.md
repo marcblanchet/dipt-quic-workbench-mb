@@ -66,18 +66,16 @@ cargo run --release --bin quinn-workbench -- \
   --non-deterministic
 ```
 
-## JSON config details
+## Network topology configuration
 
-#### Network topology config
-
-The topology configuration defines each node and each link of the network. It shall be self-documenting. See for instance
+The topology configuration defines each node and each link of the network in a JSON file. It shall be self-documenting. See for instance
 [networkgraph-fullmars.json](test-data/earth-mars/networkgraph-fullmars.json) and
 [networkgraph-5nodes.json](test-data/earth-mars/networkgraph-5nodes.json)
 
-###### Meta Information
+### Meta Information
 The top JSON object has a property "type" which must be set to "NetworkGraph" to identify a network topology configuration file. It also contains an array of "nodes" and an array of "links", as described below.
 
-###### Nodes 
+### Nodes 
 Each node is defined with the following properties:
 
 - `id` (required): a unique identifier string. 
@@ -159,16 +157,16 @@ Each link is defined with the following properties:
   (the value must be between 0 and 1). Default is 0.
 
 
-## Network events config
+## Network events configuration
 
 Network events are used to bring links up and down at different times of the simulation (e.g. to
-simulate an orbiter being unreachable at specific intervals). The format is fairly self-documenting,
+simulate an orbiter being unreachable at specific intervals), defined in a JSON file. The format is fairly self-documenting,
 as you can see in [events.json](test-data/earth-mars/events.json). If no link up/down events are necessary, specify an empty events file like [events.json](test-data/events-empty.json)
 
-###### Meta Information
+### Meta Information
 The top JSON object has a property "type" which must be set to "NetworkEvents" to identify a network events configuration file. It also contains an array of "events", as described below.
 
-###### Events
+### Events
 Each event is defined with the following properties:
 
 - `relative_time_ms` (required): The time (in ms) at which the event is happening, relative to the start of the simulation.
@@ -183,7 +181,7 @@ Note that it is planned to support more types of events such as node up/down or 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
 command line arguments.
 
-## Routing
+## Forwarding
 
 When a node receives a packet that should be forwarded, routing happens as follows: if the node's buffer does not have enough capacity, drop the packet; otherwise, enqueue the packet so it gets sent through the first link that becomes available. Here are some notes to clarify the details:
 
@@ -192,7 +190,7 @@ When a node receives a packet that should be forwarded, routing happens as follo
 3. The outgoing link is not chosen when the packet is received by the node, but when the packet can actually get sent to the next hop (i.e., when a suitable link is found which is up and has enough bandwidth for sending).
 4. When multiple links are available at the same time, the cheapest one gets to send the packet (according to the link's `cost` field in the configured network topology).
 
-A side-effect of the simulator's routing mechanism is that we automatically "load balance" packets when one of the links is saturated. Such a link is considered unavailable (not enough bandwidth), so if a second link is available towards the same destination, the packet will be routed through it instead of the saturated one.
+A side-effect of the simulator's forwarding mechanism is that the packets are forwarded to the next possible link when the first link is saturated. When such a link is considered unavailable (not enough bandwidth), if a second link is available towards the same destination, the packet will be forwarded through it instead of the saturated one.
 
 ## Validation
 
