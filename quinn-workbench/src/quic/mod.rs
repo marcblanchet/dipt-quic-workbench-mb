@@ -16,7 +16,21 @@ mod client;
 mod server;
 pub mod simulation;
 
+fn validate_opts(opts: &QuicOpt) -> anyhow::Result<()> {
+    if opts.request_interval_ms.unwrap_or_default() != 0
+        && opts.concurrent_streams_per_connection != 1
+    {
+        anyhow::bail!(
+            "incompatible command-line options used: `--request-interval-ms` is only valid when `--concurrent-streams-per-connection` is set to `1` (its default value)"
+        );
+    }
+
+    Ok(())
+}
+
 pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> {
+    validate_opts(quic_options)?;
+
     let mut simulation = QuicSimulation::new();
     let network_config = load_network_config(&quic_options.network)?;
     let result = simulation.run(quic_options, network_config).await;
