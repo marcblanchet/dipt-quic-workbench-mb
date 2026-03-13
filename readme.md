@@ -75,17 +75,17 @@ The topology configuration defines each node and each link of the network in a J
 ### Meta Information
 The top JSON object has a property "type" which must be set to "NetworkGraph" to identify a network topology configuration file. It also contains an array of "nodes" and an array of "links", as described below.
 
-### Nodes 
+### Nodes
 Each node is defined with the following properties:
 
-- `id` (required): a unique identifier string. 
+- `id` (required): a unique identifier string.
 - `type` (required): either "host" or "router". "router" means multiple interfaces and forwarding between those interfaces.
-- `bufferSizeBytes` (required): is the storage size of packets in transit while waiting for a link up event. This implements IP the store and forward capability as defined in [draft-many-tiptop-ip-architecture](https://datatracker.ietf.org/doc/draft-many-tiptop-ip-architecture/). Mandatory property.
+- `buffer_size_bytes` (required): is the storage size of packets in transit while waiting for a link up event. This implements IP the store and forward capability as defined in [draft-many-tiptop-ip-architecture](https://datatracker.ietf.org/doc/draft-many-tiptop-ip-architecture/). Mandatory property.
 - `interfaces` (required): is an array of network interfaces of this node. Each interface has an array of IP addresses and an array of routes. Mandatory property.
 - `quic` (optional): for "type" = "host" nodes, their QUIC stack configuration as described below. Optional property.
-- `packet_duplication_ratio`: The ratio of ingress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0. 
+- `packet_duplication_ratio`: The ratio of ingress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 - `packet_loss_ratio`: The ratio of ingress lost packets (the
-  value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0. 
+  value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 
 ###### QUIC config
 This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
@@ -174,7 +174,7 @@ Each event is defined with the following properties:
    - `id` (required): the identifier of the link. This must correspond to a link id in the topology file.
    - `status` (required): the target state of the link at the time of the event. Possible values are "up" or "down".
 
-Note that it is planned to support more types of events such as node up/down or modifying properties of links such as delays or bandwidth. 
+Note that it is planned to support more types of events such as node up/down or modifying properties of links such as delays or bandwidth.
 
 ## Command line arguments
 

@@ -4,7 +4,7 @@
     {
       "id": "A",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [
@@ -31,7 +31,7 @@
     {
       "id": "B",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [

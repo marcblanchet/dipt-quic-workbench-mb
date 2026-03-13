@@ -4,7 +4,7 @@
     {
       "id": "Earth",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [
@@ -31,7 +31,7 @@
     {
       "id": "Voyager",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [
