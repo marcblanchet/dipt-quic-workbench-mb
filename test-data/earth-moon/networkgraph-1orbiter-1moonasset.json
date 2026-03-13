@@ -4,7 +4,7 @@
     {
       "id": "Earth1",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [
@@ -42,7 +42,7 @@
     {
       "id": "MoonOrbiter1",
       "type": "router",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [
@@ -71,7 +71,7 @@
     {
       "id": "MoonAsset1",
       "type": "host",
-      "bufferSizeBytes": 1000000000,
+      "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
           "addresses": [

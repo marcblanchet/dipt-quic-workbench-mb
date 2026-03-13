@@ -28,7 +28,6 @@ impl NetworkSpecJson {
 }
 
 #[derive(Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
 struct NetworkNodeJson {
     id: String,
     buffer_size_bytes: u64,
@@ -47,7 +46,7 @@ struct NetworkNodeJson {
 
 #[derive(Deserialize, Clone)]
 #[serde(tag = "type")]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "snake_case")]
 enum NetworkNodeKindJson {
     Router,
     Host { quic: Option<QuinnJsonConfig> },
@@ -101,7 +100,7 @@ struct NetworkLinkJson {
 }
 
 #[derive(Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "snake_case")]
 enum NetworkLinkStatusJson {
     Up,
     Down,
