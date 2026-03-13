@@ -169,6 +169,8 @@ impl QuicSimulation {
             let client = client.clone();
             let server_name = server_name.to_string();
             let requests_left = requests_left.clone();
+            let request_interval =
+                Duration::from_millis(quic_options.request_interval_ms.unwrap_or_default());
             let connection_name = (i + b'A') as char;
             let connections_semaphore = connections_semaphore.clone();
             let concurrent_streams = quic_options.concurrent_streams_per_connection;
@@ -180,6 +182,7 @@ impl QuicSimulation {
                     server_addr,
                     connection_name.to_string(),
                     requests_left,
+                    request_interval,
                     concurrent_streams,
                     start,
                 )

@@ -13,6 +13,7 @@ use rustls::RootCertStore;
 use rustls::pki_types::CertificateDer;
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::Duration;
 
 pub async fn run_connection(
     client: Endpoint,
@@ -20,6 +21,7 @@ pub async fn run_connection(
     server_addr: SocketAddr,
     connection_name: String,
     requests_left: Arc<Mutex<u32>>,
+    request_interval: Duration,
     concurrent_streams: u32,
     start: Instant,
 ) -> anyhow::Result<()> {
@@ -52,6 +54,15 @@ pub async fn run_connection(
         }
 
         let permit = requests_semaphore.clone().acquire_arc().await;
+        if requests_made > 0 && !request_interval.is_zero() {
+            println!(
+                "{:.2}s SLEEP for {} ms (connection = {connection_name})",
+                start.elapsed().as_secs_f64(),
+                request_interval.as_millis()
+            );
+            async_rt::time::sleep(request_interval).await;
+        }
+
         requests_made += 1;
 
         // Actually make the request

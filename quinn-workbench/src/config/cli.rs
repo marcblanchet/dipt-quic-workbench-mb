@@ -76,6 +76,17 @@ pub struct QuicOpt {
     #[arg(long, default_value_t = 1024)]
     pub response_size: usize,
 
+    /// The number of milliseconds to wait between receiving a request's response and sending the
+    /// next request (useful for checking if the connection gets terminated due to being idle)
+    ///
+    /// Note 1: when multiple connections are used, this interval is applied per connection (e.g.,
+    /// if two connections are active, two requests will be sent in parallel, then each connection
+    /// will independently wait for the interval to elapse).
+    ///
+    /// Note 2: this option is only valid when `concurrent-streams-per-connection` is set to `1`
+    #[clap(long)]
+    pub request_interval_ms: Option<u64>,
+
     #[command(flatten)]
     pub network: NetworkOpt,
 }
