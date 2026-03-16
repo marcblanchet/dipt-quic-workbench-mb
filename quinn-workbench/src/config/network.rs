@@ -10,6 +10,8 @@ use std::time::Duration;
 
 #[derive(Deserialize, Clone)]
 pub struct NetworkSpecJson {
+    #[serde(rename = "type")]
+    _type: Option<String>,
     nodes: Vec<NetworkNodeJson>,
     links: Vec<NetworkLinkJson>,
 }
@@ -18,8 +20,8 @@ impl NetworkSpecJson {
     pub fn quic_configs(&self) -> HashMap<String, QuinnJsonConfig> {
         let mut configs = HashMap::new();
         for node in &self.nodes {
-            if let NetworkNodeKindJson::Host { quic } = &node.kind {
-                configs.insert(node.id.clone(), quic.clone().unwrap_or_default());
+            if let NetworkNodeKindJson::Host = &node.kind {
+                configs.insert(node.id.clone(), node.quic.clone().unwrap_or_default());
             }
         }
 
@@ -31,8 +33,9 @@ impl NetworkSpecJson {
 struct NetworkNodeJson {
     id: String,
     buffer_size_bytes: u64,
-    #[serde(flatten)]
+    #[serde(rename = "type")]
     kind: NetworkNodeKindJson,
+    quic: Option<QuinnJsonConfig>,
     interfaces: Vec<NetworkInterfaceJson>,
     /// The ratio of packets that will be duplicated upon arriving to the node (the value must be
     /// between 0 and 1)
@@ -45,11 +48,10 @@ struct NetworkNodeJson {
 }
 
 #[derive(Deserialize, Clone)]
-#[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 enum NetworkNodeKindJson {
     Router,
-    Host { quic: Option<QuinnJsonConfig> },
+    Host,
 }
 
 #[derive(Deserialize, Clone)]
@@ -166,6 +168,8 @@ impl From<NetworkLinkJson> for in_memory_network::network::spec::NetworkLinkSpec
 
 #[derive(Deserialize)]
 pub struct NetworkEventsJson {
+    #[serde(rename = "type")]
+    _type: Option<String>,
     pub events: Vec<NetworkEventJson>,
 }
 

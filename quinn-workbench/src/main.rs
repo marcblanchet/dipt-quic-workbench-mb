@@ -14,6 +14,7 @@ use config::cli::CliOpt;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::DelayMode;
 use serde::de::DeserializeOwned;
+use std::collections::HashSet;
 use std::fs::File;
 use std::path::Path;
 use tracing_subscriber::EnvFilter;
@@ -70,7 +71,23 @@ fn load_network_config(cli: &NetworkOpt) -> anyhow::Result<NetworkConfig> {
 fn load_json<T: DeserializeOwned>(path: &Path) -> anyhow::Result<T> {
     let file =
         File::open(path).with_context(|| format!("unable to open file at `{}`", path.display()))?;
-    let parsed = serde_json::from_reader(file)
-        .with_context(|| format!("error parsing JSON from `{}`", path.display()))?;
+    let deserializer = &mut serde_json::Deserializer::from_reader(file);
+    let mut unused = HashSet::new();
+    let parsed = serde_ignored::deserialize(deserializer, |path| {
+        unused.insert(path.to_string());
+    })
+    .with_context(|| format!("error parsing JSON from `{}`", path.display()))?;
+
+    let mut unused: Vec<_> = unused.into_iter().collect();
+    unused.sort_unstable();
+
+    if !unused.is_empty() {
+        let fields = unused.join("\n- ");
+        println!(
+            "WARN: the JSON file at `{}` contains the following unknown fields:\n- {fields}",
+            path.display()
+        );
+    }
+
     Ok(parsed)
 }
