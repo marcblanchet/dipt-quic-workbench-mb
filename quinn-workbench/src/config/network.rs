@@ -119,9 +119,7 @@ impl From<NetworkSpecJson> for in_memory_network::network::spec::NetworkSpec {
                     NetworkNodeKindJson::Router => {
                         in_memory_network::network::spec::NodeKind::Router
                     }
-                    NetworkNodeKindJson::Host { .. } => {
-                        in_memory_network::network::spec::NodeKind::Host
-                    }
+                    NetworkNodeKindJson::Host => in_memory_network::network::spec::NodeKind::Host,
                 },
                 buffer_size_bytes: n.buffer_size_bytes,
                 interfaces: n
