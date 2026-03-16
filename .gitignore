@@ -1,5 +1,6 @@
 /target
 .idea
 *.pcap
+*.qlog
 *.key
 replay-log.json

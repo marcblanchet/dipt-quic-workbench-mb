@@ -11,6 +11,7 @@ use quinn_proto::crypto::rustls::QuicClientConfig;
 use quinn_proto::{ClientConfig, VarInt};
 use rustls::RootCertStore;
 use rustls::pki_types::CertificateDer;
+use std::fs::File;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
@@ -152,8 +153,13 @@ fn client_config(
 
     crypto.key_log = Arc::new(rustls::KeyLogFile::new());
 
+    let client_qlog_file = File::create("client.qlog")?;
+
     let mut client_config = ClientConfig::new(Arc::new(QuicClientConfig::try_from(crypto)?));
-    client_config.transport_config(Arc::new(crate::quic::transport_config(quinn_config)));
+    client_config.transport_config(Arc::new(crate::quic::transport_config(
+        quinn_config,
+        client_qlog_file,
+    )));
 
     Ok(client_config)
 }

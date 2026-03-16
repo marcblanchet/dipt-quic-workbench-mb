@@ -6,6 +6,7 @@ use in_memory_network::async_rt;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use quinn::Endpoint;
 use rustls::pki_types::{CertificateDer, PrivateKeyDer};
+use std::fs::File;
 use std::sync::Arc;
 
 pub static _CERT_DER_ECDSA: &[u8] = &[
@@ -241,8 +242,13 @@ pub fn server_endpoint(
     let mut seed = [0; 32];
     quinn_rng.fill(&mut seed);
 
+    let server_qlog_file = File::create("server.qlog")?;
+
     let mut server_config = quinn::ServerConfig::with_single_cert(vec![cert], key).unwrap();
-    server_config.transport = Arc::new(crate::quic::transport_config(quinn_config));
+    server_config.transport = Arc::new(crate::quic::transport_config(
+        quinn_config,
+        server_qlog_file,
+    ));
     Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),
         Some(server_config),

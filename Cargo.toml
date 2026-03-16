@@ -18,7 +18,7 @@ pcap-file = "2.0.0"
 pin-project-lite = "0.2.16"
 pnet_packet = "0.34.0"
 quinn = "0.11"
-quinn-proto = "0.11"
+quinn-proto = { version = "0.11", features = ["qlog"] }
 quote = "1.0.40"
 rcgen = "0.13.1"
 rustls = { version = "0.23.8", default-features = false, features = ["ring"] }
