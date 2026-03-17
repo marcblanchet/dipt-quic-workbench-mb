@@ -10,7 +10,7 @@ A command-line application written in Rust to simulate QUIC connections in diffe
   simulation complete in an instant (even in the presence of deep-space-like RTTs).
 - Deterministic. Two runs with the same parameters yield the same output.
 - Inspectable. Next to informative command-line output and statistics, the application generates a
-  synthetic pcap file, so one can examine the traffic in more detail using Wireshark. The QUIC keylog is provided to decrypt the QUIC trafic.
+  synthetic pcap file, so one can examine the traffic in more detail using Wireshark (the TLS keylog is provided to decrypt the QUIC traffic). Also, qlog files are generated to expose details of the QUIC connections (called `client.qlog` and `server.qlog`).
 - Configurable network settings and QUIC parameters through reusable JSON config files (see
   `test-data` and [JSON config details](#json-config-details)).
 - Configurable simulation behavior through command-line arguments (see `cargo run --release --
@@ -201,6 +201,8 @@ command line arguments.
           The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
    - `--concurrent-streams-per-connection <CONCURRENT_STREAMS_PER_CONNECTION>`:
           The number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
+   - `--request-interval-ms <REQUEST_INTERVAL_MS>`:
+          The number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). Requires that `--concurrent-streams-per-connection` is `1`.
    - `--response-size <RESPONSE_SIZE>`:
           A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
    - `--non-deterministic`:
