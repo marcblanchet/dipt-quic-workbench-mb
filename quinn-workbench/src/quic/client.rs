@@ -111,6 +111,7 @@ pub async fn run_connection(
 }
 
 pub fn client_endpoint(
+    start: Instant,
     server_cert: CertificateDer<'_>,
     client_socket: InMemoryUdpSocket,
     quinn_config: &QuinnJsonConfig,
@@ -127,12 +128,13 @@ pub fn client_endpoint(
     )
     .context("failed to create client endpoint")?;
 
-    endpoint.set_default_client_config(client_config(server_cert, quinn_config)?);
+    endpoint.set_default_client_config(client_config(start, server_cert, quinn_config)?);
 
     Ok(endpoint)
 }
 
 fn client_config(
+    start: Instant,
     server_cert: CertificateDer<'_>,
     quinn_config: &QuinnJsonConfig,
 ) -> anyhow::Result<ClientConfig> {
@@ -157,6 +159,7 @@ fn client_config(
 
     let mut client_config = ClientConfig::new(Arc::new(QuicClientConfig::try_from(crypto)?));
     client_config.transport_config(Arc::new(crate::quic::transport_config(
+        start,
         quinn_config,
         client_qlog_file,
     )));

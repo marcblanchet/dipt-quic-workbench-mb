@@ -133,6 +133,7 @@ impl QuicSimulation {
         let server_host = network.host(quic_options.network.server_ip_address);
         let server_addr = server_host.quic_addr();
         let server = server::server_endpoint(
+            start,
             cert.clone(),
             key.into(),
             network.udp_socket_for_node(server_host.clone()),
@@ -145,6 +146,7 @@ impl QuicSimulation {
         // Create the client endpoint
         let client_host = network.host(quic_options.network.client_ip_address);
         let client = client::client_endpoint(
+            start,
             cert,
             network.udp_socket_for_node(client_host.clone()),
             &quic_configs[client_host.id().as_ref()],

@@ -6,6 +6,7 @@ use crate::quinn_extensions::ecn_cc::EcnCcFactory;
 use crate::quinn_extensions::no_cc::NoCCConfig;
 use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
 use anyhow::Context;
+use in_memory_network::async_rt::time::Instant;
 use quinn_proto::congestion::{CubicConfig, NewRenoConfig};
 use quinn_proto::{AckFrequencyConfig, EndpointConfig, QlogConfig, TransportConfig, VarInt};
 use std::fs;
@@ -93,11 +94,16 @@ fn endpoint_config(rng_seed: [u8; 32]) -> EndpointConfig {
     config
 }
 
-fn transport_config(quinn_config: &QuinnJsonConfig, qlog_file: File) -> TransportConfig {
+fn transport_config(
+    start: Instant,
+    quinn_config: &QuinnJsonConfig,
+    qlog_file: File,
+) -> TransportConfig {
     let mut config = TransportConfig::default();
 
     let mut qlog_config = QlogConfig::default();
     qlog_config.writer(Box::new(qlog_file));
+    qlog_config.start_time(start.into());
     let qlog_stream = qlog_config.into_stream().unwrap();
     config.qlog_stream(Some(qlog_stream));
 
