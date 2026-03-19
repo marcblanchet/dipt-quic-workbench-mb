@@ -3,6 +3,7 @@ use anyhow::Context;
 use fastrand::Rng;
 use futures::channel::mpsc::UnboundedReceiver;
 use in_memory_network::async_rt;
+use in_memory_network::async_rt::time::Instant;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use quinn::Endpoint;
 use rustls::pki_types::{CertificateDer, PrivateKeyDer};
@@ -233,6 +234,7 @@ pub fn server_listen(
 }
 
 pub fn server_endpoint(
+    start: Instant,
     cert: CertificateDer<'static>,
     key: PrivateKeyDer<'static>,
     server_socket: InMemoryUdpSocket,
@@ -246,6 +248,7 @@ pub fn server_endpoint(
 
     let mut server_config = quinn::ServerConfig::with_single_cert(vec![cert], key).unwrap();
     server_config.transport = Arc::new(crate::quic::transport_config(
+        start,
         quinn_config,
         server_qlog_file,
     ));
