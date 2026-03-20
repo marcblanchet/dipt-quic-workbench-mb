@@ -226,6 +226,15 @@ impl PcapExporter {
     }
 }
 
+impl Drop for PcapExporter {
+    fn drop(&mut self) {
+        let packets = std::mem::take(&mut *self.buffered_packets.lock());
+        for (source, transmit) in packets {
+            self.write_pcapng_transmit(source, &transmit.as_transmit());
+        }
+    }
+}
+
 fn correct_timestamp(d: Duration) -> Duration {
     // Round to the nearest millisecond
     let millis = (d.as_secs_f64() * 1000.0).round();
