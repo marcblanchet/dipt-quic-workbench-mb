@@ -4,6 +4,7 @@ use async_lock::Semaphore;
 use fastrand::Rng;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
+use in_memory_network::pcap_exporter::InMemoryKeyLog;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use parking_lot::Mutex;
 use quinn::Endpoint;
@@ -112,6 +113,7 @@ pub async fn run_connection(
 
 pub fn client_endpoint(
     start: Instant,
+    keylog: Arc<InMemoryKeyLog>,
     server_cert: CertificateDer<'_>,
     client_socket: InMemoryUdpSocket,
     quinn_config: &QuinnJsonConfig,
@@ -128,13 +130,14 @@ pub fn client_endpoint(
     )
     .context("failed to create client endpoint")?;
 
-    endpoint.set_default_client_config(client_config(start, server_cert, quinn_config)?);
+    endpoint.set_default_client_config(client_config(start, keylog, server_cert, quinn_config)?);
 
     Ok(endpoint)
 }
 
 fn client_config(
     start: Instant,
+    keylog: Arc<InMemoryKeyLog>,
     server_cert: CertificateDer<'_>,
     quinn_config: &QuinnJsonConfig,
 ) -> anyhow::Result<ClientConfig> {
@@ -153,7 +156,7 @@ fn client_config(
         .with_root_certificates(roots)
         .with_no_client_auth();
 
-    crypto.key_log = Arc::new(rustls::KeyLogFile::new());
+    crypto.key_log = keylog;
 
     let client_qlog_file = File::create("client.qlog")?;
 

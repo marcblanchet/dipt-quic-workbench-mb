@@ -7,12 +7,14 @@ anyhow = "1.0.86"
 async-lock = "3.4.0"
 bon = "3.3.0"
 bytes = "1.11.1"
+byteorder = "1.5.0"
 clap = { version = "4", features = ["derive"] }
 console = "0.15.11"
 event-listener = "5.4.0"
 fastrand = { version = "2.1.0" }
 futures = { version = "0.3.31", default-features = false, features = ["alloc", "std", "async-await"] }
 futures-util = "0.3.31"
+hex = "0.4.3"
 parking_lot = "0.12.3"
 pcap-file = "2.0.0"
 pin-project-lite = "0.2.16"

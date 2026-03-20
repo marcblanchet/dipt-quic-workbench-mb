@@ -7,7 +7,7 @@ use in_memory_network::async_rt::time::Instant;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::FileBasedPcapExporterFactory;
+use in_memory_network::pcap_exporter::PcapExporter;
 use in_memory_network::quinn_interop::BufsAndMeta;
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use parking_lot::Mutex;
@@ -38,7 +38,6 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
         network_spec.clone(),
         network_events,
         tracer.clone(),
-        Arc::new(FileBasedPcapExporterFactory),
         Rng::with_seed(ping_opt.network.network_rng_seed),
         simulation_start,
         false,
@@ -58,11 +57,17 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
 
     let server_ip = ping_opt.network.server_ip_address;
     let server_node = network.host(server_ip);
-    let server_socket = Arc::pin(network.udp_socket_for_node(server_node.clone()));
+    let server_pcap_exporter =
+        PcapExporter::for_node(server_node.id(), None).context("failed to create pcap exporter")?;
+    let server_socket =
+        Arc::pin(network.udp_socket_for_node(server_pcap_exporter, server_node.clone()));
 
     let client_ip = ping_opt.network.client_ip_address;
     let client_node = network.host(client_ip);
-    let client_socket = Arc::pin(network.udp_socket_for_node(client_node.clone()));
+    let client_pcap_exporter =
+        PcapExporter::for_node(client_node.id(), None).context("failed to create pcap exporter")?;
+    let client_socket =
+        Arc::pin(network.udp_socket_for_node(client_pcap_exporter, client_node.clone()));
 
     // Server
     let server_socket_cp = server_socket.clone();
