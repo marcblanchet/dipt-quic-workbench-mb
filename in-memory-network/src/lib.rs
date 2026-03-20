@@ -36,7 +36,7 @@ mod test {
     use crate::network::spec::{
         NetworkInterface, NetworkLinkSpec, NetworkNodeSpec, NetworkSpec, NodeKind,
     };
-    use crate::pcap_exporter::NoOpPcapExporterFactory;
+    use crate::pcap_exporter::PcapExporter;
     use crate::quinn_interop::BufsAndMeta;
     use crate::tracing::tracer::SimulationStepTracer;
     use bon::builder;
@@ -214,7 +214,6 @@ mod test {
             network_spec.clone(),
             NetworkEvents::new(events.unwrap_or_default(), &network_spec.links),
             Arc::new(SimulationStepTracer::new(network_spec)),
-            Arc::new(NoOpPcapExporterFactory),
             Rng::with_seed(42),
             async_rt::time::Instant::now(),
             false,
@@ -268,14 +267,14 @@ mod test {
         let server_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             Some(server_config),
-            Arc::new(network.udp_socket_for_node(server_socket.clone())),
+            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_socket.clone())),
             rt.clone(),
         )
         .unwrap();
         let mut client_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             None,
-            Arc::new(network.udp_socket_for_node(client_socket.clone())),
+            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), client_socket.clone())),
             rt,
         )
         .unwrap();
@@ -339,7 +338,7 @@ mod test {
         network.forward(client_node.clone(), data);
 
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket = network.udp_socket_for_node(server_node.clone());
+        let server_socket = network.udp_socket_for_node(PcapExporter::noop(), server_node.clone());
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
         assert_eq!(received, 1);
@@ -404,7 +403,8 @@ mod test {
             }
 
             let mut recv_result = BufsAndMeta::new(1200, 10);
-            let server_socket = Arc::new(network.udp_socket_for_node(server_node.clone()));
+            let server_socket =
+                Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
             let mut received = 0;
             while received < 4 {
                 received += server_socket.receive_raw(&mut recv_result).await.unwrap();
@@ -481,7 +481,8 @@ mod test {
 
         network.forward(client_socket.clone(), data.clone());
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket = Arc::new(network.udp_socket_for_node(server_socket.clone()));
+        let server_socket =
+            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_socket.clone()));
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
         assert_eq!(received, 1);

@@ -10,9 +10,7 @@ use in_memory_network::async_rt::time::Instant;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::{
-    FileBasedPcapExporterFactory, InMemoryKeyLog, NoOpPcapExporterFactory,
-};
+use in_memory_network::pcap_exporter::{InMemoryKeyLog, PcapExporter};
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use parking_lot::Mutex;
 use rustls::pki_types::{CertificateDer, PrivatePkcs8KeyDer};
@@ -71,6 +69,7 @@ impl QuicSimulation {
                 .collect(),
             &network_spec.links,
         );
+
         // Mute warnings during the connectivity check to avoid spamming the console
         let connectivity_check_tracer =
             SimulationStepTracer::new(network_spec.clone()).mute_warnings();
@@ -78,7 +77,6 @@ impl QuicSimulation {
             network_spec.clone(),
             network_events.clone(),
             Arc::new(connectivity_check_tracer),
-            Arc::new(NoOpPcapExporterFactory),
             Rng::with_seed(simulated_network_rng_seed),
             start,
             quic_options.disable_time_warping,
@@ -112,14 +110,11 @@ impl QuicSimulation {
         let start = Instant::now();
 
         // Network
-        let pcap_exporter_factory = Arc::new(FileBasedPcapExporterFactory::default());
-        let node_keylogs = pcap_exporter_factory.keylog_by_node_id.clone();
         let tracer = Arc::new(SimulationStepTracer::new(network_spec.clone()));
         let network = InMemoryNetwork::initialize(
             network_spec,
             network_events,
             tracer.clone(),
-            pcap_exporter_factory,
             Rng::with_seed(simulated_network_rng_seed),
             start,
             quic_options.disable_time_warping,
@@ -135,16 +130,16 @@ impl QuicSimulation {
         let mut quinn_rng = Rng::with_seed(quinn_rng_seed);
         let server_host = network.host(quic_options.network.server_ip_address);
         let server_keylog = Arc::new(InMemoryKeyLog::default());
-        node_keylogs
-            .lock()
-            .insert(server_host.id().clone(), server_keylog.clone());
+        let server_pcap_exporter =
+            PcapExporter::for_node(server_host.id(), Some(server_keylog.clone()))
+                .context("failed to create pcap exporter")?;
         let server_addr = server_host.quic_addr();
         let server = server::server_endpoint(
             start,
             server_keylog,
             cert.clone(),
             key.into(),
-            network.udp_socket_for_node(server_host.clone()),
+            network.udp_socket_for_node(server_pcap_exporter, server_host.clone()),
             &quic_configs[server_host.id().as_ref()],
             &mut quinn_rng,
         )?;
@@ -154,14 +149,14 @@ impl QuicSimulation {
         // Create the client endpoint
         let client_host = network.host(quic_options.network.client_ip_address);
         let client_keylog = Arc::new(InMemoryKeyLog::default());
-        node_keylogs
-            .lock()
-            .insert(client_host.id().clone(), client_keylog.clone());
+        let client_pcap_exporter =
+            PcapExporter::for_node(client_host.id(), Some(client_keylog.clone()))
+                .context("failed to create pcap exporter")?;
         let client = client::client_endpoint(
             start,
             client_keylog,
             cert,
-            network.udp_socket_for_node(client_host.clone()),
+            network.udp_socket_for_node(client_pcap_exporter, client_host.clone()),
             &quic_configs[client_host.id().as_ref()],
             &mut quinn_rng,
         )?;

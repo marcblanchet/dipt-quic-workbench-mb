@@ -14,7 +14,6 @@ use pnet_packet::udp::MutableUdpPacket;
 use pnet_packet::{PacketSize, ipv4, udp};
 use quinn::udp::Transmit;
 use rustls::KeyLog;
-use std::collections::HashMap;
 use std::fmt::{Debug, Formatter};
 use std::fs;
 use std::io::{BufWriter, Write};
@@ -41,32 +40,6 @@ impl KeyLog for InMemoryKeyLog {
         self.log
             .lock()
             .push(format!("{label} {client_random} {secret}"));
-    }
-}
-
-pub trait PcapExporterFactory: Send + Sync {
-    fn create_pcap_exporter_for_node(&self, node_id: &str) -> anyhow::Result<PcapExporter>;
-}
-
-pub struct NoOpPcapExporterFactory;
-impl PcapExporterFactory for NoOpPcapExporterFactory {
-    fn create_pcap_exporter_for_node(&self, _: &str) -> anyhow::Result<PcapExporter> {
-        Ok(PcapExporter::noop())
-    }
-}
-
-#[derive(Default)]
-pub struct FileBasedPcapExporterFactory {
-    pub keylog_by_node_id: Arc<Mutex<HashMap<Arc<str>, Arc<InMemoryKeyLog>>>>,
-}
-
-impl PcapExporterFactory for FileBasedPcapExporterFactory {
-    fn create_pcap_exporter_for_node(&self, node_id: &str) -> anyhow::Result<PcapExporter> {
-        let keylog = self.keylog_by_node_id.lock().get(node_id).cloned();
-        let file_name = format!("{node_id}.pcap");
-        let pcap_file = fs::File::create(&file_name)
-            .with_context(|| format!("failed to open {file_name} for writing"))?;
-        Ok(PcapExporter::new(pcap_file, keylog))
     }
 }
 
@@ -113,6 +86,13 @@ impl PcapExporter {
             keylog,
             keylog_written: AtomicBool::new(false),
         }
+    }
+
+    pub fn for_node(node_id: &str, keylog: Option<Arc<InMemoryKeyLog>>) -> anyhow::Result<Self> {
+        let file_name = format!("{node_id}.pcap");
+        let pcap_file = fs::File::create(&file_name)
+            .with_context(|| format!("failed to open {file_name} for writing"))?;
+        Ok(PcapExporter::new(pcap_file, keylog))
     }
 
     pub fn noop() -> Self {

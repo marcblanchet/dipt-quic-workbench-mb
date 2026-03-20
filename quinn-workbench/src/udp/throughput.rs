@@ -11,7 +11,7 @@ use in_memory_network::async_rt::time::Instant;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::NoOpPcapExporterFactory;
+use in_memory_network::pcap_exporter::PcapExporter;
 use in_memory_network::quinn_interop::BufsAndMeta;
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use quinn::AsyncUdpSocket;
@@ -44,7 +44,6 @@ pub async fn run(
         network_spec.clone(),
         network_events,
         tracer.clone(),
-        Arc::new(NoOpPcapExporterFactory),
         Rng::with_seed(throughput_opt.network.network_rng_seed),
         simulation_start,
         false,
@@ -62,11 +61,13 @@ pub async fn run(
 
     let server_ip = throughput_opt.network.server_ip_address;
     let server_node = network.host(server_ip);
-    let server_socket = Arc::pin(network.udp_socket_for_node(server_node.clone()));
+    let server_socket =
+        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
 
     let client_ip = throughput_opt.network.client_ip_address;
     let client_node = network.host(client_ip);
-    let client_socket = Arc::pin(network.udp_socket_for_node(client_node.clone()));
+    let client_socket =
+        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), client_node.clone()));
 
     let cancellation_token = Arc::new(CancellationToken::new());
 
