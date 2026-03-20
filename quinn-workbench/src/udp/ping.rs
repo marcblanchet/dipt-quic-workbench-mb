@@ -38,7 +38,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
         network_spec.clone(),
         network_events,
         tracer.clone(),
-        Arc::new(FileBasedPcapExporterFactory),
+        Arc::new(FileBasedPcapExporterFactory::default()),
         Rng::with_seed(ping_opt.network.network_rng_seed),
         simulation_start,
         false,

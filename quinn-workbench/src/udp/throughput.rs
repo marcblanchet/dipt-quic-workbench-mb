@@ -11,7 +11,7 @@ use in_memory_network::async_rt::time::Instant;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::FileBasedPcapExporterFactory;
+use in_memory_network::pcap_exporter::NoOpPcapExporterFactory;
 use in_memory_network::quinn_interop::BufsAndMeta;
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use quinn::AsyncUdpSocket;
@@ -44,7 +44,7 @@ pub async fn run(
         network_spec.clone(),
         network_events,
         tracer.clone(),
-        Arc::new(FileBasedPcapExporterFactory),
+        Arc::new(NoOpPcapExporterFactory),
         Rng::with_seed(throughput_opt.network.network_rng_seed),
         simulation_start,
         false,

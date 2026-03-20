@@ -10,10 +10,11 @@ use in_memory_network::async_rt::time::Instant;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::{FileBasedPcapExporterFactory, NoOpPcapExporterFactory};
+use in_memory_network::pcap_exporter::{
+    FileBasedPcapExporterFactory, InMemoryKeyLog, NoOpPcapExporterFactory,
+};
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use parking_lot::Mutex;
-use quinn_proto::VarInt;
 use rustls::pki_types::{CertificateDer, PrivatePkcs8KeyDer};
 use std::sync::Arc;
 use std::time::Duration;
@@ -111,12 +112,14 @@ impl QuicSimulation {
         let start = Instant::now();
 
         // Network
+        let pcap_exporter_factory = Arc::new(FileBasedPcapExporterFactory::default());
+        let node_keylogs = pcap_exporter_factory.keylog_by_node_id.clone();
         let tracer = Arc::new(SimulationStepTracer::new(network_spec.clone()));
         let network = InMemoryNetwork::initialize(
             network_spec,
             network_events,
             tracer.clone(),
-            Arc::new(FileBasedPcapExporterFactory),
+            pcap_exporter_factory,
             Rng::with_seed(simulated_network_rng_seed),
             start,
             quic_options.disable_time_warping,
@@ -131,9 +134,14 @@ impl QuicSimulation {
         // Let a server listen in the background
         let mut quinn_rng = Rng::with_seed(quinn_rng_seed);
         let server_host = network.host(quic_options.network.server_ip_address);
+        let server_keylog = Arc::new(InMemoryKeyLog::default());
+        node_keylogs
+            .lock()
+            .insert(server_host.id().clone(), server_keylog.clone());
         let server_addr = server_host.quic_addr();
         let server = server::server_endpoint(
             start,
+            server_keylog,
             cert.clone(),
             key.into(),
             network.udp_socket_for_node(server_host.clone()),
@@ -145,8 +153,13 @@ impl QuicSimulation {
 
         // Create the client endpoint
         let client_host = network.host(quic_options.network.client_ip_address);
+        let client_keylog = Arc::new(InMemoryKeyLog::default());
+        node_keylogs
+            .lock()
+            .insert(client_host.id().clone(), client_keylog.clone());
         let client = client::client_endpoint(
             start,
+            client_keylog,
             cert,
             network.udp_socket_for_node(client_host.clone()),
             &quic_configs[client_host.id().as_ref()],

@@ -27,8 +27,6 @@ fn main() -> anyhow::Result<()> {
         .without_time()
         .init();
 
-    // Safety: we are fully single-threaded
-    unsafe { std::env::set_var("SSLKEYLOGFILE", "keylog.key") };
     let opt = CliOpt::parse();
 
     match &opt.command {

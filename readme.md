@@ -10,7 +10,7 @@ A command-line application written in Rust to simulate QUIC connections in diffe
   simulation complete in an instant (even in the presence of deep-space-like RTTs).
 - Deterministic. Two runs with the same parameters yield the same output.
 - Inspectable. Next to informative command-line output and statistics, the application generates a
-  synthetic pcap file, so one can examine the traffic in more detail using Wireshark (the TLS keylog is provided to decrypt the QUIC traffic). Also, qlog files are generated to expose details of the QUIC connections (called `client.qlog` and `server.qlog`).
+  synthetic pcap file, so one can examine the traffic in more detail using Wireshark (the TLS keylog is embedded in the pcap so Wireshark can decrypt the QUIC traffic). Also, qlog files are generated to expose details of the QUIC connections (called `client.qlog` and `server.qlog`).
 - Configurable network settings and QUIC parameters through reusable JSON config files (see
   `test-data` and [JSON config details](#json-config-details)).
 - Configurable simulation behavior through command-line arguments (see `cargo run --release --
@@ -222,6 +222,12 @@ When a node receives a packet that should be forwarded, routing happens as follo
 4. When multiple links are available at the same time, the cheapest one gets to send the packet (according to the link's `cost` field in the configured network topology).
 
 A side-effect of the simulator's forwarding mechanism is that the packets are forwarded to the next possible link when the first link is saturated. When such a link is considered unavailable (not enough bandwidth), if a second link is available towards the same destination, the packet will be forwarded through it instead of the saturated one.
+
+## Inspecting packet captures with Wireshark
+
+The simulation generates packet capture files for the client and server nodes. The file name for each capture follows the pattern `<node>.pcap`. Opening the file with Wireshark should Just Work, since the encryption keys are included in it.
+
+Note: upon inspecting packet captures, you might notice that a connection close packet from the server is not received by the client. That is expected, because the client initiates the connection close and does not wait until the server responds. Hence, the simulation finishes before the server's response actually arrives to the client.
 
 ## Validation
 

@@ -4,12 +4,14 @@ use fastrand::Rng;
 use futures::channel::mpsc::UnboundedReceiver;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
+use in_memory_network::pcap_exporter::InMemoryKeyLog;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use quinn::Endpoint;
+use quinn_proto::ConnectionError;
+use quinn_proto::crypto::rustls::QuicServerConfig;
 use rustls::pki_types::{CertificateDer, PrivateKeyDer};
 use std::fs::File;
 use std::sync::Arc;
-use quinn_proto::ConnectionError;
 
 pub static _CERT_DER_ECDSA: &[u8] = &[
     0x30, 0x82, 0x1, 0x60, 0x30, 0x82, 0x1, 0x6, 0xa0, 0x3, 0x2, 0x1, 0x2, 0x2, 0x14, 0x1f, 0xa0,
@@ -242,6 +244,7 @@ pub fn server_listen(
 
 pub fn server_endpoint(
     start: Instant,
+    keylog: Arc<InMemoryKeyLog>,
     cert: CertificateDer<'static>,
     key: PrivateKeyDer<'static>,
     server_socket: InMemoryUdpSocket,
@@ -253,7 +256,24 @@ pub fn server_endpoint(
 
     let server_qlog_file = File::create("server.qlog")?;
 
-    let mut server_config = quinn::ServerConfig::with_single_cert(vec![cert], key).unwrap();
+    let default_provider = rustls::crypto::ring::default_provider();
+    let provider = rustls::crypto::CryptoProvider {
+        cipher_suites: vec![rustls::crypto::ring::cipher_suite::TLS13_AES_128_GCM_SHA256],
+        ..default_provider
+    };
+
+    let mut crypto = rustls::ServerConfig::builder_with_provider(provider.into())
+        .with_protocol_versions(&[&rustls::version::TLS13])
+        .unwrap()
+        .with_no_client_auth()
+        .with_single_cert(vec![cert], key)
+        .unwrap();
+
+    crypto.max_early_data_size = u32::MAX;
+    crypto.key_log = keylog;
+
+    let mut server_config =
+        quinn::ServerConfig::with_crypto(Arc::new(QuicServerConfig::try_from(crypto).unwrap()));
     server_config.transport = Arc::new(crate::quic::transport_config(
         start,
         quinn_config,
