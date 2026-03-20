@@ -78,14 +78,6 @@ impl PcapExporter {
         Self::new(std::io::sink())
     }
 
-    pub fn flush(&self) -> anyhow::Result<()> {
-        self.writer
-            .lock()
-            .get_mut()
-            .flush()
-            .context("failed to flush pcap writer")
-    }
-
     pub fn track_transmit(&self, source_addr: SocketAddr, transmit: &Transmit) {
         let IpAddr::V4(source) = source_addr.ip() else {
             unreachable!()
