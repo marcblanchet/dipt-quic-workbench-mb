@@ -221,7 +221,6 @@ impl QuicSimulation {
                 break;
             }
         }
-        server.close(VarInt::from_u32(0), b"server shut down");
 
         Ok(())
     }

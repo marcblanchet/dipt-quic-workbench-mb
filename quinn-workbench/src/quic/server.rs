@@ -9,6 +9,7 @@ use quinn::Endpoint;
 use rustls::pki_types::{CertificateDer, PrivateKeyDer};
 use std::fs::File;
 use std::sync::Arc;
+use quinn_proto::ConnectionError;
 
 pub static _CERT_DER_ECDSA: &[u8] = &[
     0x30, 0x82, 0x1, 0x60, 0x30, 0x82, 0x1, 0x6, 0xa0, 0x3, 0x2, 0x1, 0x2, 0x2, 0x14, 0x1f, 0xa0,
@@ -221,6 +222,12 @@ pub fn server_listen(
                         .context("server stream task crashed")?
                         .context("server stream task errored")?;
                 }
+
+                // After all streams are completed, wait for the client to close the connection
+                let closed = conn.closed().await;
+                let ConnectionError::ApplicationClosed(_) = closed else {
+                    panic!("connection closed for the wrong reason: {closed:?}")
+                };
 
                 Result::<_, anyhow::Error>::Ok(())
             });
