@@ -140,7 +140,7 @@ Here's the meaning of the different parameters:
   a value suitable for terrestrial communication.
 
 ###### Links
-Links are uni-directional, so two entries are necessary to describe a bidirectional link.
+Links are point to point and uni-directional, so two entries are necessary to describe a bidirectional link.
 Each link is defined with the following properties:
 
 - `id` (required): a unique identifier string. The suggested id is the name of the two hosts of this link with a '-'.
@@ -159,7 +159,7 @@ Each link is defined with the following properties:
 
 ## Network events configuration
 
-Network events are used to bring links up and down at different times of the simulation (e.g. to
+Network events are used to bring links up and down, nodes up and down and clearing node buffer memory at different times of the simulation (e.g. to
 simulate an orbiter being unreachable at specific intervals), defined in a JSON file. The format is fairly self-documenting,
 as you can see in [events.json](test-data/earth-mars/events.json). If no link up/down events are necessary, specify an empty events file like [events.json](test-data/events-empty.json)
 
@@ -177,6 +177,7 @@ Each event is defined with the following properties:
    - `id` (required): the identifier of the node. This must correspond to a node id in the topology file.
    - `status` (optional): the target state of the node at the time of the event. Possible values are "up" or "down".
    - `clear_buffer` (optional): if set to `true`, it will wipe all packets that have been received by the node and have not yet been sent.
+   		- one of `status` or `clear_buffer` is required
 
 Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
