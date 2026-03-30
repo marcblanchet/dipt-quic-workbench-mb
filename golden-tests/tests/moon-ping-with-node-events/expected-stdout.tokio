@@ -1,0 +1,68 @@
+--- Network ---
+* Initial link statuses (derived from events):
+  * Earth1-MoonOrbiter1: UP
+  * MoonOrbiter1-Earth1: UP
+  * MoonOrbiter1-MoonAsset1: UP
+  * MoonAsset1-MoonOrbiter1: UP
+* Initial node statuses (derived from events):
+  * Earth1: UP
+  * MoonOrbiter1: DOWN
+  * MoonAsset1: UP
+--- Ping ---
+3.90s WARN: no more network events left to process. Did the simulation keep running indefinitely?
+P2 | 2.00s - SENT | 6.00s - RECEIVED | 4.00s - DURATION
+P3 | 3.00s - SENT | 6.60s - RECEIVED | 3.60s - DURATION
+P4 | 4.00s - SENT | 7.60s - RECEIVED | 3.60s - DURATION
+P5 | 5.00s - SENT | 8.60s - RECEIVED | 3.60s - DURATION
+P6 | 6.00s - SENT | 9.60s - RECEIVED | 3.60s - DURATION
+P0 | 0.00s - SENT | 10.00s - LOST | 10.00s - DURATION
+P7 | 7.00s - SENT | 10.60s - RECEIVED | 3.60s - DURATION
+P1 | 1.00s - SENT | 11.00s - LOST | 10.00s - DURATION
+P8 | 8.00s - SENT | 11.60s - RECEIVED | 3.60s - DURATION
+P9 | 9.00s - SENT | 12.60s - RECEIVED | 3.60s - DURATION
+P10 | 10.00s - SENT | 13.60s - RECEIVED | 3.60s - DURATION
+P11 | 11.00s - SENT | 14.60s - RECEIVED | 3.60s - DURATION
+15.00s Done
+--- Replay log ---
+* Replay log available at replay-log.json
+--- Node stats ---
+* Earth1 (client)
+  * Sent packets: 15 (540 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
+  * Received packets: 10 (360 bytes)
+    | 0 packets received out of order (0 bytes)
+* MoonAsset1 (server)
+  * Sent packets: 12 (432 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
+  * Received packets: 12 (432 bytes)
+    | 0 packets received out of order (0 bytes)
+* MoonOrbiter1
+  * Sent packets: 23 (828 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 2 packets dropped (72 bytes). Caused by:
+      | node was down when the packet arrived (1 packets, 36 bytes)
+      | buffer got cleared before the packet was sent (1 packets, 36 bytes)
+  * Received packets: 25 (900 bytes)
+    | 10 packets received out of order (360 bytes)
+--- Max buffer usage per node ---
+* MoonOrbiter1: 72 bytes (0 packets dropped due to buffer being full)
+* Earth1: 0 bytes (0 packets dropped due to buffer being full)
+* MoonAsset1: 0 bytes (0 packets dropped due to buffer being full)
+--- Link stats ---
+* Earth1-MoonOrbiter1:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 576 (0.01% of the link's bandwidth)
+* MoonAsset1-MoonOrbiter1:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 576 (0.01% of the link's bandwidth)
+* MoonOrbiter1-Earth1:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 576 (0.01% of the link's bandwidth)
+* MoonOrbiter1-MoonAsset1:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 576 (0.01% of the link's bandwidth)

@@ -3,224 +3,370 @@
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "down"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-M20",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-M20",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-MRO",
-      "status": "down"
+      "link": {
+        "linkId": "M20-MRO",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "GND-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "GND-DSN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-GND",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-GND",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-TGO",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-TGO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "TGO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "TGO-DSN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MVN",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-MVN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MVN-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MVN-DSN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-ODY",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-ODY",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "ODY-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "ODY-DSN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "TGO-M20",
-      "status": "up"
+      "link": {
+        "linkId": "TGO-M20",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-TGO",
-      "status": "up"
+      "link": {
+        "linkId": "M20-TGO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MVN-M20",
-      "status": "up"
+      "link": {
+        "linkId": "MVN-M20",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-MVN",
-      "status": "up"
+      "link": {
+        "linkId": "M20-MVN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "ODY-M20",
-      "status": "up"
+      "link": {
+        "linkId": "ODY-M20",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-ODY",
-      "status": "up"
+      "link": {
+        "linkId": "M20-ODY",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-MSL",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-MSL",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MSL-MRO",
-      "status": "up"
+      "link": {
+        "linkId": "MSL-MRO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "TGO-MSL",
-      "status": "up"
+      "link": {
+        "linkId": "TGO-MSL",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MSL-TGO",
-      "status": "up"
+      "link": {
+        "linkId": "MSL-TGO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MVN-MSL",
-      "status": "up"
+      "link": {
+        "linkId": "MVN-MSL",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MSL-MVN",
-      "status": "up"
+      "link": {
+        "linkId": "MSL-MVN",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "ODY-MSL",
-      "status": "up"
+      "link": {
+        "linkId": "ODY-MSL",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MSL-ODY",
-      "status": "up"
+      "link": {
+        "linkId": "MSL-ODY",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-ING",
-      "status": "up"
+      "link": {
+        "linkId": "M20-ING",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "ING-M20",
-      "status": "up"
+      "link": {
+        "linkId": "ING-M20",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "GND",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "DSN",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "MRO",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "TGO",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "MVN",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "ODY",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "M20",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "MSL",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "ING",
+        "status": "up"
+      }
     }
   },
   {
@@ -265,8 +411,10 @@
     "relative_time_ns": 506828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -1463,8 +1611,10 @@
     "relative_time_ns": 4441828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
@@ -2105,8 +2255,10 @@
     "relative_time_ns": 7242828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -2535,8 +2687,10 @@
     "relative_time_ns": 11175828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
@@ -2812,8 +2966,10 @@
     "relative_time_ns": 13977828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -3204,8 +3360,10 @@
     "relative_time_ns": 17825828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
@@ -3711,8 +3869,10 @@
     "relative_time_ns": 22474828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -3892,40 +4052,50 @@
     "relative_time_ns": 22904828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 22951523000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 22961828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-M20",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-M20",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 22961828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-MRO",
-      "status": "up"
+      "link": {
+        "linkId": "M20-MRO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 23172828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -3971,16 +4141,20 @@
     "relative_time_ns": 23794828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-M20",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-M20",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 23794828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "M20-MRO",
-      "status": "down"
+      "link": {
+        "linkId": "M20-MRO",
+        "status": "down"
+      }
     }
   },
   {
@@ -4044,16 +4218,20 @@
     "relative_time_ns": 24637828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 24653523000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "down"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "down"
+      }
     }
   },
   {
@@ -4387,16 +4565,20 @@
     "relative_time_ns": 27230046000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 27446828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {
@@ -4739,16 +4921,20 @@
     "relative_time_ns": 31368828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "down"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 31384046000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "down"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "down"
+      }
     }
   },
   {
@@ -5100,16 +5286,20 @@
     "relative_time_ns": 33961046000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "DSN-MRO",
-      "status": "up"
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 34178828000000,
     "type": "networkEvent",
     "data": {
-      "linkId": "MRO-DSN",
-      "status": "up"
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "up"
+      }
     }
   },
   {

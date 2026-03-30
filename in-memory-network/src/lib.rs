@@ -29,7 +29,7 @@ mod test {
     use super::*;
     use crate::network::InMemoryNetwork;
     use crate::network::event::{
-        NetworkEvent, NetworkEventPayload, NetworkEvents, UpdateLinkStatus,
+        LinkEventPayload, NetworkEvent, NetworkEventKind, NetworkEvents, UpdateLinkStatus,
     };
     use crate::network::ip::Ipv4Cidr;
     use crate::network::route::{IpRange, Route};
@@ -72,7 +72,7 @@ mod test {
         let network_spec = NetworkSpec {
             nodes: vec![
                 NetworkNodeSpec {
-                    id: "server".to_string(),
+                    id: "server".into(),
                     kind: NodeKind::Host,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![SERVER_ADDR],
@@ -87,7 +87,7 @@ mod test {
                     packet_duplication_ratio: 0.0,
                 },
                 NetworkNodeSpec {
-                    id: "client".to_string(),
+                    id: "client".into(),
                     kind: NodeKind::Host,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![CLIENT_ADDR],
@@ -102,7 +102,7 @@ mod test {
                     packet_duplication_ratio: 0.0,
                 },
                 NetworkNodeSpec {
-                    id: "router1".to_string(),
+                    id: "router1".into(),
                     kind: NodeKind::Router,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![ROUTER1_ADDR],
@@ -124,7 +124,7 @@ mod test {
                     packet_duplication_ratio: 0.0,
                 },
                 NetworkNodeSpec {
-                    id: "router2".to_string(),
+                    id: "router2".into(),
                     kind: NodeKind::Router,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![ROUTER2_ADDR],
@@ -212,7 +212,11 @@ mod test {
 
         InMemoryNetwork::initialize(
             network_spec.clone(),
-            NetworkEvents::new(events.unwrap_or_default(), &network_spec.links),
+            NetworkEvents::new(
+                events.unwrap_or_default(),
+                &network_spec.nodes,
+                &network_spec.links,
+            ),
             Arc::new(SimulationStepTracer::new(network_spec)),
             Rng::with_seed(42),
             async_rt::time::Instant::now(),
@@ -436,7 +440,7 @@ mod test {
             .events(vec![
                 NetworkEvent {
                     relative_time: Duration::from_secs(0),
-                    payload: NetworkEventPayload {
+                    kind: NetworkEventKind::Link(LinkEventPayload {
                         link_id: "router2-router1".into(),
                         status: Some(UpdateLinkStatus::Down),
                         bandwidth_bps: None,
@@ -446,11 +450,11 @@ mod test {
                         packet_duplication_ratio: None,
                         packet_loss_ratio: None,
                         congestion_event_ratio: None,
-                    },
+                    }),
                 },
                 NetworkEvent {
                     relative_time: Duration::from_secs(10),
-                    payload: NetworkEventPayload {
+                    kind: NetworkEventKind::Link(LinkEventPayload {
                         link_id: "router2-router1".into(),
                         status: Some(UpdateLinkStatus::Up),
                         bandwidth_bps: None,
@@ -460,7 +464,7 @@ mod test {
                         packet_duplication_ratio: None,
                         packet_loss_ratio: None,
                         congestion_event_ratio: None,
-                    },
+                    }),
                 },
             ])
             .call();

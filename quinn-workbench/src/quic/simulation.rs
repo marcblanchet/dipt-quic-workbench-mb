@@ -67,6 +67,7 @@ impl QuicSimulation {
                 .into_iter()
                 .map(|e| e.into())
                 .collect(),
+            &network_spec.nodes,
             &network_spec.links,
         );
 
@@ -87,6 +88,11 @@ impl QuicSimulation {
         for link_spec in &network_spec.links {
             let status = connectivity_check_network.get_link_status(&link_spec.id);
             println!("  * {}: {}", link_spec.id, status);
+        }
+        println!("* Initial node statuses (derived from events):");
+        for node_spec in &network_spec.nodes {
+            let status = connectivity_check_network.get_node_status(&node_spec.id);
+            println!("  * {}: {}", node_spec.id, status);
         }
         if quic_options.disable_time_warping {
             println!("* Connectivity check skipped to save time (time warping is disabled)");

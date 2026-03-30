@@ -56,7 +56,13 @@ pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> 
         .context("failed to verify simulation")?;
     let server_node = network.host(quic_options.network.server_ip_address);
     let client_node = network.host(quic_options.network.client_ip_address);
-    print_node_stats(&verified_simulation, server_node, client_node);
+    print_node_stats(
+        &network.get_node_ids(),
+        &verified_simulation,
+        server_node,
+        client_node,
+        quic_options.verbose_node_stats,
+    );
     print_max_buffer_usage_per_node(&verified_simulation);
     print_link_stats(&verified_simulation, &network);
 

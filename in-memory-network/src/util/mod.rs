@@ -1,3 +1,8 @@
+// useful with #[serde(skip_serializing_if)]
+pub fn is_false(x: &bool) -> bool {
+    !x
+}
+
 pub mod serde_arc_str {
     use serde::de::{Error, Visitor};
     use serde::{Deserializer, Serializer};

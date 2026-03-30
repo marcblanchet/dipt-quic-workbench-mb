@@ -1,0 +1,47 @@
+{
+  "type": "NetworkEvents",
+  "events": [
+    {
+      "relative_time_ms": 1900,
+      "node": {
+        "id": "MoonOrbiter1",
+        "status": "up"
+      }
+    },
+    {
+      "relative_time_ms": 1900,
+      "link": {
+        "id": "MoonOrbiter1-MoonAsset1",
+        "status": "down"
+      }
+    },
+    {
+      "relative_time_ms": 1900,
+      "link": {
+        "id": "MoonAsset1-MoonOrbiter1",
+        "status": "down"
+      }
+    },
+    {
+      "relative_time_ms": 3500,
+      "node": {
+        "id": "MoonOrbiter1",
+        "clear_buffer": true
+      }
+    },
+    {
+      "relative_time_ms": 3900,
+      "link": {
+        "id": "MoonOrbiter1-MoonAsset1",
+        "status": "up"
+      }
+    },
+    {
+      "relative_time_ms": 3900,
+      "link": {
+        "id": "MoonAsset1-MoonOrbiter1",
+        "status": "up"
+      }
+    }
+  ]
+}

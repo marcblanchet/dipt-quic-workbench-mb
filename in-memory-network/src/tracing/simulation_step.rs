@@ -1,4 +1,4 @@
-use crate::network::event::NetworkEventPayload;
+use crate::network::event::{LinkEventPayload, NodeEventPayload};
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, DurationNanoSeconds, serde_as};
 use std::sync::Arc;
@@ -19,7 +19,7 @@ pub struct SimulationStep {
 #[serde(rename_all = "camelCase", tag = "type", content = "data")]
 pub enum SimulationStepKind {
     /// The packet is in one of the network nodes
-    PacketInNode(GenericPacketEvent),
+    PacketInNode(PacketInNode),
     /// The packet was dropped by one of the network nodes
     PacketDropped(PacketDropped),
     /// The packet was lost while in transit (i.e. the link went down)
@@ -35,7 +35,15 @@ pub enum SimulationStepKind {
     /// The packet has been delivered to an application
     PacketDeliveredToApplication(GenericPacketEvent),
     /// A network event happened
-    NetworkEvent(NetworkEventPayload),
+    NetworkEvent(NetworkEvent),
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct NetworkEvent {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<LinkEventPayload>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node: Option<NodeEventPayload>,
 }
 
 #[serde_as]
@@ -51,12 +59,32 @@ pub struct GenericPacketEvent {
 
 #[serde_as]
 #[derive(Clone, Serialize, Deserialize)]
+pub struct PacketInNode {
+    #[serde_as(as = "DisplayFromStr")]
+    pub packet_id: Uuid,
+    pub packet_number: u64,
+    pub packet_size_bytes: usize,
+    #[serde(with = "crate::util::serde_arc_str")]
+    pub node_id: Arc<str>,
+    #[serde(skip_serializing_if = "crate::util::is_false")]
+    pub dropped_on_arrival: bool,
+}
+
+#[serde_as]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct PacketDropped {
     #[serde_as(as = "DisplayFromStr")]
     pub packet_id: Uuid,
     #[serde(with = "crate::util::serde_arc_str")]
     pub node_id: Arc<str>,
-    pub injected: bool,
+    pub reason: DropReason,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub enum DropReason {
+    Random,
+    BufferFull,
+    BufferCleared,
 }
 
 #[serde_as]

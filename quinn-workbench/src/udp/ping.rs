@@ -1,5 +1,6 @@
 use crate::config::NetworkConfig;
 use crate::config::cli::PingOpt;
+use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
 use anyhow::Context as _;
 use fastrand::Rng;
 use in_memory_network::async_rt;
@@ -31,6 +32,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
             .into_iter()
             .map(|e| e.into())
             .collect(),
+        &network_spec.nodes,
         &network_spec.links,
     );
     let tracer = Arc::new(SimulationStepTracer::new(network_spec.clone()));
@@ -48,6 +50,11 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
     for link_spec in &network_spec.links {
         let status = network.get_link_status(&link_spec.id);
         println!("  * {}: {}", link_spec.id, status);
+    }
+    println!("* Initial node statuses (derived from events):");
+    for node_spec in &network_spec.nodes {
+        let status = network.get_node_status(&node_spec.id);
+        println!("  * {}: {}", node_spec.id, status);
     }
 
     println!("--- Ping ---");
@@ -117,7 +124,8 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
                 })
                 .unwrap();
 
-            in_flight_cp.lock().insert(ping_nr, Instant::now());
+            let sent_ping_nr = ping_nr;
+            in_flight_cp.lock().insert(sent_ping_nr, Instant::now());
             ping_nr += 1;
 
             // Track pings as lost after the deadline has passed
@@ -125,11 +133,12 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
             let lost_cp = lost_cp.clone();
             async_rt::spawn(async move {
                 async_rt::time::sleep(deadline).await;
-                if let Some(ping_sent) = in_flight_cp.lock().remove(&ping_nr) {
-                    lost_cp.lock().push(ping_nr);
+                if let Some(ping_sent) = in_flight_cp.lock().remove(&sent_ping_nr) {
+                    lost_cp.lock().push(sent_ping_nr);
                     let ping_lost = Instant::now();
                     println!(
-                        "{:.2}s - SENT | {:.2}s - LOST | {:.2}s - DURATION",
+                        "P{} | {:.2}s - SENT | {:.2}s - LOST | {:.2}s - DURATION",
+                        sent_ping_nr,
                         (ping_sent - simulation_start).as_secs_f64(),
                         (ping_lost - simulation_start).as_secs_f64(),
                         (ping_lost - ping_sent).as_secs_f64()
@@ -156,7 +165,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
                 if let Some(ping_sent) = in_flight.lock().remove(&ping_nr) {
                     let ping_received = Instant::now();
                     println!(
-                        "{:.2}s - SENT | {:.2}s - RECEIVED | {:.2}s - DURATION",
+                        "P{ping_nr} | {:.2}s - SENT | {:.2}s - RECEIVED | {:.2}s - DURATION",
                         (ping_sent - simulation_start).as_secs_f64(),
                         (ping_received - simulation_start).as_secs_f64(),
                         (ping_received - ping_sent).as_secs_f64()
@@ -175,6 +184,24 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
     let json_steps = serde_json::to_vec_pretty(&tracer.stepper().steps()).unwrap();
     fs::write(replay_log_path, json_steps).context("failed to store replay log")?;
     println!("* Replay log available at {replay_log_path}");
+
+    println!("--- Node stats ---");
+    let verified_simulation = tracer
+        .verifier()
+        .context("failed to create simulation verifier")?
+        .verify()
+        .context("failed to verify simulation")?;
+    let server_node = network.host(ping_opt.network.server_ip_address);
+    let client_node = network.host(ping_opt.network.client_ip_address);
+    print_node_stats(
+        &network.get_node_ids(),
+        &verified_simulation,
+        server_node,
+        client_node,
+        true,
+    );
+    print_max_buffer_usage_per_node(&verified_simulation);
+    print_link_stats(&verified_simulation, &network);
 
     Ok(())
 }
