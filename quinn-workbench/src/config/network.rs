@@ -1,5 +1,8 @@
 use crate::config::quinn::QuinnJsonConfig;
-use in_memory_network::network::event::{NetworkEvent, NetworkEventPayload, UpdateLinkStatus};
+use in_memory_network::network::event::{
+    LinkEventPayload, NetworkEvent, NetworkEventKind, NodeEventPayload, UpdateLinkStatus,
+    UpdateNodeStatus,
+};
 use in_memory_network::network::ip::Ipv4Cidr;
 use in_memory_network::network::route::IpRange;
 use serde::Deserialize;
@@ -108,13 +111,20 @@ enum NetworkLinkStatusJson {
     Down,
 }
 
+#[derive(Deserialize, Clone)]
+#[serde(rename_all = "snake_case")]
+enum NetworkNodeStatusJson {
+    Up,
+    Down,
+}
+
 impl From<NetworkSpecJson> for in_memory_network::network::spec::NetworkSpec {
     fn from(json: NetworkSpecJson) -> Self {
         let nodes = json
             .nodes
             .into_iter()
             .map(|n| in_memory_network::network::spec::NetworkNodeSpec {
-                id: n.id,
+                id: n.id.into(),
                 kind: match n.kind {
                     NetworkNodeKindJson::Router => {
                         in_memory_network::network::spec::NodeKind::Router
@@ -172,13 +182,36 @@ pub struct NetworkEventsJson {
 }
 
 #[derive(Deserialize, Clone)]
-pub struct NetworkEventJson {
+pub struct RawNetworkEventJson {
     relative_time_ms: u64,
-    link: NetworkEventPayloadJson,
+    link: Option<LinkEventPayloadJson>,
+    node: Option<NodeEventPayloadJson>,
 }
 
 #[derive(Deserialize, Clone)]
-struct NetworkEventPayloadJson {
+#[serde(try_from = "RawNetworkEventJson")]
+pub struct NetworkEventJson {
+    relative_time_ms: u64,
+    payload: EventPayloadJson,
+}
+
+#[derive(Deserialize, Clone)]
+enum EventPayloadJson {
+    Node(NodeEventPayloadJson),
+    Link(LinkEventPayloadJson),
+}
+
+#[derive(Deserialize, Clone)]
+struct NodeEventPayloadJson {
+    id: String,
+    #[serde(default)]
+    status: Option<NetworkNodeStatusJson>,
+    #[serde(default)]
+    clear_buffer: bool,
+}
+
+#[derive(Deserialize, Clone)]
+struct LinkEventPayloadJson {
     id: String,
     status: Option<NetworkLinkStatusJson>,
     bandwidth_bps: Option<u64>,
@@ -190,24 +223,53 @@ struct NetworkEventPayloadJson {
     congestion_event_ratio: Option<f64>,
 }
 
+impl TryFrom<RawNetworkEventJson> for NetworkEventJson {
+    type Error = String;
+
+    fn try_from(raw: RawNetworkEventJson) -> Result<Self, Self::Error> {
+        let payload = match (raw.link, raw.node) {
+            (Some(link), None) => EventPayloadJson::Link(link),
+            (None, Some(node)) => EventPayloadJson::Node(node),
+            (Some(_), Some(_)) => return Err("only one of 'link' or 'node' must be present".into()),
+            (None, None) => return Err("one of 'link' or 'node' must be present".into()),
+        };
+
+        Ok(NetworkEventJson {
+            relative_time_ms: raw.relative_time_ms,
+            payload,
+        })
+    }
+}
+
 impl From<NetworkEventJson> for NetworkEvent {
     fn from(json: NetworkEventJson) -> Self {
-        NetworkEvent {
-            relative_time: Duration::from_millis(json.relative_time_ms),
-            payload: NetworkEventPayload {
-                link_id: json.link.id.into(),
-                status: json.link.status.map(|s| match s {
+        let kind = match json.payload {
+            EventPayloadJson::Node(n) => NetworkEventKind::Node(NodeEventPayload {
+                node_id: n.id.into(),
+                status: n.status.map(|s| match s {
+                    NetworkNodeStatusJson::Up => UpdateNodeStatus::Up,
+                    NetworkNodeStatusJson::Down => UpdateNodeStatus::Down,
+                }),
+                clear_buffer: n.clear_buffer,
+            }),
+            EventPayloadJson::Link(l) => NetworkEventKind::Link(LinkEventPayload {
+                link_id: l.id.into(),
+                status: l.status.map(|s| match s {
                     NetworkLinkStatusJson::Up => UpdateLinkStatus::Up,
                     NetworkLinkStatusJson::Down => UpdateLinkStatus::Down,
                 }),
-                bandwidth_bps: json.link.bandwidth_bps,
-                delay: json.link.delay_ms.map(Duration::from_millis),
-                extra_delay: json.link.extra_delay_ms.map(Duration::from_millis),
-                extra_delay_ratio: json.link.extra_delay_ratio,
-                packet_duplication_ratio: json.link.packet_duplication_ratio,
-                packet_loss_ratio: json.link.packet_loss_ratio,
-                congestion_event_ratio: json.link.congestion_event_ratio,
-            },
+                bandwidth_bps: l.bandwidth_bps,
+                delay: l.delay_ms.map(Duration::from_millis),
+                extra_delay: l.extra_delay_ms.map(Duration::from_millis),
+                extra_delay_ratio: l.extra_delay_ratio,
+                packet_duplication_ratio: l.packet_duplication_ratio,
+                packet_loss_ratio: l.packet_loss_ratio,
+                congestion_event_ratio: l.congestion_event_ratio,
+            }),
+        };
+        NetworkEvent {
+            relative_time: Duration::from_millis(json.relative_time_ms),
+            kind,
         }
     }
 }

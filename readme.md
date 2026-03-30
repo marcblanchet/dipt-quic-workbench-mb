@@ -170,11 +170,15 @@ The top JSON object has a property "type" which must be set to "NetworkEvents" t
 Each event is defined with the following properties:
 
 - `relative_time_ms` (required): The time (in ms) at which the event is happening, relative to the start of the simulation.
-- `link` (required):
+- `link` (required, unless `node` is provided):
    - `id` (required): the identifier of the link. This must correspond to a link id in the topology file.
    - `status` (required): the target state of the link at the time of the event. Possible values are "up" or "down".
+- `node` (required, unless `link` is provided):
+   - `id` (required): the identifier of the node. This must correspond to a node id in the topology file.
+   - `status` (optional): the target state of the node at the time of the event. Possible values are "up" or "down".
+   - `clear_buffer` (optional): if set to `true`, it will wipe all packets that have been received by the node and have not yet been sent.
 
-Note that it is planned to support more types of events such as node up/down or modifying properties of links such as delays or bandwidth.
+Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
 ## Command line arguments
 
@@ -248,6 +252,9 @@ At the time of this writing, we are validating the following properties of the n
   it arrives)
 - Packets are received only after enough time passes since they were sent (taking the link's latency
   into account and random delays injected through `link.extra_delay_ms`)
+- Packets are lost if they arrive at a node when it is down
+- Packets are never sent from a node while it is down
+- Packets are dropped from the node's buffer upon a "clear buffer" event
 - Nodes never exceed their configured buffer size
 - Links never exceed their configured bandwidth
 

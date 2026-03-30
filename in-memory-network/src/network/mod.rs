@@ -14,9 +14,9 @@ pub mod spec;
 use crate::InTransitData;
 use crate::async_rt;
 use crate::async_rt::time::Instant;
-use crate::network::event::{NetworkEventPayload, NetworkEvents};
+use crate::network::event::{LinkEventPayload, NetworkEventKind, NetworkEvents, NodeEventPayload};
 use crate::network::inbound_queue::InboundQueue;
-use crate::network::link::OutgoingPacket;
+use crate::network::link::{BufferedPacket, OutgoingPacket};
 use crate::network::node::Node;
 use crate::network::spec::{NetworkSpec, NodeKind};
 use crate::pcap_exporter::PcapExporter;
@@ -47,6 +47,8 @@ pub struct PacketArrived {
 pub struct InMemoryNetwork {
     /// Map from ip addresses to the corresponding nodes
     nodes_by_addr: Arc<HashMap<IpAddr, Arc<Node>>>,
+    /// Map from ids to the corresponding nodes
+    nodes_by_id: Arc<HashMap<Arc<str>, Arc<Node>>>,
     /// Map from ip addresses to the available route information
     routes_by_addr: Arc<HashMap<IpAddr, Arc<Vec<Route>>>>,
     /// Map from ip address pairs to the corresponding links
@@ -103,10 +105,12 @@ impl InMemoryNetwork {
         }
 
         let mut nodes_by_addr = HashMap::new();
+        let mut nodes_by_id = HashMap::new();
         let mut nodes_and_outbound_rx = Vec::new();
         for host in hosts {
             let (h, endpoint, outbound_rx) = Node::host(host)?;
             let h = Arc::new(h);
+            nodes_by_id.insert(h.id.clone(), h.clone());
             let already_existing = nodes_by_addr.insert(endpoint.addr.ip(), h.clone());
             if already_existing.is_some() {
                 bail!(
@@ -144,12 +148,14 @@ impl InMemoryNetwork {
                 bail!("there is more than one link with id {}", id,);
             }
 
-            async_rt::spawn(async move { process_link_queue(l_cp, rx).await });
+            let tracer_cp = tracer.clone();
+            async_rt::spawn(async move { process_link_queue(tracer_cp, l_cp, rx).await });
         }
 
         for r in routers {
             let (router, outbound_rx) = Node::router(r)?;
             let router = Arc::new(router);
+            nodes_by_id.insert(router.id.clone(), router.clone());
 
             let mut inbound_links = HashMap::new();
             for (&(source, target), link) in &links_by_addr {
@@ -175,6 +181,7 @@ impl InMemoryNetwork {
 
         let network = Arc::new(Self {
             nodes_by_addr: Arc::new(nodes_by_addr),
+            nodes_by_id: Arc::new(nodes_by_id),
             routes_by_addr: Arc::new(routes_by_addr),
             links_by_addr: Arc::new(links_by_addr),
             links_by_id: Arc::new(links_by_id),
@@ -190,8 +197,11 @@ impl InMemoryNetwork {
         spawn_packet_forwarders(network.clone());
 
         // Process initial events
-        for event in events.initial_events {
-            network.process_event(event);
+        for event in events.initial_link_events {
+            network.process_link_event(event);
+        }
+        for event in events.initial_node_events {
+            network.process_node_event(event);
         }
 
         // Process events in the background
@@ -202,7 +212,10 @@ impl InMemoryNetwork {
                 async_rt::time::sleep_until(start + event.relative_time).await;
 
                 if let Some(network) = network_clone.upgrade() {
-                    network.process_event(event.payload);
+                    match event.kind {
+                        NetworkEventKind::Link(link) => network.process_link_event(link),
+                        NetworkEventKind::Node(node) => network.process_node_event(node),
+                    }
                 } else {
                     break;
                 }
@@ -217,8 +230,32 @@ impl InMemoryNetwork {
         Ok(network)
     }
 
-    fn process_event(&self, event: NetworkEventPayload) {
-        let NetworkEventPayload {
+    pub fn get_node_ids(&self) -> Vec<Arc<str>> {
+        let mut ids: Vec<_> = self.nodes_by_id.keys().cloned().collect();
+        ids.sort_unstable();
+        ids
+    }
+
+    fn process_node_event(&self, event: NodeEventPayload) {
+        let id = &event.node_id;
+        let Some(node) = self.nodes_by_id.get(id) else {
+            println!("WARN: skipping received event for node that doesn't exist ({id})");
+            return;
+        };
+
+        if let Some(status) = event.status {
+            node.update_status(status);
+        }
+
+        if event.clear_buffer {
+            node.clear_buffer();
+        }
+
+        self.tracer.track_node_event(event);
+    }
+
+    fn process_link_event(&self, event: LinkEventPayload) {
+        let LinkEventPayload {
             link_id: id,
             status,
             bandwidth_bps,
@@ -284,6 +321,10 @@ impl InMemoryNetwork {
         self.links_by_id[link_id].lock().status_str()
     }
 
+    pub fn get_node_status(&self, node_id: &str) -> &'static str {
+        self.nodes_by_id[node_id].status_str()
+    }
+
     pub fn get_link_bandwidth_bps(&self, link_id: &str) -> usize {
         self.links_by_id[link_id].lock().bandwidth_bps
     }
@@ -317,8 +358,8 @@ impl InMemoryNetwork {
         //
         // Note: This ensures that in case of packet loss on the network path the connectivity check
         // still completes.
-        for (source, target) in peers {
-            for _ in 0..100 {
+        for _ in 0..100 {
+            for (source, target) in peers {
                 let data = self.in_transit_data(
                     source,
                     OwnedTransmit {
@@ -331,6 +372,9 @@ impl InMemoryNetwork {
 
                 self.forward(source.clone(), data);
             }
+
+            // Wait for one minute after each attempt, to account for packet loss
+            async_rt::time::sleep(Duration::from_secs(60)).await;
         }
 
         // Wait for 90 days for the packets to arrive
@@ -437,6 +481,11 @@ impl InMemoryNetwork {
         current_node: Arc<Node>,
         data: InTransitData,
     ) {
+        if current_node.is_down() {
+            self.tracer.track_dropped_on_arrival(&current_node, &data);
+            return;
+        }
+
         self.tracer.track_packet_in_node(&current_node, &data);
 
         if let Some(udp_endpoint) = &current_node.udp_endpoint
@@ -470,25 +519,29 @@ impl InMemoryNetwork {
         }
 
         if randomly_dropped {
-            self.tracer.track_dropped_randomly(&data, &current_node);
+            self.tracer.track_dropped_randomly(&current_node, &data);
             return;
         }
 
+        let packet = BufferedPacket {
+            in_node_since: Instant::now(),
+            data,
+        };
         let maybe_duplicate = duplicate.then(|| {
-            let mut duplicate_data = data.clone();
-            duplicate_data.id = self.new_packet_id();
-            duplicate_data.duplicate = true;
-            duplicate_data
+            let mut duplicate_packet = packet.clone();
+            duplicate_packet.data.id = self.new_packet_id();
+            duplicate_packet.data.duplicate = true;
+            duplicate_packet
         });
 
-        current_node.enqueue_outbound(self, data);
+        current_node.enqueue_outbound(self, packet);
         if let Some(duplicate) = maybe_duplicate {
             self.tracer.track_injected_failures(
-                &duplicate,
+                &current_node,
+                &duplicate.data,
                 true,
                 Duration::default(),
                 false,
-                &current_node,
             );
 
             current_node.enqueue_outbound(self, duplicate);
@@ -525,7 +578,7 @@ fn spawn_node_buffer_processors(
     network: Arc<InMemoryNetwork>,
     nodes: Vec<(
         Arc<Node>,
-        futures::channel::mpsc::UnboundedReceiver<InTransitData>,
+        futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
     )>,
 ) {
     for (node, outbound_rx) in nodes {
@@ -537,18 +590,18 @@ fn spawn_node_buffer_processors(
 async fn process_buffer_for_node(
     network: Arc<InMemoryNetwork>,
     node: Arc<Node>,
-    mut outbound_rx: futures::channel::mpsc::UnboundedReceiver<InTransitData>,
+    mut outbound_rx: futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
 ) {
-    while let Some(data) = outbound_rx.next().await {
-        if !network.has_route_to(&node, data.transmit.destination.ip()) {
+    while let Some(packet) = outbound_rx.next().await {
+        if !network.has_route_to(&node, packet.data.transmit.destination.ip()) {
             // Fatal error: there is no route to the destination!
-            let nodes = network.tracer.stepper().get_packet_path(data.id);
+            let nodes = network.tracer.stepper().get_packet_path(packet.data.id);
             let mut path = nodes.join(" -> ");
             path.push_str(" -> ?");
 
             println!(
                 "Fatal network error: missing route to {} ({path})",
-                data.transmit.destination
+                packet.data.transmit.destination
             );
             return;
         }
@@ -558,7 +611,7 @@ async fn process_buffer_for_node(
         // Trigger sending through all links, in order of priority (cheaper = better). The first
         // one to complete wins and the rest will discard the packet.
         let mut links = VecDeque::new();
-        network.walk_links(&node, data.transmit.destination.ip(), |link| {
+        network.walk_links(&node, packet.data.transmit.destination.ip(), |link| {
             links.push_back(link.clone());
             ControlFlow::Continue::<(), ()>(())
         });
@@ -568,12 +621,13 @@ async fn process_buffer_for_node(
             link.lock()
                 .outgoing_queue
                 .unbounded_send(OutgoingPacket {
+                    in_node_since: packet.in_node_since,
                     src_node: node.clone(),
-                    data: data.clone(),
+                    data: packet.data.clone(),
                     anomalies,
                     preferred_links: links.clone(),
-                    sent_tx: sent_tx.clone(),
-                    sent_rx: sent_rx.clone(),
+                    handled_tx: sent_tx.clone(),
+                    handled_rx: sent_rx.clone(),
                 })
                 .expect("the receiver end is active until all senders are dropped");
         }
@@ -581,19 +635,25 @@ async fn process_buffer_for_node(
 }
 
 async fn process_link_queue(
+    tracer: Arc<SimulationStepTracer>,
     link: Arc<Mutex<NetworkLink>>,
     mut packet_rx: futures::channel::mpsc::UnboundedReceiver<OutgoingPacket>,
 ) {
     while let Some(mut packet) = packet_rx.next().await {
         if !link.lock().has_bandwidth_available() {
-            // Wait until there is enough bandwidth and the link is up. Waiting will be cancelled if
-            // the packet gets sent in the meantime.
-            NetworkLink::sleep_until_ready_to_send(link.clone(), &mut packet.sent_rx).await;
+            // Wait until the link is ready to send (waiting will be cancelled if the packet gets
+            // handled by another link in the meantime)
+            NetworkLink::sleep_until_ready_to_send(
+                packet.src_node.clone(),
+                link.clone(),
+                &mut packet.handled_rx,
+            )
+            .await;
         }
 
         while let Some(preferred_link) = packet.preferred_links.pop_front()
             && !Arc::ptr_eq(&link, &preferred_link)
-            && !packet.already_sent()
+            && !packet.already_handled()
         {
             // We are not the preferred link, so we should give other links a chance to send before
             // us
@@ -601,10 +661,20 @@ async fn process_link_queue(
         }
 
         // Ready to send
-        if !packet.already_sent() {
-            packet.sent_tx.send(true).ok();
-            link.lock()
-                .send(&packet.src_node, packet.data, packet.anomalies);
+        if !packet.already_handled() {
+            packet.handled_tx.send(true).ok();
+
+            let packet_cleared_from_buffer = packet
+                .src_node
+                .last_buffer_clear
+                .lock()
+                .is_some_and(|t| packet.in_node_since < t);
+            if packet_cleared_from_buffer {
+                tracer.track_dropped_by_buffer_clear_event(&packet.src_node, &packet.data);
+            } else {
+                link.lock()
+                    .send(&packet.src_node, packet.data, packet.anomalies);
+            }
         }
     }
 }
@@ -638,7 +708,7 @@ async fn forward_packets_from_link_to_node(
                 // lost
                 let link = link.lock();
                 if link.was_down_after(transmit.sent) {
-                    network.tracer.track_lost_in_transit(&transmit.data, &link);
+                    network.tracer.track_lost_in_transit(&link, &transmit.data);
                     continue;
                 }
             }

@@ -37,6 +37,7 @@ pub async fn run(
             .into_iter()
             .map(|e| e.into())
             .collect(),
+        &network_spec.nodes,
         &network_spec.links,
     );
     let tracer = Arc::new(SimulationStepTracer::new(network_spec.clone()));
@@ -54,6 +55,11 @@ pub async fn run(
     for link_spec in &network_spec.links {
         let status = network.get_link_status(&link_spec.id);
         println!("  * {}: {}", link_spec.id, status);
+    }
+    println!("* Initial node statuses (derived from events):");
+    for node_spec in &network_spec.nodes {
+        let status = network.get_node_status(&node_spec.id);
+        println!("  * {}: {}", node_spec.id, status);
     }
 
     println!("--- Throughput test ---");
@@ -189,7 +195,7 @@ pub async fn run(
     let server_node = network.host(throughput_opt.network.server_ip_address);
     let client_node = network.host(throughput_opt.network.client_ip_address);
 
-    print_node_stats(&verified_simulation, server_node, client_node);
+    print_node_stats(&[], &verified_simulation, server_node, client_node, false);
     print_max_buffer_usage_per_node(&verified_simulation);
     print_link_stats(&verified_simulation, &network);
 

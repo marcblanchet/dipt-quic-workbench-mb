@@ -1,12 +1,13 @@
 use crate::InTransitData;
 use crate::async_rt::time::Instant;
-use crate::network::event::NetworkEventPayload;
+use crate::network::event::{LinkEventPayload, NodeEventPayload};
 use crate::network::link::NetworkLink;
 use crate::network::node::Node;
 use crate::network::spec::NetworkSpec;
+use crate::tracing::simulation_step;
 use crate::tracing::simulation_step::{
-    GenericPacketEvent, PacketDropped, PacketHasExtraDelay, PacketInTransit, PacketLostInTransit,
-    SimulationStep, SimulationStepKind,
+    DropReason, GenericPacketEvent, PacketDropped, PacketHasExtraDelay, PacketInNode,
+    PacketInTransit, PacketLostInTransit, SimulationStep, SimulationStepKind,
 };
 use crate::tracing::simulation_stepper::SimulationStepper;
 use crate::tracing::simulation_verifier::SimulationVerifier;
@@ -68,16 +69,31 @@ impl SimulationStepTracer {
         });
     }
 
-    pub fn track_link_event(&self, event: NetworkEventPayload) {
-        self.record(SimulationStepKind::NetworkEvent(event));
+    pub fn track_link_event(&self, event: LinkEventPayload) {
+        self.record(SimulationStepKind::NetworkEvent(
+            simulation_step::NetworkEvent {
+                link: Some(event),
+                node: None,
+            },
+        ));
+    }
+
+    pub fn track_node_event(&self, event: NodeEventPayload) {
+        self.record(SimulationStepKind::NetworkEvent(
+            simulation_step::NetworkEvent {
+                link: None,
+                node: Some(event),
+            },
+        ));
     }
 
     pub fn track_packet_in_node(&self, node: &Node, packet: &InTransitData) {
-        self.record(SimulationStepKind::PacketInNode(GenericPacketEvent {
+        self.record(SimulationStepKind::PacketInNode(PacketInNode {
             packet_id: packet.id,
             packet_number: packet.number,
             packet_size_bytes: packet.transmit.packet_size(),
             node_id: node.id().clone(),
+            dropped_on_arrival: false,
         }));
     }
 
@@ -89,40 +105,58 @@ impl SimulationStepTracer {
         }));
     }
 
-    pub fn track_dropped_randomly(&self, data: &InTransitData, current_node: &Node) {
+    pub fn track_dropped_on_arrival(&self, node: &Node, packet: &InTransitData) {
+        self.record(SimulationStepKind::PacketInNode(PacketInNode {
+            packet_id: packet.id,
+            packet_number: packet.number,
+            packet_size_bytes: packet.transmit.packet_size(),
+            node_id: node.id().clone(),
+            dropped_on_arrival: true,
+        }));
+    }
+
+    pub fn track_dropped_by_buffer_clear_event(&self, node: &Node, packet: &InTransitData) {
         self.record(SimulationStepKind::PacketDropped(PacketDropped {
-            packet_id: data.id,
-            node_id: current_node.id().clone(),
-            injected: true,
+            packet_id: packet.id,
+            node_id: node.id().clone(),
+            reason: DropReason::BufferCleared,
+        }));
+    }
+
+    pub fn track_dropped_randomly(&self, node: &Node, packet: &InTransitData) {
+        self.record(SimulationStepKind::PacketDropped(PacketDropped {
+            packet_id: packet.id,
+            node_id: node.id().clone(),
+            reason: DropReason::Random,
         }));
 
         self.warn(&format!(
             "{} packet lost (#{})!",
-            data.source_id, data.number,
+            packet.source_id, packet.number,
         ));
     }
 
-    pub fn track_dropped_from_buffer(&self, data: &InTransitData, current_node: &Node) {
+    pub fn track_dropped_because_buffer_full(&self, node: &Node, packet: &InTransitData) {
         self.record(SimulationStepKind::PacketDropped(PacketDropped {
-            packet_id: data.id,
-            node_id: current_node.id().clone(),
-            injected: false,
+            packet_id: packet.id,
+            node_id: node.id().clone(),
+            reason: DropReason::BufferFull,
         }));
 
         let first_dropped = self
             .already_warned_dropped_from_buffer
             .lock()
-            .insert(current_node.id.clone());
+            .insert(node.id.clone());
         if first_dropped {
             self.warn(&format!(
                 "packet #{} dropped by node `{}` because its outbound buffer is full! (Note: further warnings for this link will be omitted to avoid cluttering the output)",
-                data.number,
-                current_node.id(),
+                packet.number,
+                node.id(),
             ));
         }
     }
 
-    pub fn track_lost_in_transit(&self, data: &InTransitData, link: &NetworkLink) {
+    pub fn track_lost_in_transit(&self, link: &NetworkLink, data: &InTransitData) {
         self.record(SimulationStepKind::PacketLostInTransit(
             PacketLostInTransit {
                 packet_id: data.id,
@@ -133,49 +167,49 @@ impl SimulationStepTracer {
 
     pub fn track_injected_failures(
         &self,
-        data: &InTransitData,
+        node: &Node,
+        packet: &InTransitData,
         duplicate: bool,
         extra_delay: Duration,
         congestion_experienced: bool,
-        current_node: &Node,
     ) {
         if !extra_delay.is_zero() {
             self.record(SimulationStepKind::PacketExtraDelay(PacketHasExtraDelay {
-                packet_id: data.id,
-                node_id: current_node.id().clone(),
+                packet_id: packet.id,
+                node_id: node.id().clone(),
                 extra_delay,
             }));
         }
 
         if duplicate {
             self.record(SimulationStepKind::PacketDuplicated(GenericPacketEvent {
-                packet_id: data.id,
-                packet_number: data.number,
-                packet_size_bytes: data.transmit.packet_size(),
-                node_id: current_node.id().clone(),
+                packet_id: packet.id,
+                packet_number: packet.number,
+                packet_size_bytes: packet.transmit.packet_size(),
+                node_id: node.id().clone(),
             }));
 
             self.warn(&format!(
                 "{} sent duplicate packet (#{})!",
-                current_node.id(),
-                data.number,
+                node.id(),
+                packet.number,
             ));
         }
 
         if congestion_experienced {
             self.record(SimulationStepKind::PacketCongestionEvent(
                 GenericPacketEvent {
-                    packet_id: data.id,
-                    packet_number: data.number,
-                    packet_size_bytes: data.transmit.packet_size(),
-                    node_id: current_node.id().clone(),
+                    packet_id: packet.id,
+                    packet_number: packet.number,
+                    packet_size_bytes: packet.transmit.packet_size(),
+                    node_id: node.id().clone(),
                 },
             ));
 
             self.warn(&format!(
                 "{} marked packet with CE ECN (#{})!",
-                current_node.id(),
-                data.number,
+                node.id(),
+                packet.number,
             ));
         }
     }

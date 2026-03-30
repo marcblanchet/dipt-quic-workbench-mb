@@ -33,6 +33,16 @@
   * MSL-ODY: UP
   * M20-ING: UP
   * ING-M20: UP
+* Initial node statuses (derived from events):
+  * GND: UP
+  * DSN: UP
+  * MRO: UP
+  * TGO: UP
+  * MVN: UP
+  * ODY: UP
+  * M20: UP
+  * MSL: UP
+  * ING: UP
 * Running connectivity check...
 * Connectivity check passed (packets arrived after 901200 ms and 901200 ms)
 --- Requests ---
@@ -55,16 +65,16 @@
 --- Node stats ---
 * GND (client)
   * Sent packets: 27 (4362 bytes)
-    | 0 packets duplicated in transit (0 bytes)
-    | 0 packets marked with the CE ECN codepoint in transit (0 bytes)
-    | 0 packets dropped in transit (0 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
   * Received packets: 26 (13769 bytes)
     | 0 packets received out of order (0 bytes)
 * ING (server)
   * Sent packets: 27 (13835 bytes)
-    | 0 packets duplicated in transit (0 bytes)
-    | 0 packets marked with the CE ECN codepoint in transit (0 bytes)
-    | 0 packets dropped in transit (0 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
   * Received packets: 25 (4232 bytes)
     | 0 packets received out of order (0 bytes)
 --- Max buffer usage per node ---

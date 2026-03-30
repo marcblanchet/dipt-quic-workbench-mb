@@ -24,7 +24,7 @@ pub struct NetworkLink {
     tracer: Arc<SimulationStepTracer>,
     // Packets currently in flight from the source to the destination
     in_transit: Arc<Mutex<InboundQueue>>,
-    // Packets waiting to be sent (i.e., link up + enough bandwidth)
+    // Packets waiting to be sent (i.e., source node up + link up + enough bandwidth)
     pub(crate) outgoing_queue: futures::channel::mpsc::UnboundedSender<OutgoingPacket>,
     pacer: Mutex<PacketPacer>,
     sleep_until_ready_to_send_semaphore: Arc<Semaphore>,
@@ -175,6 +175,7 @@ impl NetworkLink {
     }
 
     pub(crate) async fn sleep_until_ready_to_send(
+        src_node: Arc<Node>,
         this: Arc<Mutex<Self>>,
         packet_sent_rx: &mut tokio::sync::watch::Receiver<bool>,
     ) {
@@ -200,13 +201,33 @@ impl NetworkLink {
             _ = async_rt::time::sleep(duration_until_enough_bandwidth).fuse() => {}
         }
 
-        // Concurrency: keep the one-liner to shorten the lock on `this`
-        let notifier_for_link_up = this.lock().status.notifier_for_link_up();
-        if let Some(notifier_for_link_up) = notifier_for_link_up {
-            // Wait until the link comes up or until the packet gets sent, whichever comes first
-            select_biased! {
-                _ = packet_sent_rx.changed().fuse() => {},
-                _ = notifier_for_link_up.fuse() => {}
+        loop {
+            // Sleep until the link is up, if necessary
+            let notifier_for_link_up = this.lock().status.notifier_for_link_up();
+            if let Some(notifier_for_link_up) = notifier_for_link_up {
+                select_biased! {
+                    // Break the sleep if someone else sends the packet in the meantime
+                    _ = packet_sent_rx.changed().fuse() => return,
+                    _ = notifier_for_link_up.fuse() => {}
+                }
+            }
+
+            // Sleep until the node is up, if necessary
+            // Assumption: a link is always sending from the same node, so we are not blocking other
+            // nodes here
+            let notifier_for_node_up = src_node.status.lock().notifier_for_node_up();
+            if let Some(notifier_for_node_up) = notifier_for_node_up {
+                select_biased! {
+                    // Break the sleep if someone else sends the packet in the meantime
+                    _ = packet_sent_rx.changed().fuse() => return,
+                    _ = notifier_for_node_up.fuse() => {}
+                }
+            }
+
+            // Important: the link could have gone down again while we waited on the node to come up
+            if let LinkStatus::Up = this.lock().status {
+                // Link is still up, ready to send!
+                return;
             }
         }
     }
@@ -279,16 +300,23 @@ impl PacketPacer {
 }
 
 pub(crate) struct OutgoingPacket {
+    pub(crate) in_node_since: Instant,
     pub(crate) src_node: Arc<Node>,
     pub(crate) data: InTransitData,
     pub(crate) anomalies: PacketAnomalies,
     pub(crate) preferred_links: VecDeque<Arc<Mutex<NetworkLink>>>,
-    pub(crate) sent_tx: tokio::sync::watch::Sender<bool>,
-    pub(crate) sent_rx: tokio::sync::watch::Receiver<bool>,
+    pub(crate) handled_tx: tokio::sync::watch::Sender<bool>,
+    pub(crate) handled_rx: tokio::sync::watch::Receiver<bool>,
+}
+
+#[derive(Clone)]
+pub(crate) struct BufferedPacket {
+    pub(crate) in_node_since: Instant,
+    pub(crate) data: InTransitData,
 }
 
 impl OutgoingPacket {
-    pub(crate) fn already_sent(&self) -> bool {
-        *self.sent_rx.borrow()
+    pub(crate) fn already_handled(&self) -> bool {
+        *self.handled_rx.borrow()
     }
 }

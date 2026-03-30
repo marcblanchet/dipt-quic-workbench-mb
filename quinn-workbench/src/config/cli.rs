@@ -87,6 +87,10 @@ pub struct QuicOpt {
     #[clap(long)]
     pub request_interval_ms: Option<u64>,
 
+    /// Show stats for each node, not only for the client and server
+    #[clap(long)]
+    pub verbose_node_stats: bool,
+
     #[command(flatten)]
     pub network: NetworkOpt,
 }

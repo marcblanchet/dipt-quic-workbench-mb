@@ -12,7 +12,7 @@ pub struct NetworkSpec {
 
 #[derive(Clone)]
 pub struct NetworkNodeSpec {
-    pub id: String,
+    pub id: Arc<str>,
     pub buffer_size_bytes: u64,
     pub kind: NodeKind,
     pub interfaces: Vec<NetworkInterface>,

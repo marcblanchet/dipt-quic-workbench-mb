@@ -3,48 +3,90 @@
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MoonOrbiter1-MoonAsset1",
-      "status": "down"
+      "link": {
+        "linkId": "MoonOrbiter1-MoonAsset1",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MoonAsset1-MoonOrbiter1",
-      "status": "down"
+      "link": {
+        "linkId": "MoonAsset1-MoonOrbiter1",
+        "status": "down"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "Earth1-MoonOrbiter1",
-      "status": "up"
+      "link": {
+        "linkId": "Earth1-MoonOrbiter1",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MoonOrbiter1-Earth1",
-      "status": "up"
+      "link": {
+        "linkId": "MoonOrbiter1-Earth1",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MoonOrbiter1-MoonAsset1",
-      "status": "up"
+      "node": {
+        "node_id": "Earth1",
+        "status": "up"
+      }
     }
   },
   {
     "relative_time_ns": 0,
     "type": "networkEvent",
     "data": {
-      "linkId": "MoonAsset1-MoonOrbiter1",
-      "status": "up"
+      "node": {
+        "node_id": "MoonOrbiter1",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "node": {
+        "node_id": "MoonAsset1",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "MoonOrbiter1-MoonAsset1",
+        "status": "up"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 0,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "MoonAsset1-MoonOrbiter1",
+        "status": "up"
+      }
     }
   },
   {
