@@ -177,7 +177,7 @@ Each event is defined with the following properties:
    - `id` (required): the identifier of the node. This must correspond to a node id in the topology file.
    - `status` (optional): the target state of the node at the time of the event. Possible values are "up" or "down".
    - `clear_buffer` (optional): if set to `true`, it will wipe all packets that have been received by the node and have not yet been sent.
-   		- one of `status` or `clear_buffer` is required
+   		- both `status` and `clear_buffer` can be defined in the same event.
 
 Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
