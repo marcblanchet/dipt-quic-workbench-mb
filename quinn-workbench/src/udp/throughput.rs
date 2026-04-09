@@ -62,11 +62,9 @@ pub async fn run(
     let port = 8080;
     let server_ip = throughput_opt.peers.server_ip_address;
     let server_node = network.node(server_ip);
-    let server_socket = Arc::pin(
-        network
-            .udp_socket_for_node(server_node?.clone(), port)
-            .unwrap(),
-    );
+    let mut server_socket = network
+        .udp_socket_for_node(server_node?.clone(), port)
+        .unwrap();
 
     let client_ip = throughput_opt.peers.client_ip_address;
     let client_node = network.node(client_ip);
@@ -114,8 +112,8 @@ pub async fn run(
 
     println!("Sending at {send_bps} bps");
 
+    let client_socket_sender = client_socket.create_sender_concrete();
     let cancellation_token_cp = cancellation_token.clone();
-    let client_socket_cp = client_socket.clone();
     async_rt::spawn(async move {
         let max_bytes_per_transmit = 1200;
         let payload = vec![0; max_bytes_per_transmit];
@@ -131,7 +129,7 @@ pub async fn run(
                 bytes_left -= next_packet_size_bytes;
 
                 // Send packet
-                client_socket_cp.send(&Transmit {
+                client_socket_sender.send(&Transmit {
                     destination: SocketAddr::new(server_ip, 8080),
                     ecn: None,
                     contents: &payload[..next_packet_size_bytes],

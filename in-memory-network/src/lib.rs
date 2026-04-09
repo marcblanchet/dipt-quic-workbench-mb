@@ -262,7 +262,7 @@ mod test {
         let server_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             Some(server_config),
-            Arc::new(
+            Box::new(
                 network
                     .udp_socket_for_node(server_socket.clone(), HOST_PORT)
                     .unwrap(),
@@ -270,10 +270,10 @@ mod test {
             rt.clone(),
         )
         .unwrap();
-        let mut client_endpoint = Endpoint::new_with_abstract_socket(
+        let client_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             None,
-            Arc::new(
+            Box::new(
                 network
                     .udp_socket_for_node(client_socket.clone(), HOST_PORT)
                     .unwrap(),
@@ -343,7 +343,7 @@ mod test {
         network.forward(client_node.clone(), data);
 
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket = network
+        let mut server_socket = network
             .udp_socket_for_node(server_node.clone(), HOST_PORT)
             .unwrap();
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
@@ -416,11 +416,9 @@ mod test {
         }
 
         let mut recv_result = BufsAndMeta::new(packet_size_bytes, 10);
-        let server_socket = Arc::new(
-            network
-                .udp_socket_for_node(server_node.clone(), HOST_PORT)
-                .unwrap(),
-        );
+        let mut server_socket = network
+            .udp_socket_for_node(server_node.clone(), HOST_PORT)
+            .unwrap();
         let mut received = 0;
         while received < 4 {
             received += server_socket.receive_raw(&mut recv_result).await.unwrap();
@@ -499,11 +497,9 @@ mod test {
 
         network.forward(client_node.clone(), data.clone());
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket = Arc::new(
-            network
-                .udp_socket_for_node(server_node.clone(), HOST_PORT)
-                .unwrap(),
-        );
+        let mut server_socket = network
+            .udp_socket_for_node(server_node.clone(), HOST_PORT)
+            .unwrap();
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
         assert_eq!(received, 1);

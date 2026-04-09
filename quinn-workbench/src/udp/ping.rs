@@ -11,7 +11,7 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
-pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_socket: SocketAddr) {
+pub fn run_server_forever(mut server_socket: InMemoryUdpSocket, client_socket: SocketAddr) {
     async_rt::spawn(async move {
         let mut bufs_and_meta = BufsAndMeta::new(1200, 5);
 
@@ -34,12 +34,11 @@ pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_socket: Socke
 }
 
 pub fn run_traffic_pattern(
-    client_socket: InMemoryUdpSocket,
+    mut client_socket: InMemoryUdpSocket,
     t: &PingTraffic,
     simulation_start: Instant,
     log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
 ) -> async_rt::JoinHandle<()> {
-    let client_socket = Arc::new(client_socket);
     let interval = Duration::from_millis(t.send_interval_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let deadline = Duration::from_millis(t.deadline_ms);
@@ -51,7 +50,7 @@ pub fn run_traffic_pattern(
     let (sender_done_tx, mut sender_done_rx) = futures::channel::oneshot::channel();
 
     // Sender
-    let client_socket_cp = client_socket.clone();
+    let client_socket_sender = client_socket.create_sender_concrete();
     let in_flight_cp = in_flight.clone();
     let lost_cp = lost.clone();
     let log_writer_cp = log_writer.clone();
@@ -69,7 +68,7 @@ pub fn run_traffic_pattern(
             // Send ping
             let payload = ping_nr.to_le_bytes();
 
-            client_socket_cp.send(&Transmit {
+            client_socket_sender.send(&Transmit {
                 destination: server_socket,
                 ecn: None,
                 contents: &payload,

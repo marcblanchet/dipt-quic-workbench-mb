@@ -19,8 +19,8 @@ parking_lot = "0.12.3"
 pcap-file = "2.0.0"
 pin-project-lite = "0.2.16"
 pnet_packet = "0.34.0"
-quinn = "0.11"
-quinn-proto = { version = "0.11", features = ["qlog"] }
+quinn = "0.12"
+quinn-proto = { version = "0.12", features = ["qlog"] }
 quote = "1.0.40"
 rcgen = "0.13.1"
 rustls = { version = "0.23.8", default-features = false, features = ["ring"] }
@@ -38,3 +38,7 @@ uuid = { version = "1.11.0" }
 [profile.profiling]
 inherits = "release"
 debug = true
+
+[patch.crates-io]
+quinn = { git = "https://github.com/quinn-rs/quinn.git", rev = "dc8640052a64eb05b463b490b0a0a0f4b0cef9a6" }
+quinn-proto = { git = "https://github.com/quinn-rs/quinn.git", rev = "dc8640052a64eb05b463b490b0a0a0f4b0cef9a6" }

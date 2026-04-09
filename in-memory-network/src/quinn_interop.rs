@@ -5,7 +5,7 @@ use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
 use bytes::Bytes;
 use parking_lot::Mutex;
 use quinn::udp::{RecvMeta, Transmit};
-use quinn::{AsyncUdpSocket, UdpPoller};
+use quinn::{AsyncUdpSocket, UdpSender};
 use std::fmt::{Debug, Formatter};
 use std::io;
 use std::io::IoSliceMut;
@@ -13,15 +13,6 @@ use std::net::SocketAddr;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::task::{Context, Poll, ready};
-
-#[derive(Debug)]
-pub struct InMemoryUdpPoller;
-
-impl UdpPoller for InMemoryUdpPoller {
-    fn poll_writable(self: Pin<&mut Self>, _cx: &mut Context) -> Poll<io::Result<()>> {
-        Poll::Ready(Ok(()))
-    }
-}
 
 pub struct InMemoryUdpSocket {
     network: Arc<InMemoryNetwork>,
@@ -52,17 +43,12 @@ impl InMemoryUdpSocket {
 }
 
 impl AsyncUdpSocket for InMemoryUdpSocket {
-    fn create_io_poller(self: Arc<Self>) -> Pin<Box<dyn UdpPoller>> {
-        Box::pin(InMemoryUdpPoller)
-    }
-
-    fn try_send(&self, transmit: &Transmit) -> io::Result<()> {
-        self.send(transmit);
-        Ok(())
+    fn create_sender(&self) -> Pin<Box<dyn UdpSender>> {
+        Box::pin(self.create_sender_concrete())
     }
 
     fn poll_recv(
-        &self,
+        &mut self,
         cx: &mut Context,
         bufs: &mut [IoSliceMut<'_>],
         meta: &mut [RecvMeta],
@@ -114,29 +100,25 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
+    pub fn create_sender_concrete(&self) -> InMemoryUdpSender {
+        InMemoryUdpSender {
+            network: self.network.clone(),
+            socket_addr: self.endpoint.addr,
+            node: self.node.clone(),
+        }
+    }
+
     pub fn send(&self, transmit: &Transmit) {
-        // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
-        // packet
-        assert!(transmit.segment_size.is_none());
-
-        let transmit = OwnedTransmit {
-            source: self.endpoint.addr,
-            destination: transmit.destination,
-            ecn: transmit.ecn,
-            contents: Bytes::copy_from_slice(transmit.contents),
-            segment_size: transmit.segment_size,
-            ttl: DEFAULT_TTL,
-        };
-
-        // Track in pcap
-        self.node.pcap_exporter.track_transmit(&transmit);
-
-        let data = self.network.in_transit_data(self.node.id.clone(), transmit);
-        self.network.forward(self.node.clone(), data);
+        send(
+            self.node.clone(),
+            &self.network,
+            self.endpoint.addr,
+            transmit,
+        );
     }
 
     pub async fn receive<'a>(
-        &self,
+        &mut self,
         bufs_and_meta: &'a mut BufsAndMeta,
     ) -> io::Result<Vec<UdpPacket<'a>>> {
         let packets = self.receive_raw(bufs_and_meta).await?;
@@ -156,7 +138,7 @@ impl InMemoryUdpSocket {
         Ok(result)
     }
 
-    pub async fn receive_raw(&self, bufs_and_meta: &mut BufsAndMeta) -> io::Result<usize> {
+    pub async fn receive_raw(&mut self, bufs_and_meta: &mut BufsAndMeta) -> io::Result<usize> {
         let receive = UdpReceive {
             socket: self,
             result: bufs_and_meta,
@@ -166,13 +148,64 @@ impl InMemoryUdpSocket {
     }
 }
 
+fn send(node: Arc<Node>, network: &Arc<InMemoryNetwork>, source: SocketAddr, transmit: &Transmit) {
+    // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
+    // packet
+    assert!(transmit.segment_size.is_none());
+
+    let transmit = OwnedTransmit {
+        source,
+        destination: transmit.destination,
+        ecn: transmit.ecn,
+        contents: Bytes::copy_from_slice(transmit.contents),
+        segment_size: transmit.segment_size,
+        ttl: DEFAULT_TTL,
+    };
+
+    // Track in pcap
+    node.pcap_exporter.track_transmit(&transmit);
+
+    let data = network.in_transit_data(node.id.clone(), transmit);
+
+    network.forward(node, data);
+}
+
+pub struct InMemoryUdpSender {
+    network: Arc<InMemoryNetwork>,
+    socket_addr: SocketAddr,
+    node: Arc<Node>,
+}
+
+impl Debug for InMemoryUdpSender {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str("InMemoryUdpSender")
+    }
+}
+
+impl UdpSender for InMemoryUdpSender {
+    fn poll_send(
+        self: Pin<&mut Self>,
+        transmit: &Transmit<'_>,
+        _cx: &mut Context<'_>,
+    ) -> Poll<io::Result<()>> {
+        self.send(transmit);
+        Poll::Ready(Ok(()))
+    }
+}
+
+impl InMemoryUdpSender {
+    pub fn send(&self, transmit: &Transmit) {
+        send(self.node.clone(), &self.network, self.socket_addr, transmit);
+    }
+}
+
 pub struct UdpPacket<'a> {
     pub source_addr: SocketAddr,
     pub payload: &'a [u8],
 }
 
 pub struct UdpReceive<'a, 'b> {
-    socket: &'a dyn AsyncUdpSocket,
+    socket: &'a mut dyn AsyncUdpSocket,
     result: &'b mut BufsAndMeta,
 }
 
