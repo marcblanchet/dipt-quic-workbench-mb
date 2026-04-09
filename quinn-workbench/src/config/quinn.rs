@@ -33,6 +33,10 @@ pub struct QuinnJsonConfig {
     ///
     /// Defaults to `30_000` (30 seconds)
     pub maximum_idle_timeout_ms: Option<u64>,
+    /// The outbound rate limit (in bytes per second) for each connection.
+    ///
+    /// Defaults to no rate limiting other than what the congestion controller imposes.
+    pub maximum_outgoing_bytes_per_second: Option<u64>,
     /// Maximum reordering in packet numbers before considering a packet lost. Should not be less
     /// than 3, per RFC5681.
     ///

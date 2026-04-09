@@ -36,6 +36,8 @@ fn transport_config(
         config.mtu_discovery_config(None);
     }
 
+    config.max_outgoing_bytes_per_second(quinn_config.maximum_outgoing_bytes_per_second);
+
     if let Some(timeout) = quinn_config.maximum_idle_timeout_ms {
         config.max_idle_timeout(Some(Duration::from_millis(timeout).try_into().unwrap()));
     }
