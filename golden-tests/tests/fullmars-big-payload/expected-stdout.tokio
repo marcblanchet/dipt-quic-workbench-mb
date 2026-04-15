@@ -55,24 +55,24 @@
 * Replay log available at replay-log.json
 --- Node stats ---
 * GND (client)
-  * Sent packets: 825 (72144 bytes)
+  * Sent packets: 754 (64960 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
-  * Received packets: 8993 (11036122 bytes)
+  * Received packets: 8991 (11035914 bytes)
     | 0 packets received out of order (0 bytes)
 * ING (server)
-  * Sent packets: 8994 (11036201 bytes)
+  * Sent packets: 8993 (11036077 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
-  * Received packets: 825 (72144 bytes)
+  * Received packets: 754 (64960 bytes)
     | 0 packets received out of order (0 bytes)
 --- Max buffer usage per node ---
-* ING: 11032527 bytes (0 packets dropped due to buffer being full)
-* M20: 7721839 bytes (0 packets dropped due to buffer being full)
-* DSN: 57699 bytes (0 packets dropped due to buffer being full)
-* GND: 238 bytes (0 packets dropped due to buffer being full)
+* ING: 11009193 bytes (0 packets dropped due to buffer being full)
+* M20: 10702193 bytes (0 packets dropped due to buffer being full)
+* DSN: 50828 bytes (0 packets dropped due to buffer being full)
+* GND: 0 bytes (0 packets dropped due to buffer being full)
 * MRO: 0 bytes (0 packets dropped due to buffer being full)
 * MSL: 0 bytes (0 packets dropped due to buffer being full)
 * MVN: 0 bytes (0 packets dropped due to buffer being full)
@@ -81,28 +81,28 @@
 --- Link stats ---
 * DSN-GND:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 2957024 (0.30% of the link's bandwidth)
+|-> Max used bandwidth (bps): 2969688 (0.30% of the link's bandwidth)
 * DSN-MRO:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
 * DSN-MVN:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 1068 (106.80% of the link's bandwidth)
+|-> Max used bandwidth (bps): 1067 (106.70% of the link's bandwidth)
 * DSN-ODY:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 1068 (106.80% of the link's bandwidth)
+|-> Max used bandwidth (bps): 1067 (106.70% of the link's bandwidth)
 * DSN-TGO:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 1068 (106.80% of the link's bandwidth)
 * GND-DSN:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 19936 (0.00% of the link's bandwidth)
+|-> Max used bandwidth (bps): 18304 (0.00% of the link's bandwidth)
 * ING-M20:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 9833824 (9.83% of the link's bandwidth)
+|-> Max used bandwidth (bps): 88272864 (88.27% of the link's bandwidth)
 * M20-ING:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 12456 (0.01% of the link's bandwidth)
+|-> Max used bandwidth (bps): 11728 (0.01% of the link's bandwidth)
 * M20-MRO:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
@@ -141,7 +141,7 @@
 |-> Max used bandwidth (bps): 992224 (99.22% of the link's bandwidth)
 * MVN-M20:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 1424 (0.01% of the link's bandwidth)
+|-> Max used bandwidth (bps): 1408 (0.01% of the link's bandwidth)
 * MVN-MSL:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
@@ -150,7 +150,7 @@
 |-> Max used bandwidth (bps): 992224 (99.22% of the link's bandwidth)
 * ODY-M20:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 1424 (0.01% of the link's bandwidth)
+|-> Max used bandwidth (bps): 1408 (0.01% of the link's bandwidth)
 * ODY-MSL:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
@@ -163,14 +163,14 @@
 * TGO-MSL:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
---- Errors(showing 10 of 766) ---
-* network node `DSN` sent packet `e614bb1a-0c27-f2fb-ef5b-324e4aa41ac0` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1022 bps)
-* network node `DSN` sent packet `569928ce-8e3b-6336-0b63-02ec8cc813bc` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1023 bps)
-* network node `DSN` sent packet `7ef1053b-c601-1b03-c123-1b065769ad05` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1028 bps)
-* network node `DSN` sent packet `5d6eb4e4-3618-0639-650b-79315b9f87e5` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1033 bps)
-* network node `DSN` sent packet `ab127593-b786-ac35-05f0-efff3757d376` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1034 bps)
-* network node `DSN` sent packet `2c4254a6-444a-07ad-66b6-e0c3d425a3b8` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1038 bps)
-* network node `DSN` sent packet `ea761642-b8ba-66fa-1da4-c8e62a0449c7` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1043 bps)
-* network node `DSN` sent packet `821df617-035f-b2da-9d36-4974866ecf7f` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1044 bps)
-* network node `DSN` sent packet `190b6d6b-90d6-bb80-3db0-5b4330d70535` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1046 bps)
-* network node `DSN` sent packet `75a4f8f2-b824-f9a1-7f90-554f511d6c7b` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1051 bps)
+--- Errors(showing 10 of 698) ---
+* network node `DSN` sent packet `32a6b34f-3933-0c60-52bd-09b9e6415916` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1028 bps)
+* network node `DSN` sent packet `d0e24a47-de37-a17e-a69e-f414ed33a276` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1030 bps)
+* network node `DSN` sent packet `82c97454-e58a-cf8b-e9f6-4893005d3b61` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1056 bps)
+* network node `DSN` sent packet `3c5e8ffc-c468-a6b3-5ea7-8e661cc65b20` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1038 bps)
+* network node `DSN` sent packet `edd40b7d-7a1e-5e07-373e-986b503933ea` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1040 bps)
+* network node `DSN` sent packet `1da4c8e6-2a04-49c7-2806-d1173939133d` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1044 bps)
+* network node `DSN` sent packet `9bd67128-19d1-5442-08c6-25afee2a40bb` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1047 bps)
+* network node `DSN` sent packet `55b0711f-359b-e9d5-6ece-de5e1d737d6e` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1049 bps)
+* network node `DSN` sent packet `52c58fb3-81e3-70a4-9d89-26d658277bd7` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1052 bps)
+* network node `DSN` sent packet `5837a57e-7108-7b23-ac6b-37130af6cb9c` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1054 bps)
