@@ -506,6 +506,15 @@
   },
   {
     "relative_time_ns": 901200000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 901200000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -515,16 +524,7 @@
     }
   },
   {
-    "relative_time_ns": 901201000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 901202000000,
+    "relative_time_ns": 901200000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -544,15 +544,6 @@
   },
   {
     "relative_time_ns": 901300000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 901301000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
@@ -562,16 +553,7 @@
     }
   },
   {
-    "relative_time_ns": 901301000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "node_id": "M20",
-      "link_id": "M20-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 901302000000,
+    "relative_time_ns": 901300000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -581,7 +563,25 @@
     }
   },
   {
-    "relative_time_ns": 901302000000,
+    "relative_time_ns": 901300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 901300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "node_id": "M20",
+      "link_id": "M20-MVN"
+    }
+  },
+  {
+    "relative_time_ns": 901300000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -601,15 +601,6 @@
   },
   {
     "relative_time_ns": 902300000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 902301000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
@@ -619,16 +610,7 @@
     }
   },
   {
-    "relative_time_ns": 902301000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "node_id": "MVN",
-      "link_id": "MVN-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 902302000000,
+    "relative_time_ns": 902300000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -638,7 +620,25 @@
     }
   },
   {
-    "relative_time_ns": 902302000000,
+    "relative_time_ns": 902300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 902300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "node_id": "MVN",
+      "link_id": "MVN-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 902300000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -658,15 +658,6 @@
   },
   {
     "relative_time_ns": 1802300000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802301000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
@@ -676,16 +667,7 @@
     }
   },
   {
-    "relative_time_ns": 1802301000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802302000000,
+    "relative_time_ns": 1802300000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -695,7 +677,25 @@
     }
   },
   {
-    "relative_time_ns": 1802302000000,
+    "relative_time_ns": 1802300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802300000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
@@ -715,11 +715,51 @@
   },
   {
     "relative_time_ns": 1802400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "packet_number": 2,
+      "packet_size_bytes": 346,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
+      "packet_number": 3,
+      "packet_size_bytes": 166,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802400000000,
     "type": "packetDeliveredToApplication",
     "data": {
       "packet_id": "7e2b908a-36ff-4558-bd4a-4bc35a09b86c",
       "packet_number": 1,
       "packet_size_bytes": 1228,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
+      "packet_number": 2,
+      "packet_size_bytes": 346,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 1802400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
+      "packet_number": 3,
+      "packet_size_bytes": 166,
       "node_id": "GND"
     }
   },
@@ -743,98 +783,39 @@
     }
   },
   {
-    "relative_time_ns": 1802401000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "packet_number": 2,
-      "packet_size_bytes": 346,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802401000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "034ce541-dbd9-9145-ff1c-7147bfd448d1",
-      "packet_number": 2,
-      "packet_size_bytes": 346,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802401000000,
+    "relative_time_ns": 1802400000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
       "packet_number": 5,
-      "packet_size_bytes": 163,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802401000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 1802401000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
       "packet_size_bytes": 166,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 1802401000000,
+    "relative_time_ns": 1802400000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "packet_number": 7,
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
       "packet_size_bytes": 72,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 1802402000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
-      "packet_number": 3,
-      "packet_size_bytes": 166,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802402000000,
+    "relative_time_ns": 1802400000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 1802402000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "df65585b-553a-9a72-a615-1d9952ccf4c6",
-      "packet_number": 3,
-      "packet_size_bytes": 166,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 1802403000000,
+    "relative_time_ns": 1802400000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
@@ -846,6 +827,26 @@
       "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
       "packet_number": 4,
       "packet_size_bytes": 1228,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 1802500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
+      "packet_number": 5,
+      "packet_size_bytes": 166,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 1802500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
+      "packet_size_bytes": 72,
       "node_id": "DSN"
     }
   },
@@ -859,17 +860,7 @@
     }
   },
   {
-    "relative_time_ns": 1802501000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "packet_number": 5,
-      "packet_size_bytes": 163,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 1802501000000,
+    "relative_time_ns": 1802500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
@@ -878,41 +869,12 @@
     }
   },
   {
-    "relative_time_ns": 1802502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
-      "packet_size_bytes": 166,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 1802502000000,
+    "relative_time_ns": 1802500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
       "node_id": "DSN",
       "link_id": "DSN-ODY"
-    }
-  },
-  {
-    "relative_time_ns": 1802503000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "packet_number": 7,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 1803805000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
     }
   },
   {
@@ -927,6 +889,26 @@
   },
   {
     "relative_time_ns": 2702500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
+      "packet_number": 5,
+      "packet_size_bytes": 166,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 2702500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
+      "packet_size_bytes": 72,
+      "node_id": "ODY"
+    }
+  },
+  {
+    "relative_time_ns": 2702500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
@@ -935,17 +917,7 @@
     }
   },
   {
-    "relative_time_ns": 2702501000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "packet_number": 5,
-      "packet_size_bytes": 163,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 2702501000000,
+    "relative_time_ns": 2702500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
@@ -954,17 +926,7 @@
     }
   },
   {
-    "relative_time_ns": 2702502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
-      "packet_size_bytes": 166,
-      "node_id": "ODY"
-    }
-  },
-  {
-    "relative_time_ns": 2702502000000,
+    "relative_time_ns": 2702500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
@@ -984,44 +946,44 @@
   },
   {
     "relative_time_ns": 2703500000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703501000000,
     "type": "packetInNode",
     "data": {
       "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
       "packet_number": 5,
-      "packet_size_bytes": 163,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 2703501000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
       "packet_size_bytes": 166,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 2703502000000,
+    "relative_time_ns": 2703500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 2703500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703500000000,
     "type": "packetInTransit",
     "data": {
       "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
@@ -1032,16 +994,6 @@
   {
     "relative_time_ns": 2703600000000,
     "type": "packetInNode",
-    "data": {
-      "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
-      "packet_number": 4,
-      "packet_size_bytes": 1228,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703600000000,
-    "type": "packetDeliveredToApplication",
     "data": {
       "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
       "packet_number": 4,
@@ -1053,9 +1005,59 @@
     "relative_time_ns": 2703600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
-      "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
+      "packet_number": 5,
+      "packet_size_bytes": 166,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "4000da75-8864-fd93-f561-ef4765f7d4b1",
+      "packet_number": 4,
+      "packet_size_bytes": 1228,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
+      "packet_number": 5,
+      "packet_size_bytes": 166,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
+      "packet_number": 6,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 2703600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
+      "packet_number": 7,
+      "packet_size_bytes": 355,
       "node_id": "ING"
     }
   },
@@ -1063,85 +1065,26 @@
     "relative_time_ns": 2703600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 2703601000000,
+    "relative_time_ns": 2703600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "packet_number": 5,
-      "packet_size_bytes": 163,
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
+      "packet_number": 8,
+      "packet_size_bytes": 1082,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 2703601000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "44967fff-c410-6dc9-976e-c97eb42105dc",
-      "packet_number": 5,
-      "packet_size_bytes": 163,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703601000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "packet_number": 9,
-      "packet_size_bytes": 333,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703601000000,
+    "relative_time_ns": 2703600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 2703602000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
-      "packet_size_bytes": 166,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703602000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "32898f22-9ef6-d9d9-cef9-5bdbf4e959b6",
-      "packet_number": 6,
-      "packet_size_bytes": 166,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703602000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2703602000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
@@ -1150,9 +1093,19 @@
     "relative_time_ns": 2703700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
+      "packet_number": 7,
+      "packet_size_bytes": 355,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 2703700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
@@ -1160,228 +1113,75 @@
     "relative_time_ns": 2703700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 2703701000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "packet_number": 9,
-      "packet_size_bytes": 333,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 2703701000000,
+    "relative_time_ns": 2703700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "node_id": "M20",
       "link_id": "M20-MVN"
     }
   },
   {
-    "relative_time_ns": 2703702000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 2703702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 2703805000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "packet_number": 7,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 2703805000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
     "relative_time_ns": 2704700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
-      "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
+      "packet_number": 7,
+      "packet_size_bytes": 355,
       "node_id": "TGO"
     }
   },
   {
     "relative_time_ns": 2704700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
+      "packet_number": 8,
+      "packet_size_bytes": 1082,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 2704700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 2704701000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "packet_number": 9,
-      "packet_size_bytes": 333,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 2704701000000,
+    "relative_time_ns": 2704700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "node_id": "MVN",
       "link_id": "MVN-DSN"
     }
   },
   {
-    "relative_time_ns": 2704702000000,
+    "relative_time_ns": 3604700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 2704702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 2704805000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
       "packet_number": 7,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 2704805000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 2704905000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "packet_number": 7,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2704905000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "c153bbcc-b630-3443-016c-55f035b26d81",
-      "packet_number": 7,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2704905000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 2704905000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 2705005000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 2705005000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 2706005000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 2706005000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
+      "packet_size_bytes": 355,
+      "node_id": "DSN"
     }
   },
   {
     "relative_time_ns": 3604700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
@@ -1389,45 +1189,16 @@
     "relative_time_ns": 3604700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 3604701000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "packet_number": 9,
-      "packet_size_bytes": 333,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 3604701000000,
+    "relative_time_ns": 3604700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604702000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 3604702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
@@ -1436,9 +1207,19 @@
     "relative_time_ns": 3604800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
+      "packet_number": 7,
+      "packet_size_bytes": 355,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 3604800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
@@ -1446,165 +1227,58 @@
     "relative_time_ns": 3604800000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "4f5cad31-30c4-d285-06bd-dea2609e5baf",
+      "packet_id": "4144afaa-a68c-5b7a-25d0-5aec65aae74d",
+      "packet_number": 7,
+      "packet_size_bytes": 355,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 3604800000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "899ffa4b-3922-9d1e-b8d5-11d06154963f",
       "packet_number": 8,
-      "packet_size_bytes": 170,
+      "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 3604801000000,
+    "relative_time_ns": 3604800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
       "packet_number": 9,
-      "packet_size_bytes": 333,
+      "packet_size_bytes": 90,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 3604801000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "dc012680-038a-a19d-6c54-c4a91619276c",
-      "packet_number": 9,
-      "packet_size_bytes": 333,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604801000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604801000000,
+    "relative_time_ns": 3604800000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 3604802000000,
+    "relative_time_ns": 3604900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604802000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "414ad63f-2667-f56f-109c-f5ba677d148f",
-      "packet_number": 10,
-      "packet_size_bytes": 58,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604802000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3604802000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 3604901000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
+      "packet_number": 9,
+      "packet_size_bytes": 90,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 3604901000000,
+    "relative_time_ns": 3604900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
       "node_id": "DSN",
       "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 3604902000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 3604902000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 3606005000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 3606005000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 3606105000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 3606105000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "5b17325b-4762-327b-512f-3626f7322119",
-      "packet_number": 11,
-      "packet_size_bytes": 1082,
-      "node_id": "GND"
     }
   },
   {
@@ -1618,637 +1292,445 @@
     }
   },
   {
-    "relative_time_ns": 4504901000000,
+    "relative_time_ns": 4504900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
+      "packet_number": 9,
+      "packet_size_bytes": 90,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 4504901000000,
+    "relative_time_ns": 4504900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
       "node_id": "TGO",
       "link_id": "TGO-M20"
     }
   },
   {
-    "relative_time_ns": 4504902000000,
+    "relative_time_ns": 4505900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 4504902000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 4505901000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
+      "packet_number": 9,
+      "packet_size_bytes": 90,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 4505901000000,
+    "relative_time_ns": 4505900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 4505902000000,
+    "relative_time_ns": 4506000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 4505902000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 4506001000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
+      "packet_number": 9,
+      "packet_size_bytes": 90,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 4506001000000,
+    "relative_time_ns": 4506000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 4506001000000,
+    "relative_time_ns": 4506000000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "a5dd4d8b-9dfe-8362-0178-ce1375198017",
-      "packet_number": 12,
-      "packet_size_bytes": 62,
+      "packet_id": "ed017ec9-eb5b-344c-af2e-a72dc60c59b9",
+      "packet_number": 9,
+      "packet_size_bytes": 90,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 4506001000000,
+    "relative_time_ns": 4506000000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 4506002000000,
+    "relative_time_ns": 4506100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 4506002000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
-      "packet_number": 13,
-      "packet_size_bytes": 82,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 4506101000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 4506101000000,
+    "relative_time_ns": 4506100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 4507101000000,
+    "relative_time_ns": 4507100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 4507101000000,
+    "relative_time_ns": 4507100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 5407101000000,
+    "relative_time_ns": 5407100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 5407101000000,
+    "relative_time_ns": 5407100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 5407201000000,
+    "relative_time_ns": 5407200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 5407201000000,
+    "relative_time_ns": 5407200000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "7956e473-ab5f-7d76-40dc-71791b274d3f",
-      "packet_number": 14,
+      "packet_id": "b22eb4e7-10e6-c3cb-9775-56cc7970e4fe",
+      "packet_number": 10,
       "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 5407201000000,
+    "relative_time_ns": 5407200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 5407201000000,
+    "relative_time_ns": 5407200000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 5407202000000,
+    "relative_time_ns": 5407300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 5407202000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 5407301000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 5407301000000,
+    "relative_time_ns": 5407300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
       "node_id": "DSN",
       "link_id": "DSN-TGO"
     }
   },
   {
-    "relative_time_ns": 5407302000000,
+    "relative_time_ns": 6307300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 5407302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 6307301000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 6307301000000,
+    "relative_time_ns": 6307300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
       "node_id": "TGO",
       "link_id": "TGO-M20"
     }
   },
   {
-    "relative_time_ns": 6307302000000,
+    "relative_time_ns": 6308300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 6307302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 6308301000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 6308301000000,
+    "relative_time_ns": 6308300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 6308302000000,
+    "relative_time_ns": 6308400000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 6308302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 6308401000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 6308401000000,
+    "relative_time_ns": 6308400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 6308400000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "0493a429-17fc-f6f8-8719-6dedc9cd0483",
-      "packet_number": 15,
+      "packet_id": "83ef0d43-0a37-f636-0ada-66ffdf290a77",
+      "packet_number": 11,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 6308401000000,
+    "relative_time_ns": 6308400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 6308400000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
       "packet_size_bytes": 1082,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 6308401000000,
+    "relative_time_ns": 6308400000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 6308402000000,
+    "relative_time_ns": 6308500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "ING"
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 6308402000000,
+    "relative_time_ns": 6308500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 6308402000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "47b38456-ec4a-668a-a254-f155b788c0bb",
-      "packet_number": 16,
-      "packet_size_bytes": 63,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 6308402000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 6308501000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
       "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 6308501000000,
+    "relative_time_ns": 6308500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 6308502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 6308502000000,
+    "relative_time_ns": 6308500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
       "node_id": "M20",
       "link_id": "M20-MVN"
     }
   },
   {
-    "relative_time_ns": 6309501000000,
+    "relative_time_ns": 6309500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
-      "packet_size_bytes": 1082,
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 6309501000000,
+    "relative_time_ns": 6309500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
+      "packet_size_bytes": 1082,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 6309500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 6309502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 6309502000000,
+    "relative_time_ns": 6309500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
       "node_id": "MVN",
       "link_id": "MVN-DSN"
     }
   },
   {
-    "relative_time_ns": 7209501000000,
+    "relative_time_ns": 7209500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 7209500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
       "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 7209501000000,
+    "relative_time_ns": 7209500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 7209502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 7209502000000,
+    "relative_time_ns": 7209500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 7209601000000,
+    "relative_time_ns": 7209600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 7209600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
       "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 7209601000000,
+    "relative_time_ns": 7209600000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "b8a3e8f6-b3fe-c766-ec3c-f56261a06bfa",
-      "packet_number": 17,
+      "packet_id": "487339b5-f009-2e88-3bc5-d4cb2e0d3c0a",
+      "packet_number": 12,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 7209600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "63acb256-8394-c1f2-5172-530681ba752e",
+      "packet_number": 13,
       "packet_size_bytes": 1082,
       "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 7209602000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 7209602000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "4529b386-271b-0caa-204b-405d489e84b5",
-      "packet_number": 18,
-      "packet_size_bytes": 63,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 7209602000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 7209602000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 7209702000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 7209702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
     }
   },
   {
@@ -2262,425 +1744,387 @@
     }
   },
   {
-    "relative_time_ns": 8109702000000,
+    "relative_time_ns": 8110800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 8109702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 8110702000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 8110702000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 8110802000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
+      "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 8110802000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "99a9cea4-438a-fd36-e256-c20551f0c515",
-      "packet_number": 19,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 8110802000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 8110802000000,
+    "relative_time_ns": 8110800000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 8110902000000,
+    "relative_time_ns": 8110900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
+      "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 8110902000000,
+    "relative_time_ns": 8110900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 8111902000000,
+    "relative_time_ns": 8111900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
+      "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 8111902000000,
+    "relative_time_ns": 8111900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 9011902000000,
+    "relative_time_ns": 9011900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
+      "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 9011902000000,
+    "relative_time_ns": 9011900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 9012001000000,
+    "relative_time_ns": 9012000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
       "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 9012001000000,
+    "relative_time_ns": 9012000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 9012000000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "45822425-d931-b0a1-d8a4-d17f50254f13",
+      "packet_number": 14,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 9012000000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 9012002000000,
+    "relative_time_ns": 9012000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 9012002000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "32ff12ff-0db3-066a-6529-298d94c655cb",
-      "packet_number": 20,
-      "packet_size_bytes": 1082,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 9012101000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 9012101000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 9912101000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 9912101000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 9913101000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 9913101000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 9913201000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 9913201000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
-      "packet_number": 21,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 9913202000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 9913202000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 9913302000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 9913302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 9914302000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 9914302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 10814302000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 10814302000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 10814402000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 10814402000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 10814402000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "3483a7e0-dde3-9ffc-5d11-08c99e08de3e",
-      "packet_number": 22,
-      "packet_size_bytes": 63,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 10814402000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 10814402000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
       "packet_size_bytes": 72,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 10814403000000,
+    "relative_time_ns": 9012000000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 10814502000000,
+    "relative_time_ns": 9012100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
       "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 10814502000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 10814503000000,
+    "relative_time_ns": 9012100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
       "packet_size_bytes": 72,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 10814503000000,
+    "relative_time_ns": 9012100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 9012100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
       "node_id": "DSN",
       "link_id": "DSN-MVN"
+    }
+  },
+  {
+    "relative_time_ns": 9912100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
+      "packet_size_bytes": 65,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 9912100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
+      "packet_size_bytes": 72,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 9912100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 9912100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "node_id": "MVN",
+      "link_id": "MVN-M20"
+    }
+  },
+  {
+    "relative_time_ns": 9913100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 9913100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 9913100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "f807f098-24e8-5180-0f25-31b0a0a68e06",
+      "packet_number": 15,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "c16eec62-6605-69bb-260c-15d80acc9e2d",
+      "packet_number": 16,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 9913200000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 9913300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 9913300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 9914300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 9914300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 10814300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 10814300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 10814400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 10814400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "46f7def2-b675-5d0d-31bc-23d252bb33e7",
+      "packet_number": 17,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
     }
   },
   {
@@ -2694,270 +2138,346 @@
     }
   },
   {
-    "relative_time_ns": 11714502000000,
+    "relative_time_ns": 11715600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 11714502000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 11714503000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 11714503000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 11715502000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 11715502000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715503000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 11715503000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715602000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 11715602000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "50a8165f-d50b-2f75-0105-5602f21fef28",
-      "packet_number": 23,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715603000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715603000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "e40c7884-f383-0259-87b3-256c69873b58",
-      "packet_number": 24,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715603000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 11715603000000,
+    "relative_time_ns": 11715600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 11715703000000,
+    "relative_time_ns": 11715700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
+      "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 11715703000000,
+    "relative_time_ns": 11715700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 11716703000000,
+    "relative_time_ns": 11716700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
+      "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 11716703000000,
+    "relative_time_ns": 11716700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 12616703000000,
+    "relative_time_ns": 12616700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
+      "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 12616703000000,
+    "relative_time_ns": 12616700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 12616803000000,
+    "relative_time_ns": 12616800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
+      "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 12616803000000,
+    "relative_time_ns": 12616800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 12616800000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "d9713b03-65f1-154c-b734-9b1afc6b8410",
-      "packet_number": 25,
-      "packet_size_bytes": 1082,
+      "packet_id": "82805629-8eee-7d9c-86ca-9a7b64f17ab1",
+      "packet_number": 18,
+      "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 13518003000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 13518003000000,
+    "relative_time_ns": 12616800000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "node_id": "ING",
-      "link_id": "ING-M20"
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 13518103000000,
+    "relative_time_ns": 12616800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 13518103000000,
+    "relative_time_ns": 12616800000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 13519103000000,
+    "relative_time_ns": 12616900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 12616900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 12616900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 12616900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "node_id": "DSN",
+      "link_id": "DSN-MVN"
+    }
+  },
+  {
+    "relative_time_ns": 13516900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
       "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 13519103000000,
+    "relative_time_ns": 13516900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 13516900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 13516900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "node_id": "MVN",
+      "link_id": "MVN-M20"
+    }
+  },
+  {
+    "relative_time_ns": 13517900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 13517900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 13517900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 13517900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "2ee43dd1-c136-51b3-9729-c92ca5661d13",
+      "packet_number": 19,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "4ee98e30-5d07-2c6a-4406-0d7c82e94bb6",
+      "packet_number": 20,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
+      "packet_size_bytes": 1082,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 13518000000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 13518100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
+      "packet_size_bytes": 1082,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 13518100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 13519100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
+      "packet_size_bytes": 1082,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 13519100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
@@ -2973,385 +2493,385 @@
     }
   },
   {
-    "relative_time_ns": 14419103000000,
+    "relative_time_ns": 14419100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
-      "packet_size_bytes": 65,
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
+      "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 14419103000000,
+    "relative_time_ns": 14419100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 14419203000000,
+    "relative_time_ns": 14419200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 14419203000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 14419203000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "e1f31fc6-1e93-d9be-dc78-b1649cfa8877",
-      "packet_number": 26,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 14419203000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 14419203000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 14419204000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 14419303000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 14419303000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 14419304000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 14419304000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 15319303000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 15319303000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 15319304000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 15319304000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 15320303000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 15320303000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320304000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 15320304000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320403000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320403000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "d1232fce-6716-1641-515e-c648beb48c22",
-      "packet_number": 27,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320404000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320404000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "301c741a-e23f-6e1a-1168-f62a2303a215",
-      "packet_number": 28,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 15320404000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
       "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 14419200000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "89dad40d-04aa-773f-d158-297ce5d223df",
+      "packet_number": 21,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 15320400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 15320404000000,
+    "relative_time_ns": 15320400000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 15320504000000,
+    "relative_time_ns": 15320500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
-      "packet_size_bytes": 1082,
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 15320504000000,
+    "relative_time_ns": 15320500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 15321504000000,
+    "relative_time_ns": 15321500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
-      "packet_size_bytes": 1082,
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 15321504000000,
+    "relative_time_ns": 15321500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 16221504000000,
+    "relative_time_ns": 16221500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
-      "packet_size_bytes": 1082,
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 16221504000000,
+    "relative_time_ns": 16221500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 16221604000000,
+    "relative_time_ns": 16221600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
-      "packet_size_bytes": 1082,
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 16221604000000,
+    "relative_time_ns": 16221600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 16221600000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "a2d9312f-b000-b93d-ce5c-78dcb2d99f29",
-      "packet_number": 29,
-      "packet_size_bytes": 1082,
+      "packet_id": "a51c7ae6-5769-b581-dfc4-eb1f218a7268",
+      "packet_number": 22,
+      "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 17122804000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 17122804000000,
+    "relative_time_ns": 16221600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "node_id": "ING",
-      "link_id": "ING-M20"
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 17122904000000,
+    "relative_time_ns": 16221600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 17122904000000,
+    "relative_time_ns": 16221600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 17123904000000,
+    "relative_time_ns": 16221700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 16221700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 16221700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 16221700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "node_id": "DSN",
+      "link_id": "DSN-MVN"
+    }
+  },
+  {
+    "relative_time_ns": 17121700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
       "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 17123904000000,
+    "relative_time_ns": 17121700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "MVN"
+    }
+  },
+  {
+    "relative_time_ns": 17121700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 17121700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "node_id": "MVN",
+      "link_id": "MVN-M20"
+    }
+  },
+  {
+    "relative_time_ns": 17122700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 17122700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 17122700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "e55eaeaf-4211-6a48-33b2-99a280ef9a22",
+      "packet_number": 23,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "0e4d742d-d3a2-1afa-28a9-100a6a0542ee",
+      "packet_number": 24,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 17122800000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 17122900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 17122900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 17123900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 17123900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
@@ -3367,502 +2887,426 @@
     }
   },
   {
-    "relative_time_ns": 18023904000000,
+    "relative_time_ns": 18023900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
-      "packet_size_bytes": 65,
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 18023904000000,
+    "relative_time_ns": 18023900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 18024004000000,
+    "relative_time_ns": 18024000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
-      "packet_size_bytes": 65,
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 18024004000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 18024004000000,
+    "relative_time_ns": 18024000000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "0d381831-3392-f8ac-42d1-0d775e872109",
-      "packet_number": 30,
-      "packet_size_bytes": 65,
+      "packet_id": "f14adcc6-8c75-3c3a-d50a-c9a95460291d",
+      "packet_number": 25,
+      "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 18024004000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 18024004000000,
+    "relative_time_ns": 18925200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 18024005000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 18024104000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
       "packet_size_bytes": 65,
-      "node_id": "DSN"
+      "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 18024104000000,
+    "relative_time_ns": 18925200000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "node_id": "ING",
+      "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 18024105000000,
+    "relative_time_ns": 18925300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 18024105000000,
+    "relative_time_ns": 18925300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 18924104000000,
+    "relative_time_ns": 18926300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
       "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 18924104000000,
+    "relative_time_ns": 18926300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
       "node_id": "TGO",
-      "link_id": "TGO-M20"
+      "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 18924105000000,
+    "relative_time_ns": 19826300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 19826300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "5233136c-099d-9562-a425-a84f11d7f521",
+      "packet_number": 26,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 19826400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 19826500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 19826500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 19826500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 19826500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "node_id": "DSN",
+      "link_id": "DSN-MVN"
+    }
+  },
+  {
+    "relative_time_ns": 20726500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
+      "packet_size_bytes": 65,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 20726500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
       "packet_size_bytes": 72,
       "node_id": "MVN"
     }
   },
   {
-    "relative_time_ns": 18924105000000,
+    "relative_time_ns": 20726500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 20726500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
       "node_id": "MVN",
       "link_id": "MVN-M20"
     }
   },
   {
-    "relative_time_ns": 18925104000000,
+    "relative_time_ns": 20727500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
       "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 18925104000000,
+    "relative_time_ns": 20727500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 20727500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 18925105000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 18925105000000,
+    "relative_time_ns": 20727500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 18925204000000,
+    "relative_time_ns": 20727600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 18925204000000,
+    "relative_time_ns": 20727600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 20727600000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "7b3847a0-0f53-7daf-cac4-31d84196e729",
-      "packet_number": 31,
+      "packet_id": "73dd44fe-cad4-08b8-c1c2-08041d6a8cd3",
+      "packet_number": 27,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 18925205000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 18925205000000,
+    "relative_time_ns": 20727600000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "d60362be-c6fa-7287-8185-085588e79bc1",
-      "packet_number": 32,
+      "packet_id": "f1f6051e-48e3-2395-0118-b3acc1dbb239",
+      "packet_number": 28,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 18925205000000,
+    "relative_time_ns": 20727600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 18925205000000,
+    "relative_time_ns": 20727600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 18925305000000,
+    "relative_time_ns": 20727700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 18925305000000,
+    "relative_time_ns": 20727700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 18926305000000,
+    "relative_time_ns": 20728700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 18926305000000,
+    "relative_time_ns": 20728700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 19826305000000,
+    "relative_time_ns": 21628700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 19826305000000,
+    "relative_time_ns": 21628700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 19826405000000,
+    "relative_time_ns": 21628800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 19826405000000,
+    "relative_time_ns": 21628800000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "9a64f9e5-0e4c-7895-c655-cb60c43db648",
-      "packet_number": 33,
+      "packet_id": "7da068e8-fe2d-cbe9-93fc-307dab2d90d3",
+      "packet_number": 29,
       "packet_size_bytes": 1082,
       "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 20727605000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 20727605000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 20727705000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 20727705000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 20728705000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 20728705000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628705000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628705000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 21628805000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 21628805000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 21628805000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "371604b3-1ac6-cc6d-edd1-52622e78290b",
-      "packet_number": 34,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 21628805000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628805000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 21628806000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628905000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628905000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 21628906000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 21628906000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
     }
   },
   {
@@ -3876,174 +3320,58 @@
     }
   },
   {
-    "relative_time_ns": 22528905000000,
+    "relative_time_ns": 22530000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 22528905000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 22528906000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 22528906000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 22529905000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 22529905000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 22529906000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 22529906000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 22530005000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 22530005000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
-      "packet_number": 35,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 22530006000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 22530006000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "db7fd379-0fe6-e10a-b58a-e81764d1ab32",
-      "packet_number": 36,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 22530006000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 22530006000000,
+    "relative_time_ns": 22530000000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 22530106000000,
+    "relative_time_ns": 22530100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
+      "packet_size_bytes": 65,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 22530106000000,
+    "relative_time_ns": 22530100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 22531106000000,
+    "relative_time_ns": 22531100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
+      "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 22531106000000,
+    "relative_time_ns": 22531100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
@@ -4099,42 +3427,118 @@
     }
   },
   {
-    "relative_time_ns": 23431106000000,
+    "relative_time_ns": 23431100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
+      "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 23431106000000,
+    "relative_time_ns": 23431100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 23431206000000,
+    "relative_time_ns": 23431200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
+      "packet_size_bytes": 65,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 23431206000000,
+    "relative_time_ns": 23431200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "716a334c-1743-b84b-f502-594929961dcf",
+      "packet_number": 31,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 23431200000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "ba2994f1-742b-2258-c110-53635f75ad58",
-      "packet_number": 37,
-      "packet_size_bytes": 1082,
+      "packet_id": "67e1fed9-85be-7f26-6ebe-780445d4a2d0",
+      "packet_number": 30,
+      "packet_size_bytes": 65,
       "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 23431200000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "716a334c-1743-b84b-f502-594929961dcf",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 23431200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 23431200000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 23431300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "716a334c-1743-b84b-f502-594929961dcf",
+      "packet_number": 31,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 23431300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 23431300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "716a334c-1743-b84b-f502-594929961dcf",
+      "node_id": "DSN",
+      "link_id": "DSN-MRO"
+    }
+  },
+  {
+    "relative_time_ns": 23431300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
     }
   },
   {
@@ -4158,58 +3562,126 @@
     }
   },
   {
-    "relative_time_ns": 24332406000000,
+    "relative_time_ns": 24331300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
+      "packet_id": "716a334c-1743-b84b-f502-594929961dcf",
+      "packet_number": 31,
       "packet_size_bytes": 65,
+      "node_id": "MRO"
+    }
+  },
+  {
+    "relative_time_ns": 24331300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 24331300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 24332300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 24332300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 24332400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 24332406000000,
+    "relative_time_ns": 24332400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "fbea45c9-6a14-8ccd-58b0-deec7bb187be",
+      "packet_number": 32,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 24332400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
+      "packet_size_bytes": 1082,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 24332400000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 24332506000000,
+    "relative_time_ns": 24332500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
-      "packet_size_bytes": 65,
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
+      "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 24332506000000,
+    "relative_time_ns": 24332500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 24333506000000,
+    "relative_time_ns": 24333500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
-      "packet_size_bytes": 65,
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
+      "packet_size_bytes": 1082,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 24333506000000,
+    "relative_time_ns": 24333500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
@@ -4235,330 +3707,214 @@
     }
   },
   {
-    "relative_time_ns": 25233506000000,
+    "relative_time_ns": 25233500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
-      "packet_size_bytes": 65,
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
+      "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 25233506000000,
+    "relative_time_ns": 25233500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 25233606000000,
+    "relative_time_ns": 25233600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 25233606000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 25233606000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "cec53ea1-4f94-b127-3ffd-5e8e0838c8b5",
-      "packet_number": 38,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 25233606000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 25233606000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 25233607000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 25233706000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 25233706000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 25233707000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 25233707000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 26133706000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 26133706000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "node_id": "TGO",
-      "link_id": "TGO-M20"
-    }
-  },
-  {
-    "relative_time_ns": 26133707000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 26133707000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 26134706000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 26134706000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134707000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 26134707000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134806000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134806000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
-      "packet_number": 39,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134807000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134807000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "9d368e28-1aa4-4379-c2a6-2c2f92cae755",
-      "packet_number": 40,
-      "packet_size_bytes": 72,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 26134807000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
       "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 25233600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "d9fe7988-0717-8a4e-3ee8-5c7fee99125b",
+      "packet_number": 33,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 26134800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 26134807000000,
+    "relative_time_ns": 26134800000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 26134907000000,
+    "relative_time_ns": 26134900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
-      "packet_size_bytes": 1082,
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 26134907000000,
+    "relative_time_ns": 26134900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 26135907000000,
+    "relative_time_ns": 26135900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
-      "packet_size_bytes": 1082,
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 26135907000000,
+    "relative_time_ns": 26135900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 27035907000000,
+    "relative_time_ns": 27035900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
-      "packet_size_bytes": 1082,
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 27035907000000,
+    "relative_time_ns": 27035900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 27036007000000,
+    "relative_time_ns": 27036000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
-      "packet_size_bytes": 1082,
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 27036007000000,
+    "relative_time_ns": 27036000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 27036000000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "508b38ba-cb5f-5954-5234-4f761dacd5a4",
-      "packet_number": 41,
-      "packet_size_bytes": 1082,
+      "packet_id": "a61fc7b0-fb5f-d09a-cff3-2e9ff4b345b5",
+      "packet_number": 34,
+      "packet_size_bytes": 67,
       "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 27036000000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 27036000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 27036000000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 27036100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 27036100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 27036100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 27036100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "node_id": "DSN",
+      "link_id": "DSN-MVN"
     }
   },
   {
@@ -4582,339 +3938,387 @@
     }
   },
   {
-    "relative_time_ns": 27937207000000,
+    "relative_time_ns": 27936100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 27937207000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 27937307000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 27937307000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 27938307000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
       "packet_size_bytes": 65,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 27938307000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838307000000,
+    "relative_time_ns": 27936100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838307000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 28838407000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 28838407000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "35a08141-4a32-430c-c5ae-f4d128248c93",
-      "packet_number": 43,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 28838407000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "5186c3f6-aec8-9292-d67f-e361de01f551",
-      "packet_number": 42,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 28838407000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "35a08141-4a32-430c-c5ae-f4d128248c93",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838407000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
       "packet_size_bytes": 72,
-      "node_id": "GND"
+      "node_id": "MVN"
     }
   },
   {
-    "relative_time_ns": 28838408000000,
+    "relative_time_ns": 27936100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838507000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "35a08141-4a32-430c-c5ae-f4d128248c93",
-      "packet_number": 43,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838507000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "35a08141-4a32-430c-c5ae-f4d128248c93",
-      "node_id": "DSN",
-      "link_id": "DSN-MRO"
-    }
-  },
-  {
-    "relative_time_ns": 28838508000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 28838508000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 29738507000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "35a08141-4a32-430c-c5ae-f4d128248c93",
-      "packet_number": 43,
-      "packet_size_bytes": 65,
-      "node_id": "MRO"
-    }
-  },
-  {
-    "relative_time_ns": 29738508000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
-      "packet_size_bytes": 72,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 29738508000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
       "node_id": "TGO",
       "link_id": "TGO-M20"
     }
   },
   {
-    "relative_time_ns": 29739508000000,
+    "relative_time_ns": 27936100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "node_id": "MVN",
+      "link_id": "MVN-M20"
+    }
+  },
+  {
+    "relative_time_ns": 27937100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 27937100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
       "packet_size_bytes": 72,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 29739508000000,
+    "relative_time_ns": 27937100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 29739608000000,
+    "relative_time_ns": 27937100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 27937200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 27937200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 29739608000000,
+    "relative_time_ns": 27937200000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "66927713-ba3e-2526-8cc6-7ee67d32536b",
-      "packet_number": 44,
+      "packet_id": "4074dee9-8d32-f034-3331-67403a4664bf",
+      "packet_number": 35,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 27937200000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "d035c9e0-9e0b-7bbf-1329-429d09a0b5c5",
+      "packet_number": 36,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 29739608000000,
+    "relative_time_ns": 27937200000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 29739608000000,
+    "relative_time_ns": 27937200000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 29739708000000,
+    "relative_time_ns": 27937300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 29739708000000,
+    "relative_time_ns": 27937300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 29740708000000,
+    "relative_time_ns": 27938300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 29740708000000,
+    "relative_time_ns": 27938300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
   },
   {
-    "relative_time_ns": 30640708000000,
+    "relative_time_ns": 28838300000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 30640708000000,
+    "relative_time_ns": 28838300000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 30640808000000,
+    "relative_time_ns": 28838400000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 30640808000000,
+    "relative_time_ns": 28838400000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "67e806ea-9fa9-d733-1e68-c23de675e4d8",
-      "packet_number": 45,
+      "packet_id": "347d994d-8750-8caa-ebe8-22bd8eddbc87",
+      "packet_number": 37,
       "packet_size_bytes": 1082,
       "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 29739600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 29739600000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 29739700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 29739700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 29740700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 29740700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640700000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "a22a9713-d738-e7b6-eadc-adf8999062d6",
+      "packet_number": 39,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "3ff2c1d2-3fe4-fc37-96f8-ff32d62baeff",
+      "packet_number": 38,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "a22a9713-d738-e7b6-eadc-adf8999062d6",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
+      "packet_size_bytes": 72,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 30640800000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "a22a9713-d738-e7b6-eadc-adf8999062d6",
+      "packet_number": 39,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 30640900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "a22a9713-d738-e7b6-eadc-adf8999062d6",
+      "node_id": "DSN",
+      "link_id": "DSN-MRO"
+    }
+  },
+  {
+    "relative_time_ns": 30640900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
     }
   },
   {
@@ -4938,346 +4342,220 @@
     }
   },
   {
-    "relative_time_ns": 31542008000000,
+    "relative_time_ns": 31540900000000,
+    "type": "packetLostInTransit",
+    "data": {
+      "packet_id": "a22a9713-d738-e7b6-eadc-adf8999062d6",
+      "link_id": "DSN-MRO"
+    }
+  },
+  {
+    "relative_time_ns": 31540900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 31542008000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 31542108000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 31542108000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 31543108000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
+      "packet_size_bytes": 72,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 31543108000000,
+    "relative_time_ns": 31540900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443108000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443108000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 32443208000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 32443208000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 32443208000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "b186d19d-04df-4042-4e45-5cd9705009fb",
-      "packet_number": 46,
-      "packet_size_bytes": 67,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 32443208000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443208000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
-      "packet_size_bytes": 72,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 32443209000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "node_id": "GND",
-      "link_id": "GND-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443308000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443308000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "node_id": "DSN",
-      "link_id": "DSN-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 32443309000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
-      "packet_size_bytes": 72,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 32443309000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "node_id": "DSN",
-      "link_id": "DSN-MVN"
-    }
-  },
-  {
-    "relative_time_ns": 33343308000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 33343308000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
       "node_id": "TGO",
       "link_id": "TGO-M20"
     }
   },
   {
-    "relative_time_ns": 33343309000000,
+    "relative_time_ns": 31541900000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
-      "packet_size_bytes": 72,
-      "node_id": "MVN"
-    }
-  },
-  {
-    "relative_time_ns": 33343309000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "node_id": "MVN",
-      "link_id": "MVN-M20"
-    }
-  },
-  {
-    "relative_time_ns": 33344308000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 33344308000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "node_id": "M20",
-      "link_id": "M20-ING"
-    }
-  },
-  {
-    "relative_time_ns": 33344309000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
       "packet_size_bytes": 72,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 33344309000000,
+    "relative_time_ns": 31541900000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 33344408000000,
+    "relative_time_ns": 31542000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 33344408000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "edf1b54e-fc3f-d4c7-d48f-594623d894af",
-      "packet_number": 47,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 33344409000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 33344409000000,
+    "relative_time_ns": 31542000000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "7d539fb0-5866-2210-9934-8030476441a8",
-      "packet_number": 48,
+      "packet_id": "e777af82-9bcd-1205-28b6-04df7927d3f6",
+      "packet_number": 40,
       "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 33344409000000,
+    "relative_time_ns": 31542000000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
       "packet_size_bytes": 1082,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 33344409000000,
+    "relative_time_ns": 31542000000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
       "node_id": "ING",
       "link_id": "ING-M20"
     }
   },
   {
-    "relative_time_ns": 33344509000000,
+    "relative_time_ns": 31542100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
       "packet_size_bytes": 1082,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 33344509000000,
+    "relative_time_ns": 31542100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
       "node_id": "M20",
       "link_id": "M20-TGO"
     }
   },
   {
-    "relative_time_ns": 33345509000000,
+    "relative_time_ns": 31543100000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
       "packet_size_bytes": 1082,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 33345509000000,
+    "relative_time_ns": 31543100000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 32443100000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
+      "packet_size_bytes": 1082,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 32443100000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 32443200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 32443200000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "b93da591-10e5-579f-331f-6a2cc9f53209",
+      "packet_number": 41,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 33344400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 33344400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 33344500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 33344500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 33345500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 33345500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
       "node_id": "TGO",
       "link_id": "TGO-DSN"
     }
@@ -5303,299 +4581,557 @@
     }
   },
   {
-    "relative_time_ns": 34245509000000,
+    "relative_time_ns": 34245500000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
-      "packet_size_bytes": 1082,
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 34245509000000,
+    "relative_time_ns": 34245500000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
       "node_id": "DSN",
       "link_id": "DSN-GND"
     }
   },
   {
-    "relative_time_ns": 34245609000000,
+    "relative_time_ns": 34245600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
-      "packet_size_bytes": 1082,
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 34245609000000,
+    "relative_time_ns": 34245600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "5ee8a1d7-3a08-f51a-a000-b2dec7916284",
+      "packet_number": 43,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 34245600000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "5ddc4a1f-9292-1502-27d3-ee27331aa1e4",
-      "packet_number": 49,
-      "packet_size_bytes": 1082,
+      "packet_id": "821547d6-8aa4-6d21-c752-661e3c5534dd",
+      "packet_number": 42,
+      "packet_size_bytes": 67,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 35146809000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "ING"
-    }
-  },
-  {
-    "relative_time_ns": 35146809000000,
+    "relative_time_ns": 34245600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "node_id": "ING",
-      "link_id": "ING-M20"
-    }
-  },
-  {
-    "relative_time_ns": 35146909000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "M20"
-    }
-  },
-  {
-    "relative_time_ns": 35146909000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "node_id": "M20",
-      "link_id": "M20-TGO"
-    }
-  },
-  {
-    "relative_time_ns": 35147909000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "TGO"
-    }
-  },
-  {
-    "relative_time_ns": 35147909000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "node_id": "TGO",
-      "link_id": "TGO-DSN"
-    }
-  },
-  {
-    "relative_time_ns": 36047909000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 36047909000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "node_id": "DSN",
-      "link_id": "DSN-GND"
-    }
-  },
-  {
-    "relative_time_ns": 36048009000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 36048009000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "248c79fc-a790-797b-d5af-2d6ac524fb3d",
-      "packet_number": 51,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 36048009000000,
-    "type": "packetDeliveredToApplication",
-    "data": {
-      "packet_id": "7f19b39e-7ef8-bffe-ea46-3e011769921c",
-      "packet_number": 50,
-      "packet_size_bytes": 65,
-      "node_id": "GND"
-    }
-  },
-  {
-    "relative_time_ns": 36048009000000,
-    "type": "packetInTransit",
-    "data": {
-      "packet_id": "248c79fc-a790-797b-d5af-2d6ac524fb3d",
+      "packet_id": "5ee8a1d7-3a08-f51a-a000-b2dec7916284",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 36048009000000,
+    "relative_time_ns": 34245600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
-      "packet_size_bytes": 65,
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
       "node_id": "GND"
     }
   },
   {
-    "relative_time_ns": 36048010000000,
+    "relative_time_ns": 34245600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
       "node_id": "GND",
       "link_id": "GND-DSN"
     }
   },
   {
-    "relative_time_ns": 36048109000000,
+    "relative_time_ns": 34245700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "248c79fc-a790-797b-d5af-2d6ac524fb3d",
-      "packet_number": 51,
+      "packet_id": "5ee8a1d7-3a08-f51a-a000-b2dec7916284",
+      "packet_number": 43,
       "packet_size_bytes": 65,
       "node_id": "DSN"
     }
   },
   {
-    "relative_time_ns": 36048109000000,
+    "relative_time_ns": 34245700000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 34245700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "248c79fc-a790-797b-d5af-2d6ac524fb3d",
+      "packet_id": "5ee8a1d7-3a08-f51a-a000-b2dec7916284",
       "node_id": "DSN",
       "link_id": "DSN-MRO"
     }
   },
   {
-    "relative_time_ns": 36048110000000,
-    "type": "packetInNode",
-    "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
-      "packet_size_bytes": 65,
-      "node_id": "DSN"
-    }
-  },
-  {
-    "relative_time_ns": 36048110000000,
+    "relative_time_ns": 34245700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
       "node_id": "DSN",
       "link_id": "DSN-TGO"
     }
   },
   {
-    "relative_time_ns": 36948109000000,
+    "relative_time_ns": 35145700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "248c79fc-a790-797b-d5af-2d6ac524fb3d",
-      "packet_number": 51,
+      "packet_id": "5ee8a1d7-3a08-f51a-a000-b2dec7916284",
+      "packet_number": 43,
       "packet_size_bytes": 65,
       "node_id": "MRO"
     }
   },
   {
-    "relative_time_ns": 36948110000000,
+    "relative_time_ns": 35145700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
-      "packet_size_bytes": 65,
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
       "node_id": "TGO"
     }
   },
   {
-    "relative_time_ns": 36948110000000,
+    "relative_time_ns": 35145700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
       "node_id": "TGO",
       "link_id": "TGO-M20"
     }
   },
   {
-    "relative_time_ns": 36949110000000,
+    "relative_time_ns": 35146700000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
-      "packet_size_bytes": 65,
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
       "node_id": "M20"
     }
   },
   {
-    "relative_time_ns": 36949110000000,
+    "relative_time_ns": 35146700000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
       "node_id": "M20",
       "link_id": "M20-ING"
     }
   },
   {
-    "relative_time_ns": 36949210000000,
+    "relative_time_ns": 35146800000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
-      "packet_size_bytes": 65,
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 36949210000000,
+    "relative_time_ns": 35146800000000,
     "type": "packetDeliveredToApplication",
     "data": {
-      "packet_id": "935a920b-4edd-eb89-4a81-efa06957ae79",
-      "packet_number": 52,
+      "packet_id": "72d73bc3-9238-bda1-c1ae-8a8db69fe9a7",
+      "packet_number": 44,
+      "packet_size_bytes": 72,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 35146800000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 35146800000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 35146900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 35146900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 35147900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 35147900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 36047900000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 36047900000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 36048000000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 36048000000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "4c71dd1c-c6f5-e889-5c05-3012f96c8bce",
+      "packet_number": 45,
+      "packet_size_bytes": 1082,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 36949200000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 36949200000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "node_id": "ING",
+      "link_id": "ING-M20"
+    }
+  },
+  {
+    "relative_time_ns": 36949300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 36949300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "node_id": "M20",
+      "link_id": "M20-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 36950300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 36950300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "node_id": "TGO",
+      "link_id": "TGO-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850300000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850300000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "node_id": "DSN",
+      "link_id": "DSN-GND"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "1ec39f25-85cb-6c68-20db-c962a5ad7a1f",
+      "packet_number": 47,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "ffe46a2b-d106-7cb9-266f-af87c2aa8a19",
+      "packet_number": 46,
+      "packet_size_bytes": 69,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "1ec39f25-85cb-6c68-20db-c962a5ad7a1f",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
+      "packet_size_bytes": 65,
+      "node_id": "GND"
+    }
+  },
+  {
+    "relative_time_ns": 37850400000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "node_id": "GND",
+      "link_id": "GND-DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "1ec39f25-85cb-6c68-20db-c962a5ad7a1f",
+      "packet_number": 47,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
+      "packet_size_bytes": 65,
+      "node_id": "DSN"
+    }
+  },
+  {
+    "relative_time_ns": 37850500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "1ec39f25-85cb-6c68-20db-c962a5ad7a1f",
+      "node_id": "DSN",
+      "link_id": "DSN-MRO"
+    }
+  },
+  {
+    "relative_time_ns": 37850500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "node_id": "DSN",
+      "link_id": "DSN-TGO"
+    }
+  },
+  {
+    "relative_time_ns": 38101828000000,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "MRO-DSN",
+        "status": "down"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 38116046000000,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "DSN-MRO",
+        "status": "down"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 38750500000000,
+    "type": "packetLostInTransit",
+    "data": {
+      "packet_id": "1ec39f25-85cb-6c68-20db-c962a5ad7a1f",
+      "link_id": "DSN-MRO"
+    }
+  },
+  {
+    "relative_time_ns": 38750500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
+      "packet_size_bytes": 65,
+      "node_id": "TGO"
+    }
+  },
+  {
+    "relative_time_ns": 38750500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "node_id": "TGO",
+      "link_id": "TGO-M20"
+    }
+  },
+  {
+    "relative_time_ns": 38751500000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
+      "packet_size_bytes": 65,
+      "node_id": "M20"
+    }
+  },
+  {
+    "relative_time_ns": 38751500000000,
+    "type": "packetInTransit",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "node_id": "M20",
+      "link_id": "M20-ING"
+    }
+  },
+  {
+    "relative_time_ns": 38751600000000,
+    "type": "packetInNode",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
       "packet_size_bytes": 65,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 36949210000000,
+    "relative_time_ns": 38751600000000,
+    "type": "packetDeliveredToApplication",
+    "data": {
+      "packet_id": "029074dd-12f2-e126-193e-4e0d7a6b9527",
+      "packet_number": 48,
+      "packet_size_bytes": 65,
+      "node_id": "ING"
+    }
+  },
+  {
+    "relative_time_ns": 38751600000000,
     "type": "packetInNode",
     "data": {
-      "packet_id": "fa4dfe65-445b-f625-874b-e808ab42f2ce",
-      "packet_number": 53,
+      "packet_id": "4ecccd0f-d2bc-73f4-22d1-10124aed979d",
+      "packet_number": 49,
       "packet_size_bytes": 66,
       "node_id": "ING"
     }
   },
   {
-    "relative_time_ns": 36949210000000,
+    "relative_time_ns": 38751600000000,
     "type": "packetInTransit",
     "data": {
-      "packet_id": "fa4dfe65-445b-f625-874b-e808ab42f2ce",
+      "packet_id": "4ecccd0f-d2bc-73f4-22d1-10124aed979d",
       "node_id": "ING",
       "link_id": "ING-M20"
     }

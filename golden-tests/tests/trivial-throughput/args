@@ -1,0 +1,7 @@
+throughput
+--network-graph test-data/trivial/networkgraph-2nodes.json
+--network-events test-data/events-empty.json
+--duration-ms 1000
+--client-ip-address 192.168.40.1
+--server-ip-address 192.168.40.2
+--send-bps 177721600

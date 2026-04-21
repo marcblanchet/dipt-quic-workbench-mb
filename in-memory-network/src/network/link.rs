@@ -13,10 +13,10 @@ use futures_util::{FutureExt, select_biased};
 use parking_lot::Mutex;
 use quinn::udp::EcnCodepoint;
 use std::collections::VecDeque;
-use std::mem;
 use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Duration;
+use std::{cmp, mem};
 
 pub struct NetworkLink {
     pub id: Arc<str>,
@@ -86,7 +86,7 @@ impl NetworkLink {
             target: l.target,
             in_transit: Arc::new(Mutex::new(InboundQueue::new())),
             outgoing_queue: queue_tx,
-            pacer: Mutex::new(PacketPacer::new(l.bandwidth_bps)),
+            pacer: Mutex::new(PacketPacer::new(Instant::now(), l.bandwidth_bps)),
             sleep_until_ready_to_send_semaphore: Arc::new(Semaphore::new(1)),
             delay: l.delay,
             bandwidth_bps: l.bandwidth_bps as usize,
@@ -144,7 +144,11 @@ impl NetworkLink {
         anomalies: PacketAnomalies,
     ) {
         // Sanity checks
-        assert!(self.pacer.lock().can_send(Instant::now()));
+        assert!(
+            self.pacer
+                .lock()
+                .can_send(Instant::now(), data.transmit.packet_size())
+        );
         assert!(matches!(self.status, LinkStatus::Up));
 
         // Apply "congestion experience" anomaly if requested
@@ -177,10 +181,11 @@ impl NetworkLink {
     pub(crate) async fn sleep_until_ready_to_send(
         src_node: Arc<Node>,
         this: Arc<Mutex<Self>>,
+        packet_size_bytes: usize,
         packet_sent_rx: &mut tokio::sync::watch::Receiver<bool>,
     ) {
         assert!(
-            !this.lock().has_bandwidth_available(),
+            !this.lock().has_bandwidth_available(packet_size_bytes),
             "we should only wait when no bandwidth is available"
         );
 
@@ -193,7 +198,7 @@ impl NetworkLink {
             .lock()
             .pacer
             .lock()
-            .duration_until_can_send(Instant::now());
+            .duration_until_can_send(Instant::now(), packet_size_bytes);
 
         // Sleep until enough bandwidth or until the packet gets sent, whichever comes first
         select_biased! {
@@ -232,7 +237,7 @@ impl NetworkLink {
         }
     }
 
-    pub(crate) fn has_bandwidth_available(&mut self) -> bool {
+    pub(crate) fn has_bandwidth_available(&mut self, packet_size_bytes: usize) -> bool {
         // concurrency: note the line below acquires a permit, but drops it right away
         let packets_are_waiting_for_bandwidth = self
             .sleep_until_ready_to_send_semaphore
@@ -243,7 +248,9 @@ impl NetworkLink {
             return false;
         }
 
-        self.pacer.lock().can_send(Instant::now())
+        self.pacer
+            .lock()
+            .can_send(Instant::now(), packet_size_bytes)
     }
 
     pub(crate) fn next_delivered_packets(&mut self, max_transmits: usize) -> NextPacketDelivery {
@@ -251,52 +258,82 @@ impl NetworkLink {
     }
 }
 
+const BATCH_MAX_DELAY: Duration = Duration::from_millis(2);
+
 // Ensures that only a single packet at a time is being sent
 struct PacketPacer {
     bandwidth_bps: f64,
-    last_send: Option<SendingPacket>,
+    batch: PacketBatch,
 }
 
 #[derive(Clone)]
-struct SendingPacket {
-    send_done: Instant,
+struct PacketBatch {
+    created: Instant,
+    delay: Duration,
+}
+
+impl PacketBatch {
+    fn update_and_check_has_room(&mut self, now: Instant, packet_delay: Duration) -> bool {
+        // Reset the batch if it got sent already
+        if now - self.created >= self.delay {
+            self.created = now;
+            self.delay = Duration::default();
+        }
+
+        if self.delay.is_zero() {
+            // The batch is empty, which means it has room for at least one packet, _regardless_ of
+            // the packet's delay. This ensures we can send packets over slow connections, where the
+            // packet's delay would already exceed a `BATCH_INTERVAL`
+            return true;
+        }
+
+        self.delay + packet_delay < BATCH_MAX_DELAY
+    }
+
+    fn sent_at(&self) -> Instant {
+        self.created + self.delay
+    }
 }
 
 impl PacketPacer {
-    fn new(bandwidth_bps: u64) -> Self {
+    fn new(now: Instant, bandwidth_bps: u64) -> Self {
         Self {
             bandwidth_bps: bandwidth_bps as f64,
-            last_send: None,
+            batch: PacketBatch {
+                created: now,
+                delay: Default::default(),
+            },
         }
     }
 
-    fn can_send(&mut self, now: Instant) -> bool {
-        let Some(packet) = self.last_send.clone() else {
-            // No packet has been sent yet
-            return true;
-        };
-
-        packet.send_done <= now
+    fn can_send(&mut self, now: Instant, packet_size_bytes: usize) -> bool {
+        let delay = packet_delay(self.bandwidth_bps, packet_size_bytes);
+        self.batch.update_and_check_has_room(now, delay)
     }
 
-    fn duration_until_can_send(&self, now: Instant) -> Duration {
-        match &self.last_send {
-            None => Duration::default(),
-            Some(p) => p
-                .send_done
-                .into_std()
-                .saturating_duration_since(now.into_std()),
+    fn duration_until_can_send(&mut self, now: Instant, packet_size_bytes: usize) -> Duration {
+        let delay = packet_delay(self.bandwidth_bps, packet_size_bytes);
+        if self.batch.update_and_check_has_room(now, delay) {
+            Duration::default()
+        } else {
+            // No room left in the batch... The next send possibility is after the batch gets sent
+            self.batch.sent_at() - now
         }
     }
 
     fn track_send(&mut self, now: Instant, packet_size_bytes: usize) {
-        let packet_size_bits = packet_size_bytes.saturating_mul(8);
-        let send_duration_ms = packet_size_bits as f64 / self.bandwidth_bps * 1_000.0;
+        let delay = packet_delay(self.bandwidth_bps, packet_size_bytes);
+        assert!(self.batch.update_and_check_has_room(now, delay));
 
-        self.last_send = Some(SendingPacket {
-            send_done: now + Duration::from_millis(send_duration_ms.ceil() as u64),
-        });
+        let time_since_created = now - self.batch.created;
+        self.batch.delay = cmp::max(self.batch.delay, time_since_created);
+        self.batch.delay += delay;
     }
+}
+
+fn packet_delay(bandwidth_bps: f64, packet_size_bytes: usize) -> Duration {
+    let packet_size_bits = packet_size_bytes.saturating_mul(8);
+    Duration::from_secs_f64(packet_size_bits as f64 / bandwidth_bps)
 }
 
 pub(crate) struct OutgoingPacket {
@@ -318,5 +355,82 @@ pub(crate) struct BufferedPacket {
 impl OutgoingPacket {
     pub(crate) fn already_handled(&self) -> bool {
         *self.handled_rx.borrow()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const BANDWIDTH_10_KB: u64 = 10 * 1000;
+    const ONE_KB_BYTES: usize = 1000 / 8;
+
+    #[test]
+    fn test_pacer_can_send_bigger_than_bandwidth() {
+        let mut pacer = PacketPacer::new(Instant::now(), BANDWIDTH_10_KB);
+        let payload_bytes = 20 * ONE_KB_BYTES;
+
+        assert!(packet_delay(BANDWIDTH_10_KB as f64, payload_bytes) > BATCH_MAX_DELAY);
+
+        let now = Instant::now();
+        assert!(pacer.can_send(now, payload_bytes));
+        pacer.track_send(now, payload_bytes);
+
+        // Can't send right after
+        assert!(!pacer.can_send(now, payload_bytes));
+        assert!(!pacer.can_send(now + Duration::from_secs(1), payload_bytes));
+
+        // Can send much later
+        assert!(pacer.can_send(now + Duration::from_secs(100), payload_bytes));
+    }
+
+    #[test]
+    fn test_pacer_batches_packets() {
+        let now = Instant::now();
+        let mut pacer = PacketPacer::new(now, BANDWIDTH_10_KB * 1000);
+
+        assert_eq!(pacer.batch.created, now);
+        assert_eq!(pacer.batch.delay, Duration::from_millis(0));
+
+        // Send one
+        assert!(pacer.can_send(now, ONE_KB_BYTES));
+        pacer.track_send(now, ONE_KB_BYTES);
+        assert_eq!(pacer.batch.created, now);
+        assert_eq!(pacer.batch.delay, Duration::from_micros(100));
+
+        // Send another
+        assert!(pacer.can_send(now, ONE_KB_BYTES));
+        pacer.track_send(now, ONE_KB_BYTES);
+        assert_eq!(pacer.batch.created, now);
+        assert_eq!(pacer.batch.delay, Duration::from_micros(200));
+
+        // Send another, 1ms later resets the batch
+        let later = now + Duration::from_millis(1);
+        assert!(pacer.can_send(later, ONE_KB_BYTES));
+        pacer.track_send(later, ONE_KB_BYTES);
+        assert_eq!(pacer.batch.created, later);
+        assert_eq!(pacer.batch.delay, Duration::from_micros(100));
+
+        // Fail to send a too-big packet right after
+        assert!(!pacer.can_send(later, ONE_KB_BYTES * 100));
+    }
+
+    #[test]
+    fn test_pacer_can_send_after_wait() {
+        let now = Instant::now();
+        let mut pacer = PacketPacer::new(now, BANDWIDTH_10_KB * 100);
+
+        // Send one
+        pacer.track_send(now, 10);
+        assert_eq!(pacer.batch.created, now);
+        assert!(pacer.batch.delay < Duration::from_millis(1));
+
+        // Fail to send second
+        assert!(!pacer.can_send(now, 1000));
+        let delay = pacer.duration_until_can_send(now, 1000);
+
+        // Send after the wait
+        let after_wait = now + delay;
+        assert!(pacer.can_send(after_wait, 1000));
     }
 }

@@ -54,7 +54,6 @@ mod test {
     const ROUTER2_ADDR: Ipv4Cidr = Ipv4Cidr::from_ipv4(Ipv4Addr::new(200, 200, 200, 2), 24);
     const CLIENT_ADDR: Ipv4Cidr = Ipv4Cidr::from_ipv4(Ipv4Addr::new(1, 1, 1, 1), 24);
     const BANDWIDTH_100_MBPS: u64 = 1000 * 1000 * 100;
-    const BANDWIDTH_8_KBPS: u64 = 1000 * 8;
 
     #[builder]
     fn default_network(
@@ -152,7 +151,7 @@ mod test {
                     source: SERVER_ADDR.as_ip_addr(),
                     target: ROUTER1_ADDR.as_ip_addr(),
                     delay: default_link_delay,
-                    bandwidth_bps: BANDWIDTH_100_MBPS,
+                    bandwidth_bps,
                     congestion_event_ratio: 0.0,
                     extra_delay: Default::default(),
                     extra_delay_ratio: 0.0,
@@ -202,7 +201,7 @@ mod test {
                     source: CLIENT_ADDR.as_ip_addr(),
                     target: ROUTER2_ADDR.as_ip_addr(),
                     delay: default_link_delay,
-                    bandwidth_bps: BANDWIDTH_100_MBPS,
+                    bandwidth_bps,
                     congestion_event_ratio: 0.0,
                     extra_delay: Default::default(),
                     extra_delay_ratio: 0.0,
@@ -370,66 +369,70 @@ mod test {
     }
 
     #[tokio::test(start_paused = true)]
-    async fn test_packet_is_delayed_by_buffering() {
-        let bandwidths_and_delays = [
-            (BANDWIDTH_100_MBPS, Duration::from_millis(1)),
-            (BANDWIDTH_8_KBPS, Duration::from_secs_f64(1.228)),
-        ];
-        for (bandwidth, expected_delay) in bandwidths_and_delays {
-            // Sanity check
-            let network = default_network().bandwidth_bps(bandwidth).call();
-            let server_node = network.host(SERVER_ADDR.as_ip_addr());
-            let client_node = network.host(CLIENT_ADDR.as_ip_addr());
-            network
-                .assert_connectivity_between_hosts(client_node, server_node)
-                .await
-                .unwrap();
+    async fn test_packets_are_batched() {
+        let bandwidth = BANDWIDTH_100_MBPS;
+        let packet_size_bytes = 1200;
 
-            // Actual test
-            let network = default_network().bandwidth_bps(bandwidth).call();
-            let server_node = network.host(SERVER_ADDR.as_ip_addr());
-            let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        // If we send four packets, they all take less than 2 ms to send, which means they should
+        // be batched together
+        let expected_packet_delay =
+            Duration::from_secs_f64((packet_size_bytes * 8) as f64 / bandwidth as f64);
+        assert!(4 * expected_packet_delay < Duration::from_millis(2));
 
-            let mut packet_ids = Vec::new();
-            for _ in 0..4 {
-                let data = network.in_transit_data(
-                    &client_node,
-                    OwnedTransmit {
-                        destination: server_node.quic_addr(),
-                        ecn: None,
-                        contents: vec![42; 1200].into(),
-                        segment_size: None,
-                    },
-                );
+        // Sanity check
+        let network = default_network().bandwidth_bps(bandwidth).call();
+        let server_node = network.host(SERVER_ADDR.as_ip_addr());
+        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        network
+            .assert_connectivity_between_hosts(client_node, server_node)
+            .await
+            .unwrap();
 
-                packet_ids.push(data.id);
-                network.forward(client_node.clone(), data.clone());
-            }
+        // Actual test
+        let network = default_network().bandwidth_bps(bandwidth).call();
+        let server_node = network.host(SERVER_ADDR.as_ip_addr());
+        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
 
-            let mut recv_result = BufsAndMeta::new(1200, 10);
-            let server_socket =
-                Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
-            let mut received = 0;
-            while received < 4 {
-                received += server_socket.receive_raw(&mut recv_result).await.unwrap();
-                assert!(received >= 1);
-                assert_eq!(recv_result.meta[0].len, 1200);
-            }
+        let mut packet_ids = Vec::new();
+        for _ in 0..4 {
+            let data = network.in_transit_data(
+                &client_node,
+                OwnedTransmit {
+                    destination: server_node.quic_addr(),
+                    ecn: None,
+                    contents: vec![42; packet_size_bytes].into(),
+                    segment_size: None,
+                },
+            );
 
-            assert_eq!(received, 4);
+            packet_ids.push(data.id);
+            network.forward(client_node.clone(), data.clone());
+        }
 
-            let stepper = network.tracer.stepper();
+        let mut recv_result = BufsAndMeta::new(packet_size_bytes, 10);
+        let server_socket =
+            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
+        let mut received = 0;
+        while received < 4 {
+            received += server_socket.receive_raw(&mut recv_result).await.unwrap();
+            assert!(received >= 1);
+            assert_eq!(recv_result.meta[0].len, packet_size_bytes);
+        }
 
-            let mut arrival_times = Vec::new();
-            for packet_id in packet_ids {
-                let packet_arrived = stepper.get_packet_arrived_at(packet_id, &server_node.id);
-                arrival_times.push(packet_arrived.unwrap());
-            }
+        assert_eq!(received, 4);
 
-            for x in arrival_times.windows(2) {
-                let delay = *x.last().unwrap() - *x.first().unwrap();
-                assert_eq!(delay, expected_delay);
-            }
+        let stepper = network.tracer.stepper();
+
+        let mut packet_times = Vec::new();
+        for packet_id in packet_ids {
+            let packet_sent = stepper.get_packet_sent_from(packet_id, &client_node.id);
+            let packet_arrived = stepper.get_packet_arrived_at(packet_id, &server_node.id);
+            packet_times.push((packet_sent.unwrap(), packet_arrived.unwrap()));
+        }
+
+        // The packets are batched, so they all arrive at the same time
+        for w in packet_times.windows(2) {
+            assert_eq!(w[0], w[1])
         }
     }
 

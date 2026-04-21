@@ -38,6 +38,20 @@ impl SimulationStepper {
             .collect()
     }
 
+    pub fn get_packet_sent_from(&self, packet_id: Uuid, node_id: &str) -> Option<Duration> {
+        self.steps
+            .iter()
+            .filter_map(|s| match &s.kind {
+                SimulationStepKind::PacketInTransit(kind)
+                    if kind.packet_id == packet_id && kind.node_id.as_ref() == node_id =>
+                {
+                    Some(s.relative_time)
+                }
+                _ => None,
+            })
+            .next()
+    }
+
     pub fn get_packet_arrived_at(&self, packet_id: Uuid, node_id: &str) -> Option<Duration> {
         self.steps
             .iter()

@@ -640,12 +640,16 @@ async fn process_link_queue(
     mut packet_rx: futures::channel::mpsc::UnboundedReceiver<OutgoingPacket>,
 ) {
     while let Some(mut packet) = packet_rx.next().await {
-        if !link.lock().has_bandwidth_available() {
-            // Wait until the link is ready to send (waiting will be cancelled if the packet gets
+        if !link
+            .lock()
+            .has_bandwidth_available(packet.data.transmit.packet_size())
+        {
+            // Wait until the link is ready to send (waiting will be canceled if the packet gets
             // handled by another link in the meantime)
             NetworkLink::sleep_until_ready_to_send(
                 packet.src_node.clone(),
                 link.clone(),
+                packet.data.transmit.packet_size(),
                 &mut packet.handled_rx,
             )
             .await;

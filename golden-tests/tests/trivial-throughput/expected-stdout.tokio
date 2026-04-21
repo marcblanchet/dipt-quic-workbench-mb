@@ -1,0 +1,39 @@
+--- Network ---
+* Initial link statuses (derived from events):
+  * A->B: UP
+  * B->A: UP
+* Initial node statuses (derived from events):
+  * A: UP
+  * B: UP
+--- Throughput test ---
+Sending at 177721600 bps
+0.00s WARN: no more network events left to process. Did the simulation keep running indefinitely?
+1.00s Done
+--- Replay log ---
+* Replay log available at replay-log.json
+--- Throughput ---
+* Max smoothed throughput (bps): 197209600
+* A (client)
+  * Sent packets: 18520 (22733760 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
+  * Received packets: 0 (0 bytes)
+    | 0 packets received out of order (0 bytes)
+* B (server)
+  * Sent packets: 0 (0 bytes)
+    | 0 packets duplicated (0 bytes)
+    | 0 packets marked with the CE ECN codepoint (0 bytes)
+    | 0 packets dropped (0 bytes)
+  * Received packets: 15019 (18436292 bytes)
+    | 0 packets received out of order (0 bytes)
+--- Max buffer usage per node ---
+* A: 887404 bytes (0 packets dropped due to buffer being full)
+* B: 249284 bytes (0 packets dropped due to buffer being full)
+--- Link stats ---
+* A->B:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 181870080 (18.19% of the link's bandwidth)
+* B->A:
+|-> Lost in transit 0 packets (0 bytes)
+|-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
