@@ -47,7 +47,7 @@ pub struct PcapExporter {
     capture_start: Instant,
     total_tracked_packets: AtomicU64,
     writer: Mutex<PcapNgWriter<BufWriter<Box<dyn Write + Send + Sync + 'static>>>>,
-    buffered_packets: Mutex<Vec<(SocketAddr, OwnedTransmit)>>,
+    buffered_packets: Mutex<Vec<(SocketAddr, OwnedTransmit, Instant)>>,
     keylog: Option<Arc<InMemoryKeyLog>>,
     keylog_written: AtomicBool,
 }
@@ -115,6 +115,7 @@ impl PcapExporter {
                         contents: Bytes::copy_from_slice(transmit.contents),
                         segment_size: transmit.segment_size,
                     },
+                    Instant::now(),
                 ));
 
                 return;
@@ -156,16 +157,18 @@ impl PcapExporter {
                 self.writer.lock().write_raw_block(&raw_block).unwrap();
 
                 // Write previously buffered packets
-                for (source_addr, transmit) in std::mem::take(&mut *self.buffered_packets.lock()) {
-                    self.write_pcapng_transmit(source_addr, &transmit.as_transmit());
+                for (source_addr, transmit, sent) in
+                    std::mem::take(&mut *self.buffered_packets.lock())
+                {
+                    self.write_pcapng_transmit(source_addr, &transmit.as_transmit(), sent);
                 }
             }
         }
 
-        self.write_pcapng_transmit(source_addr, transmit);
+        self.write_pcapng_transmit(source_addr, transmit, Instant::now());
     }
 
-    fn write_pcapng_transmit(&self, source_addr: SocketAddr, transmit: &Transmit) {
+    fn write_pcapng_transmit(&self, source_addr: SocketAddr, transmit: &Transmit, sent: Instant) {
         let IpAddr::V4(source) = source_addr.ip() else {
             unreachable!()
         };
@@ -217,7 +220,7 @@ impl PcapExporter {
             .lock()
             .write_pcapng_block(EnhancedPacketBlock {
                 interface_id: 0,
-                timestamp: correct_timestamp(self.capture_start.elapsed()),
+                timestamp: correct_timestamp(sent - self.capture_start),
                 original_len: ip_packet.len() as u32,
                 data: ip_packet.into(),
                 options: Vec::new(),
@@ -229,8 +232,8 @@ impl PcapExporter {
 impl Drop for PcapExporter {
     fn drop(&mut self) {
         let packets = std::mem::take(&mut *self.buffered_packets.lock());
-        for (source, transmit) in packets {
-            self.write_pcapng_transmit(source, &transmit.as_transmit());
+        for (source, transmit, sent) in packets {
+            self.write_pcapng_transmit(source, &transmit.as_transmit(), sent);
         }
     }
 }
