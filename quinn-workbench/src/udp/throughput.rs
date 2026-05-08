@@ -67,13 +67,19 @@ pub async fn run(
 
     let server_ip = throughput_opt.network.server_ip_address;
     let server_node = network.node(server_ip);
-    let server_socket =
-        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
+    let server_socket = Arc::pin(
+        network
+            .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+            .unwrap(),
+    );
 
     let client_ip = throughput_opt.network.client_ip_address;
     let client_node = network.node(client_ip);
-    let client_socket =
-        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), client_node.clone()));
+    let client_socket = Arc::pin(
+        network
+            .udp_socket_for_node(PcapExporter::noop(), client_node.clone())
+            .unwrap(),
+    );
 
     let cancellation_token = Arc::new(CancellationToken::new());
 

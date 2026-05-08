@@ -145,7 +145,9 @@ impl QuicSimulation {
             server_keylog,
             cert.clone(),
             key.into(),
-            network.udp_socket_for_node(server_pcap_exporter, server_node.clone()),
+            network
+                .udp_socket_for_node(server_pcap_exporter, server_node.clone())
+                .unwrap(),
             &quic_configs[server_node.id().as_ref()],
             &mut quinn_rng,
         )?;
@@ -162,7 +164,9 @@ impl QuicSimulation {
             start,
             client_keylog,
             cert,
-            network.udp_socket_for_node(client_pcap_exporter, client_node.clone()),
+            network
+                .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                .unwrap(),
             &quic_configs[client_node.id().as_ref()],
             &mut quinn_rng,
         )?;

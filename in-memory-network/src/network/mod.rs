@@ -29,7 +29,7 @@ use futures_util::StreamExt;
 use link::NetworkLink;
 use parking_lot::Mutex;
 use route::Route;
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::net::IpAddr;
 use std::ops::ControlFlow;
 use std::sync::Arc;
@@ -55,6 +55,8 @@ pub struct InMemoryNetwork {
     links_by_addr: Arc<HashMap<(IpAddr, IpAddr), Arc<Mutex<NetworkLink>>>>,
     /// Map from ids the corresponding links
     links_by_id: Arc<HashMap<Arc<str>, Arc<Mutex<NetworkLink>>>>,
+    /// Set indicating whether an udp socket has been created for this node (by id)
+    udp_socket_created: Mutex<HashSet<Arc<str>>>,
     pub(crate) tracer: Arc<SimulationStepTracer>,
     rng: Mutex<Rng>,
     next_transmit_number: AtomicU64,
@@ -170,6 +172,7 @@ impl InMemoryNetwork {
             routes_by_addr: Arc::new(routes_by_addr),
             links_by_addr: Arc::new(links_by_addr),
             links_by_id: Arc::new(links_by_id),
+            udp_socket_created: Default::default(),
             tracer,
             rng: Mutex::new(rng),
             next_transmit_number: Default::default(),
@@ -314,15 +317,23 @@ impl InMemoryNetwork {
         self.links_by_id[link_id].lock().bandwidth_bps
     }
 
-    /// Returns a udp socket for the provided node
+    /// Creates a UDP socket for the provided node
     ///
-    /// Note: creating multiple sockets for a single node results in unspecified behavior
+    /// Returns `Some` when the function is first called for a specific node, and `None` afterwards
     pub fn udp_socket_for_node(
         self: &Arc<InMemoryNetwork>,
         pcap_exporter: PcapExporter,
         node: Arc<Node>,
-    ) -> InMemoryUdpSocket {
-        InMemoryUdpSocket::from_node(self.clone(), node, pcap_exporter)
+    ) -> Option<InMemoryUdpSocket> {
+        if self.udp_socket_created.lock().insert(node.id.clone()) {
+            Some(InMemoryUdpSocket::from_node(
+                self.clone(),
+                node,
+                pcap_exporter,
+            ))
+        } else {
+            None
+        }
     }
 
     /// Returns the node bound to the provided address
