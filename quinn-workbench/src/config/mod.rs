@@ -3,6 +3,7 @@ use crate::config::network::{NetworkEventJson, NetworkSpecJson};
 pub mod cli;
 pub mod network;
 pub mod quinn;
+pub mod traffic;
 
 pub struct NetworkConfig {
     pub network_graph: NetworkSpecJson,

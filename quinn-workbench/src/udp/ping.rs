@@ -62,7 +62,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
     let deadline = Duration::from_millis(ping_opt.deadline_ms);
     let interval = Duration::from_millis(ping_opt.interval_ms);
 
-    let server_ip = ping_opt.network.server_ip_address;
+    let server_ip = ping_opt.peers.server_ip_address;
     let server_node = network.node(server_ip);
     let server_pcap_exporter =
         PcapExporter::for_node(server_node.id(), None).context("failed to create pcap exporter")?;
@@ -72,7 +72,7 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
             .unwrap(),
     );
 
-    let client_ip = ping_opt.network.client_ip_address;
+    let client_ip = ping_opt.peers.client_ip_address;
     let client_node = network.node(client_ip);
     let client_pcap_exporter =
         PcapExporter::for_node(client_node.id(), None).context("failed to create pcap exporter")?;
@@ -197,13 +197,13 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.node(ping_opt.network.server_ip_address);
-    let client_node = network.node(ping_opt.network.client_ip_address);
+    let server_node = network.node(ping_opt.peers.server_ip_address);
+    let client_node = network.node(ping_opt.peers.client_ip_address);
     print_node_stats(
         &network.get_node_ids(),
         &verified_simulation,
-        server_node,
-        client_node,
+        &[server_node.id().as_ref()],
+        &[client_node.id().as_ref()],
         true,
     );
     print_max_buffer_usage_per_node(&verified_simulation);

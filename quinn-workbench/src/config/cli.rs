@@ -12,6 +12,8 @@ pub struct CliOpt {
 pub enum Command {
     /// Run the QUIC simulation
     Quic(QuicOpt),
+    /// Run the QUIC simulation with a json-based traffic configuration
+    QuicTraffic(QuicTrafficOpt),
     /// Run a ping simulation at the UDP level
     Ping(PingOpt),
     /// Run a throughput simulation at the UDP level
@@ -21,7 +23,7 @@ pub enum Command {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct NetworkOpt {
+pub struct PeerOpt {
     /// The IP address of the node used as a client
     #[arg(long)]
     pub client_ip_address: IpAddr,
@@ -29,7 +31,10 @@ pub struct NetworkOpt {
     /// The IP address of the node used as a server
     #[arg(long)]
     pub server_ip_address: IpAddr,
+}
 
+#[derive(Parser, Debug, Clone)]
+pub struct NetworkOpt {
     /// Whether the run should be non-deterministic, i.e. using a non-constant seed for the random
     /// number generators
     #[arg(long)]
@@ -55,18 +60,25 @@ pub struct NetworkOpt {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct QuicOpt {
+pub struct RtOpt {
     /// Disable time-warping (making the simulation use real-world delays)
     #[arg(long, default_value_t = false)]
     pub disable_time_warping: bool,
 
+    /// Show stats for each node, not only for the client and server nodes
+    #[clap(long)]
+    pub verbose_node_stats: bool,
+}
+
+#[derive(Parser, Debug, Clone)]
+pub struct QuicOpt {
     /// The number of requests that should be made
     #[arg(long, default_value_t = 10)]
     pub requests: u32,
 
     /// The number of concurrent connections used when making the requests
     #[arg(long, default_value_t = 1)]
-    pub concurrent_connections: u8,
+    pub concurrent_connections: u32,
 
     /// The number of concurrent streams per connection used when making the requests
     #[arg(long, default_value_t = 1)]
@@ -84,12 +96,27 @@ pub struct QuicOpt {
     /// will independently wait for the interval to elapse).
     ///
     /// Note 2: this option is only valid when `concurrent-streams-per-connection` is set to `1`
-    #[clap(long)]
-    pub request_interval_ms: Option<u64>,
+    #[clap(long, default_value_t = 0)]
+    pub request_interval_ms: u64,
 
-    /// Show stats for each node, not only for the client and server
-    #[clap(long)]
-    pub verbose_node_stats: bool,
+    #[command(flatten)]
+    pub rt: RtOpt,
+
+    #[command(flatten)]
+    pub peers: PeerOpt,
+
+    #[command(flatten)]
+    pub network: NetworkOpt,
+}
+
+#[derive(Parser, Debug, Clone)]
+pub struct QuicTrafficOpt {
+    /// Path to the JSON file containing the traffic specification
+    #[arg(long)]
+    pub traffic: PathBuf,
+
+    #[command(flatten)]
+    pub rt: RtOpt,
 
     #[command(flatten)]
     pub network: NetworkOpt,
@@ -112,6 +139,9 @@ pub struct PingOpt {
     pub deadline_ms: u64,
 
     #[command(flatten)]
+    pub peers: PeerOpt,
+
+    #[command(flatten)]
     pub network: NetworkOpt,
 }
 
@@ -126,6 +156,9 @@ pub struct ThroughputOpt {
     /// If not provided, we find the link with the highest capacity and use its doubled bandwidth
     #[arg(long)]
     pub send_bps: Option<u64>,
+
+    #[command(flatten)]
+    pub peers: PeerOpt,
 
     #[command(flatten)]
     pub network: NetworkOpt,

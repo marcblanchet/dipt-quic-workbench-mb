@@ -1,0 +1,15 @@
+{
+  "traffic": [
+    {
+      "type": "quic_request_response",
+      "client_ip": "192.168.50.2",
+      "server_ip": "192.168.50.1"
+    },
+    {
+      "type": "quic_request_response",
+      "start_at_ms": 1000,
+      "client_ip": "192.168.40.1",
+      "server_ip": "192.168.43.2"
+    }
+  ]
+}

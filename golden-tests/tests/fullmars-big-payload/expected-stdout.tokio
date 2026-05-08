@@ -43,8 +43,8 @@
   * M20: UP
   * MSL: UP
   * ING: UP
-* Running connectivity check...
-* Connectivity check passed (packets arrived after 901200 ms and 901200 ms)
+* Running connectivity check for the following node pairs:
+  * 192.168.40.1 <-> 192.168.43.2 ... passed (packets arrived after 901200 ms and 901200 ms)
 --- Requests ---
 0.00s CONNECT (conn = A)
 1802.40s CONNECTED (conn = A)

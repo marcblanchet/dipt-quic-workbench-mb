@@ -163,9 +163,11 @@ simulate an orbiter being unreachable at specific intervals), defined in a JSON 
 as you can see in [events.json](test-data/earth-mars/events.json). If no link up/down events are necessary, specify an empty events file like [events.json](test-data/events-empty.json)
 
 ### Meta Information
+
 The top JSON object has a property "type" which must be set to "NetworkEvents" to identify a network events configuration file. It also contains an array of "events", as described below.
 
 ### Events
+
 Each event is defined with the following properties:
 
 - `relative_time_ms` (required): The time (in ms) at which the event is happening, relative to the start of the simulation.
@@ -180,6 +182,25 @@ Each event is defined with the following properties:
 
 Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
+## Traffic configuration
+
+The `quic` subcommand only supports a single client/server pair with traffic parameters supplied on the command line. For richer scenarios (multiple concurrent client/server pairs, traffic that starts at different times, etc.), use the `quic-traffic` subcommand instead, which reads the desired traffic from a JSON file. See for instance [multi-node-traffic.json](test-data/earth-mars/multi-node-traffic.json).
+
+The top JSON object has a single `traffic` property, which is an array of traffic entries. Currently a single entry type is supported:
+
+#### `quic_request_response`
+
+Issues QUIC requests from a client node to a server node, equivalent to what the `quic` subcommand does. Each entry is defined with the following properties:
+
+- `client_ip` (required): the IP address of the node used as a client. Must correspond to an address defined in the network graph.
+- `server_ip` (required): the IP address of the node used as a server. Must correspond to an address defined in the network graph.
+- `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
+- `requests`: the number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
+- `concurrent_connections`: the number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
+- `concurrent_streams_per_connection`: the number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
+- `response_size`: the size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
+- `request_interval_ms`: the number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). If set to something other than `0`, requires that `concurrent_streams_per_connection` is `1`. [default: 0]
+
 ## Command line arguments
 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
@@ -187,7 +208,8 @@ command line arguments.
 
 - `cargo run --release --bin quinn-workbench -- --help` shows types of simulations. Tool arguments include:
   -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
-  -  `quic`: run a quic simulation. see below for more details
+  -  `quic`: run a quic simulation (see below for more details)
+  -  `quic-traffic`: run a quic simulation (see below for more details)
   -  `ping`: run a ping simulation at UDP level
   -  `throughput`: run a throughput simulation at the UDP level
 
@@ -198,7 +220,7 @@ command line arguments.
           The IP address of the node used as a server
    -  `--network-graph <NETWORK_GRAPH>` (required):
           Path to the JSON file containing the network graph
-    - `--network-events <NETWORK_EVENTS>` (required):
+   -  `--network-events <NETWORK_EVENTS>` (required):
           Path to the JSON file containing the network events
    - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
    - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
@@ -211,9 +233,22 @@ command line arguments.
           A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
    - `--non-deterministic`:
           Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
-    - `--quinn-rng-seed <QUINN_RNG_SEED>`:
+   - `--quinn-rng-seed <QUINN_RNG_SEED>`:
           A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
-    - `--network-rng-seed <NETWORK_RNG_SEED>`:
+   - `--network-rng-seed <NETWORK_RNG_SEED>`:
+          A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
+
+- `cargo run --release --bin quinn-workbench -- quic-traffic --help` shows arguments for the JSON-driven Quic simulation.
+   - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification. See the [Traffic configuration](#traffic-configuration) section above.
+   - `--network-graph <NETWORK_GRAPH>` (required):
+          Path to the JSON file containing the network graph
+   - `--network-events <NETWORK_EVENTS>` (required):
+          Path to the JSON file containing the network events
+   - `--non-deterministic`:
+          Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
+   - `--quinn-rng-seed <QUINN_RNG_SEED>`:
+          A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
+   - `--network-rng-seed <NETWORK_RNG_SEED>`:
           A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
 
 ## Forwarding

@@ -1,11 +1,12 @@
-use crate::config::cli::QuicOpt;
+use crate::config::cli::{NetworkOpt, RtOpt};
 use crate::config::quinn::{CongestionControlAlgorithm, QuinnJsonConfig};
-use crate::load_network_config;
+use crate::config::traffic::{QuicRequestResponseTraffic, TrafficKind};
 use crate::quic::simulation::QuicSimulation;
 use crate::quinn_extensions::ecn_cc::EcnCcFactory;
 use crate::quinn_extensions::no_cc::NoCCConfig;
 use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
-use anyhow::Context;
+use crate::{load_network_config, util};
+use anyhow::{Context, bail};
 use in_memory_network::async_rt::time::Instant;
 use quinn_proto::congestion::{CubicConfig, NewRenoConfig};
 use quinn_proto::{AckFrequencyConfig, EndpointConfig, QlogConfig, TransportConfig, VarInt};
@@ -18,24 +19,38 @@ mod client;
 mod server;
 pub mod simulation;
 
-fn validate_opts(opts: &QuicOpt) -> anyhow::Result<()> {
-    if opts.request_interval_ms.unwrap_or_default() != 0
-        && opts.concurrent_streams_per_connection != 1
-    {
-        anyhow::bail!(
-            "incompatible command-line options used: `--request-interval-ms` is only valid when `--concurrent-streams-per-connection` is set to `1` (its default value)"
+fn validate_traffic(opts: &QuicRequestResponseTraffic) -> anyhow::Result<()> {
+    if opts.request_interval_ms != 0 && opts.concurrent_streams_per_connection != 1 {
+        bail!(
+            "incompatible QUIC traffic options used: `request_interval_ms` is only valid when `concurrent_streams_per_connection` is set to `1` (its default value)"
         );
     }
 
     Ok(())
 }
 
-pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> {
-    validate_opts(quic_options)?;
+pub async fn run_and_report_stats(
+    rt_options: &RtOpt,
+    network_options: &NetworkOpt,
+    traffic: Vec<TrafficKind>,
+) -> anyhow::Result<()> {
+    let mut server_ips = Vec::new();
+    let mut client_ips = Vec::new();
+    for t in &traffic {
+        match t {
+            TrafficKind::QuicRequestResponse(request_response) => {
+                validate_traffic(request_response)?;
+                server_ips.push(request_response.server_ip);
+                client_ips.push(request_response.client_ip);
+            }
+        }
+    }
 
     let mut simulation = QuicSimulation::new();
-    let network_config = load_network_config(&quic_options.network)?;
-    let result = simulation.run(quic_options, network_config).await;
+    let network_config = load_network_config(network_options)?;
+    let result = simulation
+        .run(rt_options, network_options, network_config, traffic)
+        .await;
 
     let Some((tracer, network)) = simulation.tracer_and_network else {
         eprintln!("Error...");
@@ -54,14 +69,30 @@ pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> 
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.node(quic_options.network.server_ip_address);
-    let client_node = network.node(quic_options.network.client_ip_address);
+
+    let server_ids = server_ips
+        .into_iter()
+        .map(|ip| network.node(ip).id().as_ref())
+        .collect::<Vec<_>>();
+    let client_ids = client_ips
+        .into_iter()
+        .map(|ip| network.node(ip).id().as_ref())
+        .collect::<Vec<_>>();
+    let duplicate_ids =
+        util::duplicates(server_ids.iter().cloned().chain(client_ids.iter().cloned()));
+    if !duplicate_ids.is_empty() {
+        let duplicates = duplicate_ids.join(", ");
+        bail!(
+            "it is currently not allowed to use the same node in different traffic specs, but the following nodes were reused: {duplicates}"
+        )
+    }
+
     print_node_stats(
         &network.get_node_ids(),
         &verified_simulation,
-        server_node,
-        client_node,
-        quic_options.verbose_node_stats,
+        &server_ids,
+        &client_ids,
+        rt_options.verbose_node_stats,
     );
     print_max_buffer_usage_per_node(&verified_simulation);
     print_link_stats(&verified_simulation, &network);

@@ -65,7 +65,7 @@ pub async fn run(
     println!("--- Throughput test ---");
     let duration = Duration::from_millis(throughput_opt.duration_ms);
 
-    let server_ip = throughput_opt.network.server_ip_address;
+    let server_ip = throughput_opt.peers.server_ip_address;
     let server_node = network.node(server_ip);
     let server_socket = Arc::pin(
         network
@@ -73,7 +73,7 @@ pub async fn run(
             .unwrap(),
     );
 
-    let client_ip = throughput_opt.network.client_ip_address;
+    let client_ip = throughput_opt.peers.client_ip_address;
     let client_node = network.node(client_ip);
     let client_socket = Arc::pin(
         network
@@ -198,10 +198,16 @@ pub async fn run(
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.node(throughput_opt.network.server_ip_address);
-    let client_node = network.node(throughput_opt.network.client_ip_address);
+    let server_node = network.node(throughput_opt.peers.server_ip_address);
+    let client_node = network.node(throughput_opt.peers.client_ip_address);
 
-    print_node_stats(&[], &verified_simulation, server_node, client_node, false);
+    print_node_stats(
+        &[],
+        &verified_simulation,
+        &[server_node.id().as_ref()],
+        &[client_node.id().as_ref()],
+        false,
+    );
     print_max_buffer_usage_per_node(&verified_simulation);
     print_link_stats(&verified_simulation, &network);
 
