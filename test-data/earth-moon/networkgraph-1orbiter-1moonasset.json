@@ -3,7 +3,6 @@
   "nodes": [
     {
       "id": "Earth1",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
@@ -41,7 +40,6 @@
     },
     {
       "id": "MoonOrbiter1",
-      "type": "router",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
@@ -70,7 +68,6 @@
     },
     {
       "id": "MoonAsset1",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {

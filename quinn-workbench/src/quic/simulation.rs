@@ -99,11 +99,11 @@ impl QuicSimulation {
         } else {
             println!("* Running connectivity check...");
             let server_node =
-                connectivity_check_network.host(quic_options.network.server_ip_address);
+                connectivity_check_network.node(quic_options.network.server_ip_address);
             let client_node =
-                connectivity_check_network.host(quic_options.network.client_ip_address);
+                connectivity_check_network.node(quic_options.network.client_ip_address);
             let (arrived1, arrived2) = connectivity_check_network
-                .assert_connectivity_between_hosts(server_node, client_node)
+                .assert_connectivity_between_nodes(server_node, client_node)
                 .await?;
             println!(
                 "* Connectivity check passed (packets arrived after {} ms and {} ms)",
@@ -134,36 +134,36 @@ impl QuicSimulation {
 
         // Let a server listen in the background
         let mut quinn_rng = Rng::with_seed(quinn_rng_seed);
-        let server_host = network.host(quic_options.network.server_ip_address);
+        let server_node = network.node(quic_options.network.server_ip_address);
         let server_keylog = Arc::new(InMemoryKeyLog::default());
         let server_pcap_exporter =
-            PcapExporter::for_node(server_host.id(), Some(server_keylog.clone()))
+            PcapExporter::for_node(server_node.id(), Some(server_keylog.clone()))
                 .context("failed to create pcap exporter")?;
-        let server_addr = server_host.quic_addr();
+        let server_addr = server_node.quic_addr();
         let server = server::server_endpoint(
             start,
             server_keylog,
             cert.clone(),
             key.into(),
-            network.udp_socket_for_node(server_pcap_exporter, server_host.clone()),
-            &quic_configs[server_host.id().as_ref()],
+            network.udp_socket_for_node(server_pcap_exporter, server_node.clone()),
+            &quic_configs[server_node.id().as_ref()],
             &mut quinn_rng,
         )?;
         let mut server_handled_connections =
             server::server_listen(server.clone(), quic_options.response_size);
 
         // Create the client endpoint
-        let client_host = network.host(quic_options.network.client_ip_address);
+        let client_node = network.node(quic_options.network.client_ip_address);
         let client_keylog = Arc::new(InMemoryKeyLog::default());
         let client_pcap_exporter =
-            PcapExporter::for_node(client_host.id(), Some(client_keylog.clone()))
+            PcapExporter::for_node(client_node.id(), Some(client_keylog.clone()))
                 .context("failed to create pcap exporter")?;
         let client = client::client_endpoint(
             start,
             client_keylog,
             cert,
-            network.udp_socket_for_node(client_pcap_exporter, client_host.clone()),
-            &quic_configs[client_host.id().as_ref()],
+            network.udp_socket_for_node(client_pcap_exporter, client_node.clone()),
+            &quic_configs[client_node.id().as_ref()],
             &mut quinn_rng,
         )?;
 

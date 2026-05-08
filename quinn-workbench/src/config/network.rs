@@ -23,9 +23,7 @@ impl NetworkSpecJson {
     pub fn quic_configs(&self) -> HashMap<String, QuinnJsonConfig> {
         let mut configs = HashMap::new();
         for node in &self.nodes {
-            if let NetworkNodeKindJson::Host = &node.kind {
-                configs.insert(node.id.clone(), node.quic.clone().unwrap_or_default());
-            }
+            configs.insert(node.id.clone(), node.quic.clone().unwrap_or_default());
         }
 
         configs
@@ -36,8 +34,6 @@ impl NetworkSpecJson {
 struct NetworkNodeJson {
     id: String,
     buffer_size_bytes: u64,
-    #[serde(rename = "type")]
-    kind: NetworkNodeKindJson,
     quic: Option<QuinnJsonConfig>,
     interfaces: Vec<NetworkInterfaceJson>,
     /// The ratio of packets that will be duplicated upon arriving to the node (the value must be
@@ -48,13 +44,6 @@ struct NetworkNodeJson {
     /// 0 and 1)
     #[serde(default)]
     packet_loss_ratio: f64,
-}
-
-#[derive(Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
-enum NetworkNodeKindJson {
-    Router,
-    Host,
 }
 
 #[derive(Deserialize, Clone)]
@@ -125,12 +114,6 @@ impl From<NetworkSpecJson> for in_memory_network::network::spec::NetworkSpec {
             .into_iter()
             .map(|n| in_memory_network::network::spec::NetworkNodeSpec {
                 id: n.id.into(),
-                kind: match n.kind {
-                    NetworkNodeKindJson::Router => {
-                        in_memory_network::network::spec::NodeKind::Router
-                    }
-                    NetworkNodeKindJson::Host => in_memory_network::network::spec::NodeKind::Host,
-                },
                 buffer_size_bytes: n.buffer_size_bytes,
                 interfaces: n
                     .interfaces

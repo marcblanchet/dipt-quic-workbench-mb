@@ -3,7 +3,6 @@
   "nodes": [
     {
       "id": "Earth",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
@@ -30,7 +29,6 @@
     },
     {
       "id": "Voyager",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {

@@ -63,14 +63,14 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
     let interval = Duration::from_millis(ping_opt.interval_ms);
 
     let server_ip = ping_opt.network.server_ip_address;
-    let server_node = network.host(server_ip);
+    let server_node = network.node(server_ip);
     let server_pcap_exporter =
         PcapExporter::for_node(server_node.id(), None).context("failed to create pcap exporter")?;
     let server_socket =
         Arc::pin(network.udp_socket_for_node(server_pcap_exporter, server_node.clone()));
 
     let client_ip = ping_opt.network.client_ip_address;
-    let client_node = network.host(client_ip);
+    let client_node = network.node(client_ip);
     let client_pcap_exporter =
         PcapExporter::for_node(client_node.id(), None).context("failed to create pcap exporter")?;
     let client_socket =
@@ -191,8 +191,8 @@ pub async fn run(ping_opt: &PingOpt, network_config: NetworkConfig) -> anyhow::R
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.host(ping_opt.network.server_ip_address);
-    let client_node = network.host(ping_opt.network.client_ip_address);
+    let server_node = network.node(ping_opt.network.server_ip_address);
+    let client_node = network.node(ping_opt.network.client_ip_address);
     print_node_stats(
         &network.get_node_ids(),
         &verified_simulation,

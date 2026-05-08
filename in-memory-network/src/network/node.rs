@@ -3,7 +3,7 @@ use crate::network::event::UpdateNodeStatus;
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::BufferedPacket;
 use crate::network::outbound_buffer::OutboundBuffer;
-use crate::network::spec::{NetworkNodeSpec, NodeKind};
+use crate::network::spec::NetworkNodeSpec;
 use crate::{HOST_PORT, async_rt};
 use anyhow::bail;
 use futures_util::FutureExt;
@@ -41,7 +41,7 @@ impl NodeStatus {
 pub struct Node {
     pub(crate) addresses: Vec<IpAddr>,
     pub(crate) id: Arc<str>,
-    pub(crate) udp_endpoint: Option<Arc<UdpEndpoint>>,
+    pub(crate) udp_endpoint: Arc<UdpEndpoint>,
     pub(crate) injected_failures: NodeInjectedFailures,
     pub(crate) status: Mutex<NodeStatus>,
     pub(crate) last_buffer_clear: Mutex<Option<async_rt::time::Instant>>,
@@ -50,27 +50,25 @@ pub struct Node {
 }
 
 impl Node {
-    pub(crate) fn host(
-        node: NetworkNodeSpec,
+    pub(crate) fn new(
+        node: &NetworkNodeSpec,
     ) -> anyhow::Result<(
         Self,
-        Arc<UdpEndpoint>,
         futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
     )> {
-        if node.kind != NodeKind::Host {
-            bail!(
-                "Attempted to create a host from a node that is not a host: {}",
-                node.id
-            );
-        }
         if node.interfaces.is_empty() {
-            bail!("Host {} has no interfaces", node.id);
+            bail!("Node {} has no interfaces", node.id);
         }
         if node.interfaces[0].addresses.is_empty() {
-            bail!("Host {} has an interface without any address", node.id);
+            bail!("Node {} has an interface without any address", node.id);
         }
 
         let addresses = node.addresses();
+
+        // The QUIC endpoint is bound to the node's address in the first network interface
+        //
+        // If there are nodes with multiple network interfaces, routing tables must be properly set
+        // up so packets addressed to the QUIC endpoint can be transmitted over any of the links
         let quic_address = addresses[0];
         let quinn_endpoint = Arc::new(UdpEndpoint {
             addr: SocketAddr::new(quic_address, HOST_PORT),
@@ -78,42 +76,16 @@ impl Node {
         });
 
         let (tx, rx) = futures::channel::mpsc::unbounded();
-        let host = Self {
-            injected_failures: NodeInjectedFailures::from_spec(&node),
-            id: node.id,
+        let node = Self {
+            injected_failures: NodeInjectedFailures::from_spec(node),
+            id: node.id.clone(),
             addresses,
             outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
-            udp_endpoint: Some(quinn_endpoint.clone()),
+            udp_endpoint: quinn_endpoint.clone(),
             outbound_tx: tx,
             status: Mutex::new(NodeStatus::Up),
             last_buffer_clear: Mutex::default(),
         };
-        Ok((host, quinn_endpoint, rx))
-    }
-
-    pub(crate) fn router(
-        node: NetworkNodeSpec,
-    ) -> anyhow::Result<(
-        Self,
-        futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
-    )> {
-        let addresses = node.addresses();
-        if addresses.is_empty() {
-            bail!("found router with no addresses: {}", node.id);
-        }
-
-        let (tx, rx) = futures::channel::mpsc::unbounded();
-        let node = Node {
-            injected_failures: NodeInjectedFailures::from_spec(&node),
-            id: node.id,
-            addresses,
-            outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
-            udp_endpoint: None,
-            outbound_tx: tx,
-            status: Mutex::new(NodeStatus::Up),
-            last_buffer_clear: Mutex::default(),
-        };
-
         Ok((node, rx))
     }
 
@@ -134,7 +106,7 @@ impl Node {
     }
 
     pub fn quic_addr(&self) -> SocketAddr {
-        self.udp_endpoint.as_ref().unwrap().addr
+        self.udp_endpoint.addr
     }
 
     pub fn id(&self) -> &Arc<str> {

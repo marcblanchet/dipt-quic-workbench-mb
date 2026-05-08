@@ -1,6 +1,6 @@
 //! In-memory network implementation
 //!
-//! Provides an in-memory network with two peers and an arbitrary number of routers in between
+//! Provides a simulated, in-memory UDP/IP network with an arbitrary number of nodes
 
 pub mod event;
 pub(crate) mod inbound_queue;
@@ -18,7 +18,7 @@ use crate::network::event::{LinkEventPayload, NetworkEventKind, NetworkEvents, N
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::{BufferedPacket, OutgoingPacket};
 use crate::network::node::Node;
-use crate::network::spec::{NetworkSpec, NodeKind};
+use crate::network::spec::NetworkSpec;
 use crate::pcap_exporter::PcapExporter;
 use crate::quinn_interop::InMemoryUdpSocket;
 use crate::tracing::tracer::SimulationStepTracer;
@@ -43,7 +43,7 @@ pub struct PacketArrived {
     pub content: Vec<u8>,
 }
 
-/// A network between two hosts, with multiple routers in between
+/// A simulated UDP/IP network
 pub struct InMemoryNetwork {
     /// Map from ip addresses to the corresponding nodes
     nodes_by_addr: Arc<HashMap<IpAddr, Arc<Node>>>,
@@ -93,35 +93,6 @@ impl InMemoryNetwork {
             }
         }
 
-        let (hosts, routers): (Vec<_>, _) = network_spec
-            .nodes
-            .into_iter()
-            .partition(|n| n.kind == NodeKind::Host);
-        if hosts.len() < 2 {
-            bail!(
-                "Expected at least two hosts in network graph, found {}",
-                hosts.len()
-            );
-        }
-
-        let mut nodes_by_addr = HashMap::new();
-        let mut nodes_by_id = HashMap::new();
-        let mut nodes_and_outbound_rx = Vec::new();
-        for host in hosts {
-            let (h, endpoint, outbound_rx) = Node::host(host)?;
-            let h = Arc::new(h);
-            nodes_by_id.insert(h.id.clone(), h.clone());
-            let already_existing = nodes_by_addr.insert(endpoint.addr.ip(), h.clone());
-            if already_existing.is_some() {
-                bail!(
-                    "Expected quic endpoints to have unique ip addresses, but at least two endpoints are using {}",
-                    endpoint.addr.ip()
-                );
-            }
-
-            nodes_and_outbound_rx.push((h, outbound_rx));
-        }
-
         let mut links_by_addr = HashMap::new();
         let mut links_by_id = HashMap::new();
         for l in network_spec.links {
@@ -152,31 +123,45 @@ impl InMemoryNetwork {
             async_rt::spawn(async move { process_link_queue(tracer_cp, l_cp, rx).await });
         }
 
-        for r in routers {
-            let (router, outbound_rx) = Node::router(r)?;
-            let router = Arc::new(router);
-            nodes_by_id.insert(router.id.clone(), router.clone());
+        if network_spec.nodes.len() < 2 {
+            bail!(
+                "Expected at least two nodes in network graph, found {}",
+                network_spec.nodes.len()
+            );
+        }
 
-            let mut inbound_links = HashMap::new();
-            for (&(source, target), link) in &links_by_addr {
-                if router.addresses.contains(&target) {
-                    inbound_links.insert(source, link.clone());
-                }
-            }
+        let mut nodes_by_addr = HashMap::new();
+        let mut nodes_by_id = HashMap::new();
+        let mut nodes_and_outbound_rx = Vec::new();
+        for n in &network_spec.nodes {
+            let (node, outbound_rx) = Node::new(n)?;
+            let node = Arc::new(node);
 
-            for &address in &router.addresses {
-                let address_taken = nodes_by_addr.insert(address, router.clone());
-                if let Some(conflicting_router) = address_taken {
+            for &address in &node.addresses {
+                let address_taken = nodes_by_addr.insert(address, node.clone());
+                if let Some(conflicting_node) = address_taken {
                     bail!(
                         "nodes {} and {} share the same address: {}",
-                        router.id,
-                        conflicting_router.id,
+                        node.id,
+                        conflicting_node.id,
                         address
                     );
                 }
             }
 
-            nodes_and_outbound_rx.push((router, outbound_rx));
+            let id_taken = nodes_by_id.insert(node.id.clone(), node.clone());
+            if id_taken.is_some() {
+                bail!("there are multiple nodes with id {}", node.id)
+            }
+
+            let mut inbound_links = HashMap::new();
+            for (&(source, target), link) in &links_by_addr {
+                if node.addresses.contains(&target) {
+                    inbound_links.insert(source, link.clone());
+                }
+            }
+
+            nodes_and_outbound_rx.push((node, outbound_rx));
         }
 
         let network = Arc::new(Self {
@@ -329,7 +314,7 @@ impl InMemoryNetwork {
         self.links_by_id[link_id].lock().bandwidth_bps
     }
 
-    /// Returns a udp socket for the provided host node
+    /// Returns a udp socket for the provided node
     ///
     /// Note: creating multiple sockets for a single node results in unspecified behavior
     pub fn udp_socket_for_node(
@@ -340,19 +325,17 @@ impl InMemoryNetwork {
         InMemoryUdpSocket::from_node(self.clone(), node, pcap_exporter)
     }
 
-    /// Returns the host bound to the provided address
-    pub fn host(self: &InMemoryNetwork, ip: IpAddr) -> &Arc<Node> {
-        let node = &self.nodes_by_addr[&ip];
-        assert!(node.udp_endpoint.is_some(), "not a host");
-        node
+    /// Returns the node bound to the provided address
+    pub fn node(self: &InMemoryNetwork, ip: IpAddr) -> &Arc<Node> {
+        &self.nodes_by_addr[&ip]
     }
 
-    pub async fn assert_connectivity_between_hosts(
+    pub async fn assert_connectivity_between_nodes(
         self: &Arc<Self>,
-        host_a: &Arc<Node>,
-        host_b: &Arc<Node>,
+        node_a: &Arc<Node>,
+        node_b: &Arc<Node>,
     ) -> anyhow::Result<(Duration, Duration)> {
-        let peers = [(host_a, host_b), (host_b, host_a)];
+        let peers = [(node_a, node_b), (node_b, node_a)];
 
         // Send 100 packets both ways
         //
@@ -363,7 +346,7 @@ impl InMemoryNetwork {
                 let data = self.in_transit_data(
                     source,
                     OwnedTransmit {
-                        destination: target.udp_endpoint.as_ref().unwrap().addr,
+                        destination: target.udp_endpoint.addr,
                         ecn: None,
                         contents: vec![42].into(),
                         segment_size: None,
@@ -381,15 +364,15 @@ impl InMemoryNetwork {
         let days = 90;
         let timeout = Duration::from_secs(3600 * 24 * days);
 
-        // Ensure the packets arrived at each host (one successful delivery is sufficient)
+        // Ensure the packets arrived at each node (one successful delivery is sufficient)
         let a_to_b = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(host_b.udp_endpoint.as_ref().unwrap().inbound.clone(), 1),
+            InboundQueue::receive(node_b.udp_endpoint.inbound.clone(), 1),
         )
         .await;
         let b_to_a = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(host_a.udp_endpoint.as_ref().unwrap().inbound.clone(), 1),
+            InboundQueue::receive(node_a.udp_endpoint.inbound.clone(), 1),
         )
         .await;
 
@@ -398,17 +381,17 @@ impl InMemoryNetwork {
                 let stepper = self.tracer.stepper();
                 Ok((
                     stepper
-                        .get_packet_arrived_at(a_to_b[0].data.id, &host_b.id)
+                        .get_packet_arrived_at(a_to_b[0].data.id, &node_b.id)
                         .unwrap(),
                     stepper
-                        .get_packet_arrived_at(b_to_a[0].data.id, &host_a.id)
+                        .get_packet_arrived_at(b_to_a[0].data.id, &node_a.id)
                         .unwrap(),
                 ))
             }
             (a_to_b, b_to_a) => {
                 let report = |failed| if failed { "failed" } else { "succeeded" };
                 Err(anyhow!(
-                    "failed to deliver packets between the hosts after {days} days (A to B {}, B to A {})",
+                    "failed to deliver packets between the nodes after {days} days (A to B {}, B to A {})",
                     report(a_to_b.is_err()),
                     report(b_to_a.is_err())
                 ))
@@ -465,7 +448,7 @@ impl InMemoryNetwork {
             id: self.new_packet_id(),
             duplicate: false,
             source_id: source.id.clone(),
-            source_endpoint: source.udp_endpoint.as_ref().unwrap().clone(),
+            source_endpoint: source.udp_endpoint.clone(),
             transmit,
             number: self.next_transmit_number.fetch_add(1, Ordering::Relaxed),
         }
@@ -488,12 +471,11 @@ impl InMemoryNetwork {
 
         self.tracer.track_packet_in_node(&current_node, &data);
 
-        if let Some(udp_endpoint) = &current_node.udp_endpoint
-            && udp_endpoint.addr == data.transmit.destination
-        {
+        if current_node.udp_endpoint.addr == data.transmit.destination {
             // The packet has arrived to a quinn endpoint, so we forward it directly to the nodes's
             // inbound queue (from where it will be automatically picked up by quinn)
-            udp_endpoint
+            current_node
+                .udp_endpoint
                 .inbound
                 .clone()
                 .lock()

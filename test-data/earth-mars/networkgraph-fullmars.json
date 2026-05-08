@@ -3,7 +3,6 @@
   "nodes": [
     {
       "id": "GND",
-      "type": "host",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -41,7 +40,6 @@
     },
     {
       "id": "DSN",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -137,7 +135,6 @@
     },
     {
       "id": "MRO",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -186,7 +183,6 @@
     },
     {
       "id": "TGO",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -235,7 +231,6 @@
     },
     {
       "id": "MVN",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -284,7 +279,6 @@
     },
     {
       "id": "ODY",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -333,7 +327,6 @@
     },
     {
       "id": "M20",
-      "type": "router",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -404,7 +397,6 @@
     },
     {
       "id": "MSL",
-      "type": "host",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {
@@ -487,7 +479,6 @@
     },
     {
       "id": "ING",
-      "type": "host",
       "buffer_size_bytes": 104857600,
       "interfaces": [
         {

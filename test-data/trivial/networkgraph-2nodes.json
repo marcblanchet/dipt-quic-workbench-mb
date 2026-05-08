@@ -3,7 +3,6 @@
   "nodes": [
     {
       "id": "A",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
@@ -18,7 +17,6 @@
     },
     {
       "id": "B",
-      "type": "host",
       "buffer_size_bytes": 1000000000,
       "interfaces": [
         {
