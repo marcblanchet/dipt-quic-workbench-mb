@@ -66,14 +66,20 @@ pub async fn run(
     let duration = Duration::from_millis(throughput_opt.duration_ms);
 
     let server_ip = throughput_opt.network.server_ip_address;
-    let server_node = network.host(server_ip);
-    let server_socket =
-        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
+    let server_node = network.node(server_ip);
+    let server_socket = Arc::pin(
+        network
+            .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+            .unwrap(),
+    );
 
     let client_ip = throughput_opt.network.client_ip_address;
-    let client_node = network.host(client_ip);
-    let client_socket =
-        Arc::pin(network.udp_socket_for_node(PcapExporter::noop(), client_node.clone()));
+    let client_node = network.node(client_ip);
+    let client_socket = Arc::pin(
+        network
+            .udp_socket_for_node(PcapExporter::noop(), client_node.clone())
+            .unwrap(),
+    );
 
     let cancellation_token = Arc::new(CancellationToken::new());
 
@@ -192,8 +198,8 @@ pub async fn run(
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.host(throughput_opt.network.server_ip_address);
-    let client_node = network.host(throughput_opt.network.client_ip_address);
+    let server_node = network.node(throughput_opt.network.server_ip_address);
+    let client_node = network.node(throughput_opt.network.client_ip_address);
 
     print_node_stats(&[], &verified_simulation, server_node, client_node, false);
     print_max_buffer_usage_per_node(&verified_simulation);

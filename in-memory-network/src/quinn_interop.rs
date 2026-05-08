@@ -45,7 +45,7 @@ impl InMemoryUdpSocket {
         pcap_exporter: PcapExporter,
     ) -> Self {
         InMemoryUdpSocket {
-            endpoint: node.udp_endpoint.as_ref().unwrap().clone(),
+            endpoint: node.udp_endpoint.clone(),
             node,
             network: network.clone(),
             next_packet_delivery: Mutex::new(None),
@@ -104,7 +104,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
         for (in_transit, (meta, buf)) in delivered.into_iter().zip(out) {
             self.network
                 .tracer
-                .track_read_by_host(node.id.clone(), &in_transit.data);
+                .track_read_by_application(node.id.clone(), &in_transit.data);
 
             let transmit = in_transit.data.transmit;
 

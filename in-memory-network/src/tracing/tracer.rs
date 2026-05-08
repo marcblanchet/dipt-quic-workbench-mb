@@ -214,13 +214,13 @@ impl SimulationStepTracer {
         }
     }
 
-    pub fn track_read_by_host(&self, host_id: Arc<str>, data: &InTransitData) {
+    pub fn track_read_by_application(&self, node_id: Arc<str>, data: &InTransitData) {
         self.record(SimulationStepKind::PacketDeliveredToApplication(
             GenericPacketEvent {
                 packet_id: data.id,
                 packet_number: data.number,
                 packet_size_bytes: data.transmit.packet_size(),
-                node_id: host_id.clone(),
+                node_id,
             },
         ));
     }

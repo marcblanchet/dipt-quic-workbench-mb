@@ -1,7 +1,7 @@
 QUIC Workbench
 ==============
 
-A command-line application written in Rust to simulate QUIC connections in different scenarios by specifying the network topology and QUIC parameters. The simulation creates one or more connections, issues a configurable number of requests from the client to the server, and streams the server's responses back to the client. The network topology consists of hosts, routers and links specified in a JSON file. Events in the network such as link down/up, which corresponds to intermittence in deep space orbiter links, are also specified in a JSON file. While its initial goal was for deep space IP simulations, it can be used for any other scenario.
+A command-line application written in Rust to simulate QUIC connections in different scenarios by specifying the network topology and QUIC parameters. The simulation creates one or more connections, issues a configurable number of requests from the client to the server, and streams the server's responses back to the client. The network topology consists of nodes and links specified in a JSON file. Events in the network such as link down/up, which corresponds to intermittence in deep space orbiter links, are also specified in a JSON file. While its initial goal was for deep space IP simulations, it can be used for any other scenario.
 
 ## Features
 
@@ -79,16 +79,15 @@ The top JSON object has a property "type" which must be set to "NetworkGraph" to
 Each node is defined with the following properties:
 
 - `id` (required): a unique identifier string.
-- `type` (required): either "host" or "router". "router" means multiple interfaces and forwarding between those interfaces.
 - `buffer_size_bytes` (required): is the storage size of packets in transit while waiting for a link up event. This implements IP the store and forward capability as defined in [draft-many-tiptop-ip-architecture](https://datatracker.ietf.org/doc/draft-many-tiptop-ip-architecture/). Mandatory property.
 - `interfaces` (required): is an array of network interfaces of this node. Each interface has an array of IP addresses and an array of routes. Mandatory property.
-- `quic` (optional): for "type" = "host" nodes, their QUIC stack configuration as described below. Optional property.
+- `quic` (optional): the QUIC stack configuration of the node, as described below. Optional property.
 - `packet_duplication_ratio`: The ratio of ingress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 - `packet_loss_ratio`: The ratio of ingress lost packets (the
   value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 
 ###### QUIC config
-This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each host node in a network graph's json file may have a `quic` field, specifying the QUIC
+This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each node in a network graph's json file may have a `quic` field, specifying the QUIC
 parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](https://github.com/quinn-rs/quinn/blob/main/quinn-proto/src/config/transport.rs). **Important**: Quinn stack defaults assume a terrestrial communication scenario. For how to configure for deepspace simulation, see [draft-many-tiptop-quic-profile](https://datatracker.ietf.org/doc/draft-many-tiptop-quic-profile/)
 
 Consider the following example in which all parameters are specified:
@@ -143,7 +142,7 @@ Here's the meaning of the different parameters:
 Links are point to point and uni-directional, so two entries are necessary to describe a bidirectional link.
 Each link is defined with the following properties:
 
-- `id` (required): a unique identifier string. The suggested id is the name of the two hosts of this link with a '-'.
+- `id` (required): a unique identifier string. The suggested id is the name of the two nodes connected by this link with a '-' in between.
 - `source` (required): The source IP address of the uni-directional link. This must correspond to a defined address on one of the nodes.
 - `target` (required): The destination IP address of the uni-directional link. This must correspond to a defined address on one of the nodes.
 - `delay_ms` (required): The delay of the link in milliseconds (i.e. time it takes for a packet
@@ -243,7 +242,6 @@ automatically run our verifier after every simulation and raise an error if appl
 
 At the time of this writing, we are validating the following properties of the network:
 
-- Packets are only created at host nodes
 - Packets are only duplicated when a link injects a randomized duplication (see
   `link.packet_duplication_ratio` above)
 - When packets are transmitted, they must travel through a link to which both the source and the

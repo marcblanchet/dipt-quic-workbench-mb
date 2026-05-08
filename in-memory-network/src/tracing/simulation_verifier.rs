@@ -1,5 +1,5 @@
 use crate::network::event::{NodeEventPayload, UpdateLinkStatus, UpdateNodeStatus};
-use crate::network::spec::{NetworkSpec, NodeKind};
+use crate::network::spec::NetworkSpec;
 use crate::tracing::simulation_step::{
     DropReason, GenericPacketEvent, PacketDropped, PacketInNode, SimulationStep, SimulationStepKind,
 };
@@ -7,7 +7,7 @@ use crate::tracing::simulation_verifier::replayed::ReplayedLink;
 use crate::tracing::stats::{LinkStats, NodeStats, PacketStats};
 use anyhow::{anyhow, bail};
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
 use std::rc::Rc;
 use std::sync::Arc;
@@ -77,8 +77,6 @@ pub enum NonFatalError {
         "network node `{node_id}` had a buffer corruption event, but at least one packet remained in the buffer and got sent (packet `{packet_id}`)"
     )]
     PacketSurvivedBufferCorruption { node_id: Arc<str>, packet_id: Uuid },
-    #[error("network node `{node_id}` created a packet out of thin air (packet `{packet_id}`)")]
-    PacketCreatedByRouterNode { node_id: Arc<str>, packet_id: Uuid },
     #[error(
         "packet `{packet_id}` was marked as lost in transit, but according to the trace the packet was not in transit at that moment"
     )]
@@ -184,8 +182,6 @@ pub struct SimulationVerifier {
     links: HashMap<Arc<str>, ReplayedLink>,
     /// Map from packet ids to the links where they can be found
     in_flight_packets: HashMap<Uuid, InFlightPacket>,
-    /// Ids of nodes considered to be hosts
-    host_nodes: HashSet<Arc<str>>,
     /// Map from nodes to metadata useful for verification
     node_metadata: HashMap<Arc<str>, NodeMetadata>,
     /// Map from links to metadata useful for verification
@@ -205,13 +201,9 @@ impl SimulationVerifier {
 
         let mut node_metadata = HashMap::new();
         let mut replayed_nodes = HashMap::new();
-        let mut host_nodes = HashSet::new();
         let mut ip_to_node = HashMap::new();
         for node in network_spec.nodes {
             let node_id: Arc<str> = node.id.clone();
-            if let NodeKind::Host = node.kind {
-                host_nodes.insert(node_id.clone());
-            }
 
             node_metadata.insert(
                 node_id.clone(),
@@ -262,7 +254,6 @@ impl SimulationVerifier {
             steps,
             nodes: replayed_nodes,
             links: replayed_links,
-            host_nodes,
             node_metadata,
             link_metadata,
             error_tracker,
@@ -333,15 +324,7 @@ impl SimulationVerifier {
                         );
                     } else {
                         // The packet was not in flight, so it must have just been created at
-                        // one of the hosts
-                        if !self.host_nodes.contains(&s.node_id) {
-                            self.error_tracker
-                                .track(NonFatalError::PacketCreatedByRouterNode {
-                                    node_id: s.node_id.clone(),
-                                    packet_id: s.packet_id,
-                                });
-                        }
-
+                        // one of the nodes
                         let node = try_fatal!(self.node(&s.node_id), self.error_tracker);
                         try_fatal!(
                             node.packet_created(s, step.relative_time),

@@ -54,8 +54,8 @@ pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> 
         .context("failed to create simulation verifier")?
         .verify()
         .context("failed to verify simulation")?;
-    let server_node = network.host(quic_options.network.server_ip_address);
-    let client_node = network.host(quic_options.network.client_ip_address);
+    let server_node = network.node(quic_options.network.server_ip_address);
+    let client_node = network.node(quic_options.network.client_ip_address);
     print_node_stats(
         &network.get_node_ids(),
         &verified_simulation,

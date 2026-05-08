@@ -125,7 +125,7 @@ impl NetworkLink {
 
                 // Nothing else to do here, because:
                 // 1. already sent packets will be dropped by the forwarding code if they are still in flight
-                // 2. packets in the router's outbound buffer will stay there until the link is back up
+                // 2. packets in the node's outbound buffer will stay there until the link is back up
                 // 3. attempting to send new packets will cause them to land in the buffer (if there's space)
             }
 

@@ -33,9 +33,7 @@ mod test {
     };
     use crate::network::ip::Ipv4Cidr;
     use crate::network::route::{IpRange, Route};
-    use crate::network::spec::{
-        NetworkInterface, NetworkLinkSpec, NetworkNodeSpec, NetworkSpec, NodeKind,
-    };
+    use crate::network::spec::{NetworkInterface, NetworkLinkSpec, NetworkNodeSpec, NetworkSpec};
     use crate::pcap_exporter::PcapExporter;
     use crate::quinn_interop::BufsAndMeta;
     use crate::tracing::tracer::SimulationStepTracer;
@@ -72,7 +70,6 @@ mod test {
             nodes: vec![
                 NetworkNodeSpec {
                     id: "server".into(),
-                    kind: NodeKind::Host,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![SERVER_ADDR],
                         routes: vec![Route {
@@ -87,7 +84,6 @@ mod test {
                 },
                 NetworkNodeSpec {
                     id: "client".into(),
-                    kind: NodeKind::Host,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![CLIENT_ADDR],
                         routes: vec![Route {
@@ -102,7 +98,6 @@ mod test {
                 },
                 NetworkNodeSpec {
                     id: "router1".into(),
-                    kind: NodeKind::Router,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![ROUTER1_ADDR],
                         routes: vec![
@@ -124,7 +119,6 @@ mod test {
                 },
                 NetworkNodeSpec {
                     id: "router2".into(),
-                    kind: NodeKind::Router,
                     interfaces: vec![NetworkInterface {
                         addresses: vec![ROUTER2_ADDR],
                         routes: vec![
@@ -259,8 +253,8 @@ mod test {
 
         // Network
         let network = default_network().call();
-        let server_socket = network.host(SERVER_ADDR.as_ip_addr());
-        let client_socket = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_socket = network.node(SERVER_ADDR.as_ip_addr());
+        let client_socket = network.node(CLIENT_ADDR.as_ip_addr());
 
         // QUIC config
         let (server_name, server_cert, server_config) = default_server_config();
@@ -270,14 +264,22 @@ mod test {
         let server_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             Some(server_config),
-            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_socket.clone())),
+            Arc::new(
+                network
+                    .udp_socket_for_node(PcapExporter::noop(), server_socket.clone())
+                    .unwrap(),
+            ),
             rt.clone(),
         )
         .unwrap();
         let mut client_endpoint = Endpoint::new_with_abstract_socket(
             EndpointConfig::default(),
             None,
-            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), client_socket.clone())),
+            Arc::new(
+                network
+                    .udp_socket_for_node(PcapExporter::noop(), client_socket.clone())
+                    .unwrap(),
+            ),
             rt,
         )
         .unwrap();
@@ -317,17 +319,17 @@ mod test {
     async fn test_packet_arrives_at_expected_time() {
         // Sanity check
         let network = default_network().call();
-        let server_node = network.host(SERVER_ADDR.as_ip_addr());
-        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr());
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
         network
-            .assert_connectivity_between_hosts(server_node, client_node)
+            .assert_connectivity_between_nodes(server_node, client_node)
             .await
             .unwrap();
 
         // Test
         let network = default_network().call();
-        let server_node = network.host(SERVER_ADDR.as_ip_addr());
-        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr());
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
         let data = network.in_transit_data(
             &client_node,
             OwnedTransmit {
@@ -341,7 +343,9 @@ mod test {
         network.forward(client_node.clone(), data);
 
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket = network.udp_socket_for_node(PcapExporter::noop(), server_node.clone());
+        let server_socket = network
+            .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+            .unwrap();
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
         assert_eq!(received, 1);
@@ -381,17 +385,17 @@ mod test {
 
         // Sanity check
         let network = default_network().bandwidth_bps(bandwidth).call();
-        let server_node = network.host(SERVER_ADDR.as_ip_addr());
-        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr());
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
         network
-            .assert_connectivity_between_hosts(client_node, server_node)
+            .assert_connectivity_between_nodes(client_node, server_node)
             .await
             .unwrap();
 
         // Actual test
         let network = default_network().bandwidth_bps(bandwidth).call();
-        let server_node = network.host(SERVER_ADDR.as_ip_addr());
-        let client_node = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr());
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
 
         let mut packet_ids = Vec::new();
         for _ in 0..4 {
@@ -410,8 +414,11 @@ mod test {
         }
 
         let mut recv_result = BufsAndMeta::new(packet_size_bytes, 10);
-        let server_socket =
-            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_node.clone()));
+        let server_socket = Arc::new(
+            network
+                .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+                .unwrap(),
+        );
         let mut received = 0;
         while received < 4 {
             received += server_socket.receive_raw(&mut recv_result).await.unwrap();
@@ -472,8 +479,8 @@ mod test {
             ])
             .call();
 
-        let server_socket = network.host(SERVER_ADDR.as_ip_addr());
-        let client_socket = network.host(CLIENT_ADDR.as_ip_addr());
+        let server_socket = network.node(SERVER_ADDR.as_ip_addr());
+        let client_socket = network.node(CLIENT_ADDR.as_ip_addr());
 
         let data = network.in_transit_data(
             &client_socket,
@@ -488,8 +495,11 @@ mod test {
 
         network.forward(client_socket.clone(), data.clone());
         let mut recv_result = BufsAndMeta::new(1200, 10);
-        let server_socket =
-            Arc::new(network.udp_socket_for_node(PcapExporter::noop(), server_socket.clone()));
+        let server_socket = Arc::new(
+            network
+                .udp_socket_for_node(PcapExporter::noop(), server_socket.clone())
+                .unwrap(),
+        );
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
         assert_eq!(received, 1);
