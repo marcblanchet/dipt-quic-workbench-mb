@@ -64,7 +64,8 @@ pub struct QuinnJsonConfig {
     /// Maximum time for a packet to be declared lost when a later packet has been acknowledged
     /// see RFC9002 section 6.1.2. It is expressed as an RTT multiplier
     ///
-    /// Defaults to 9/8 (in RFC9002) pub time_threshold: Option<f32>,
+    /// Defaults to 9/8 (in RFC9002)
+    pub time_threshold: Option<f32>,
 }
 
 #[derive(Deserialize, Clone, Default)]
