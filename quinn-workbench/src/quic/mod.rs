@@ -53,6 +53,10 @@ fn transport_config(
         config.packet_threshold(packet_threshold);
     }
 
+    if let Some(time_threshold) = quinn_config.time_threshold {
+        config.time_threshold(time_threshold);
+    }
+
     let get_congestion_window_bytes = |packets: u64| packets * BASE_DATAGRAM_SIZE;
     let cc_factory: Arc<dyn quinn_proto::congestion::ControllerFactory + Send + Sync> =
         match quinn_config
