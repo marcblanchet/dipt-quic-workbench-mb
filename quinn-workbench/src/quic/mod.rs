@@ -68,15 +68,16 @@ pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> 
 
     const DISPLAY_MAX_ERRORS: usize = 10;
     if !verified_simulation.non_fatal_errors.is_empty() {
-        print!("--- Errors");
+        print!("--- Internal errors");
         if verified_simulation.non_fatal_errors.len() > DISPLAY_MAX_ERRORS {
             print!(
-                "(showing {DISPLAY_MAX_ERRORS} of {})",
+                " (showing {DISPLAY_MAX_ERRORS} of {})",
                 verified_simulation.non_fatal_errors.len()
             );
         }
 
         println!(" ---");
+        println!("(These errors might indicate a bug in the workbench, please report them to the project's maintainers.)");
     }
     for error in verified_simulation
         .non_fatal_errors
