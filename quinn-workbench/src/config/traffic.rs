@@ -14,6 +14,7 @@ pub enum TrafficKind {
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct QuicRequestResponseTraffic {
     /// The time at which traffic should start, in milliseconds (defaults to 0)
     #[serde(default)]
@@ -60,6 +61,7 @@ fn default_response_size() -> usize {
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingTraffic {
     /// The time at which traffic should start, in milliseconds (defaults to 0)
     #[serde(default)]
