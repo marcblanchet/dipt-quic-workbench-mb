@@ -163,7 +163,8 @@
 * TGO-MSL:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
---- Errors(showing 10 of 698) ---
+--- Internal errors (showing 10 of 698) ---
+(These errors might indicate a bug in the workbench, please report them to the project's maintainers.)
 * network node `DSN` sent packet `32a6b34f-3933-0c60-52bd-09b9e6415916` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1028 bps)
 * network node `DSN` sent packet `d0e24a47-de37-a17e-a69e-f414ed33a276` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1030 bps)
 * network node `DSN` sent packet `82c97454-e58a-cf8b-e9f6-4893005d3b61` through link `DSN-TGO`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1056 bps)
