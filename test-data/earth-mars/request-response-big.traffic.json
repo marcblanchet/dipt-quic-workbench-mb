@@ -1,0 +1,11 @@
+{
+  "traffic_patterns": [
+    {
+      "type": "quic_request_response",
+      "client_ip": "192.168.40.1",
+      "server_ip": "192.168.43.2",
+      "requests": 1,
+      "response_size_bytes": 10485760
+    }
+  ]
+}

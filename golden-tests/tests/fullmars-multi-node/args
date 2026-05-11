@@ -1,4 +1,4 @@
 simulate
 --network-graph test-data/earth-mars/networkgraph-fullmars.json
 --network-events test-data/earth-mars/events.json
---traffic test-data/earth-mars/request-response.traffic.json
+--traffic test-data/earth-mars/request-response-multi.traffic.json

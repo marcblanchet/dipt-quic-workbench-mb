@@ -1,100 +1,15 @@
-use crate::config::cli::QuicOpt;
 use crate::config::quinn::{CongestionControlAlgorithm, QuinnJsonConfig};
-use crate::load_network_config;
-use crate::quic::simulation::QuicSimulation;
 use crate::quinn_extensions::ecn_cc::EcnCcFactory;
 use crate::quinn_extensions::no_cc::NoCCConfig;
-use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
-use anyhow::Context;
 use in_memory_network::async_rt::time::Instant;
 use quinn_proto::congestion::{CubicConfig, NewRenoConfig};
 use quinn_proto::{AckFrequencyConfig, EndpointConfig, QlogConfig, TransportConfig, VarInt};
-use std::fs;
 use std::fs::File;
 use std::sync::Arc;
 use std::time::Duration;
 
-mod client;
-mod server;
-pub mod simulation;
-
-fn validate_opts(opts: &QuicOpt) -> anyhow::Result<()> {
-    if opts.request_interval_ms.unwrap_or_default() != 0
-        && opts.concurrent_streams_per_connection != 1
-    {
-        anyhow::bail!(
-            "incompatible command-line options used: `--request-interval-ms` is only valid when `--concurrent-streams-per-connection` is set to `1` (its default value)"
-        );
-    }
-
-    Ok(())
-}
-
-pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> {
-    validate_opts(quic_options)?;
-
-    let mut simulation = QuicSimulation::new();
-    let network_config = load_network_config(&quic_options.network)?;
-    let result = simulation.run(quic_options, network_config).await;
-
-    let Some((tracer, network)) = simulation.tracer_and_network else {
-        eprintln!("Error...");
-        return result;
-    };
-
-    println!("--- Replay log ---");
-    let replay_log_path = "replay-log.json";
-    let json_steps = serde_json::to_vec_pretty(&tracer.stepper().steps()).unwrap();
-    fs::write(replay_log_path, json_steps).context("failed to store replay log")?;
-    println!("* Replay log available at {replay_log_path}");
-
-    println!("--- Node stats ---");
-    let verified_simulation = tracer
-        .verifier()
-        .context("failed to create simulation verifier")?
-        .verify()
-        .context("failed to verify simulation")?;
-    let server_node = network.node(quic_options.network.server_ip_address);
-    let client_node = network.node(quic_options.network.client_ip_address);
-    print_node_stats(
-        &network.get_node_ids(),
-        &verified_simulation,
-        server_node,
-        client_node,
-        quic_options.verbose_node_stats,
-    );
-    print_max_buffer_usage_per_node(&verified_simulation);
-    print_link_stats(&verified_simulation, &network);
-
-    const DISPLAY_MAX_ERRORS: usize = 10;
-    if !verified_simulation.non_fatal_errors.is_empty() {
-        print!("--- Internal errors");
-        if verified_simulation.non_fatal_errors.len() > DISPLAY_MAX_ERRORS {
-            print!(
-                " (showing {DISPLAY_MAX_ERRORS} of {})",
-                verified_simulation.non_fatal_errors.len()
-            );
-        }
-
-        println!(" ---");
-        println!(
-            "(These errors might indicate a bug in the workbench, please report them to the project's maintainers.)"
-        );
-    }
-    for error in verified_simulation
-        .non_fatal_errors
-        .into_iter()
-        .take(DISPLAY_MAX_ERRORS)
-    {
-        println!("* {error}");
-    }
-
-    if result.is_err() {
-        eprintln!("Error...");
-    }
-
-    result
-}
+pub mod client;
+pub mod server;
 
 fn endpoint_config(rng_seed: [u8; 32]) -> EndpointConfig {
     let mut config = EndpointConfig::default();

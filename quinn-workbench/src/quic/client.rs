@@ -1,9 +1,11 @@
 use crate::config::quinn::QuinnJsonConfig;
-use anyhow::Context;
+use crate::config::traffic::QuicRequestResponseTraffic;
+use anyhow::{Context, bail};
 use async_lock::Semaphore;
 use fastrand::Rng;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
+use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::pcap_exporter::InMemoryKeyLog;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use parking_lot::Mutex;
@@ -13,30 +15,104 @@ use quinn_proto::{ClientConfig, VarInt};
 use rustls::RootCertStore;
 use rustls::pki_types::CertificateDer;
 use std::fs::File;
+use std::io::Write;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
+pub async fn run_traffic_pattern(
+    network: Arc<InMemoryNetwork>,
+    traffic: QuicRequestResponseTraffic,
+    simulation_start: Instant,
+    client: Endpoint,
+    log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
+) -> anyhow::Result<usize> {
+    let max_connections = b'Z' - b'A';
+    if traffic.concurrent_connections > max_connections as u32 {
+        bail!(
+            "The maximum number of concurrent connections is {max_connections}, but {} were configured",
+            traffic.concurrent_connections
+        );
+    }
+
+    // Don't start until the specified moment
+    let time_until_start =
+        Duration::from_millis(traffic.start_at_ms).saturating_sub(simulation_start.elapsed());
+    if !time_until_start.is_zero() {
+        async_rt::time::sleep(time_until_start).await;
+    }
+
+    // Make requests, potentially using concurrent connections
+    let connections_semaphore = Arc::new(Semaphore::new(traffic.concurrent_connections as usize));
+    let mut connection_tasks = Vec::new();
+    let requests_left = Arc::new(Mutex::new(traffic.requests));
+    for i in 0..traffic.concurrent_connections {
+        let client = client.clone();
+        let server_node = network.node(traffic.server_ip).clone();
+        let requests_left = requests_left.clone();
+        let request_interval = Duration::from_millis(traffic.request_interval_ms);
+        let connection_name = (i as u8 + b'A') as char;
+        let connections_semaphore = connections_semaphore.clone();
+        let concurrent_streams = traffic.concurrent_streams_per_connection;
+        let log_writer = log_writer.clone();
+        connection_tasks.push(async_rt::spawn(async move {
+            let _permit = connections_semaphore.acquire().await;
+            run_connection(
+                client,
+                server_node.quic_addr(),
+                connection_name.to_string(),
+                requests_left,
+                request_interval,
+                concurrent_streams,
+                simulation_start,
+                log_writer,
+            )
+            .await
+        }));
+
+        // Wait 1 ms before starting the next connection
+        async_rt::time::sleep(Duration::from_millis(1)).await;
+    }
+
+    let total_connections = connection_tasks.len();
+    for task in connection_tasks {
+        task.await
+            .context("client connection task crashed")?
+            .context("client connection errored")?;
+    }
+
+    let total_time_sec = simulation_start.elapsed().as_secs_f64();
+    _ = writeln!(
+        log_writer.lock(),
+        "{:.2}s All connections closed",
+        total_time_sec
+    );
+
+    Ok(total_connections)
+}
+
 pub async fn run_connection(
     client: Endpoint,
-    server_name: String,
     server_addr: SocketAddr,
     connection_name: String,
     requests_left: Arc<Mutex<u32>>,
     request_interval: Duration,
     concurrent_streams: u32,
     start: Instant,
+    log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
 ) -> anyhow::Result<()> {
-    println!(
+    _ = writeln!(
+        log_writer.lock(),
         "{:.2}s CONNECT (conn = {connection_name})",
         start.elapsed().as_secs_f64()
     );
     let connection = client
-        .connect(server_addr, &server_name)
+        .connect(server_addr, "server-name")
         .context("failed to start connecting to server")?
         .await
         .context("client failed to connect to server")?;
-    println!(
+    _ = writeln!(
+        log_writer.lock(),
         "{:.2}s CONNECTED (conn = {connection_name})",
         start.elapsed().as_secs_f64()
     );
@@ -57,7 +133,8 @@ pub async fn run_connection(
 
         let permit = requests_semaphore.clone().acquire_arc().await;
         if requests_made > 0 && !request_interval.is_zero() {
-            println!(
+            _ = writeln!(
+                log_writer.lock(),
                 "{:.2}s SLEEP for {} ms (connection = {connection_name})",
                 start.elapsed().as_secs_f64(),
                 request_interval.as_millis()
@@ -70,9 +147,11 @@ pub async fn run_connection(
         // Actually make the request
         let connection = connection.clone();
         let connection_name = connection_name.clone();
+        let log_writer_cp = log_writer.clone();
         let request_task = async_rt::spawn(async move {
             let request = "GET /index.html";
-            println!(
+            _ = writeln!(
+                log_writer_cp.lock(),
                 "{:.2}s {request} (stream = {connection_name}{requests_made})",
                 start.elapsed().as_secs_f64()
             );
@@ -102,7 +181,8 @@ pub async fn run_connection(
             .context("client stream task errored")?;
     }
 
-    println!(
+    _ = writeln!(
+        log_writer.lock(),
         "{:.2}s DONE (conn = {connection_name}, request/response amount = {requests_made})",
         start.elapsed().as_secs_f64()
     );
@@ -122,6 +202,7 @@ pub fn client_endpoint(
     let mut seed = [0; 32];
     quinn_rng.fill(&mut seed);
 
+    let qlog_file = File::create(format!("{}.qlog", client_socket.node().id()))?;
     let mut endpoint = Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),
         None,
@@ -130,7 +211,13 @@ pub fn client_endpoint(
     )
     .context("failed to create client endpoint")?;
 
-    endpoint.set_default_client_config(client_config(start, keylog, server_cert, quinn_config)?);
+    endpoint.set_default_client_config(client_config(
+        start,
+        keylog,
+        server_cert,
+        quinn_config,
+        qlog_file,
+    )?);
 
     Ok(endpoint)
 }
@@ -140,6 +227,7 @@ fn client_config(
     keylog: Arc<InMemoryKeyLog>,
     server_cert: CertificateDer<'_>,
     quinn_config: &QuinnJsonConfig,
+    qlog_file: File,
 ) -> anyhow::Result<ClientConfig> {
     let mut roots = RootCertStore::empty();
     roots.add(server_cert)?;
@@ -158,13 +246,11 @@ fn client_config(
 
     crypto.key_log = keylog;
 
-    let client_qlog_file = File::create("client.qlog")?;
-
     let mut client_config = ClientConfig::new(Arc::new(QuicClientConfig::try_from(crypto)?));
     client_config.transport_config(Arc::new(crate::quic::transport_config(
         start,
         quinn_config,
-        client_qlog_file,
+        qlog_file,
     )));
 
     Ok(client_config)

@@ -1,7 +1,7 @@
 use crate::config::quinn::QuinnJsonConfig;
 use anyhow::Context;
 use fastrand::Rng;
-use futures::channel::mpsc::UnboundedReceiver;
+use futures::channel::mpsc::UnboundedSender;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
 use in_memory_network::pcap_exporter::InMemoryKeyLog;
@@ -184,9 +184,8 @@ pub static _KEY_PAIR_DER_ECDSA: &[u8] = &[
 pub fn server_listen(
     endpoint: Endpoint,
     response_payload_size: usize,
-) -> UnboundedReceiver<async_rt::JoinHandle<anyhow::Result<()>>> {
-    let (connection_result_tx, connection_result_rx) = futures::channel::mpsc::unbounded();
-
+    connection_handled: UnboundedSender<async_rt::JoinHandle<anyhow::Result<()>>>,
+) {
     async_rt::spawn(async move {
         let response: Vec<_> = "Lorem ipsum "
             .bytes()
@@ -235,11 +234,9 @@ pub fn server_listen(
             });
 
             // Notify observers that we are done handling the connection
-            connection_result_tx.unbounded_send(task).unwrap();
+            connection_handled.unbounded_send(task).unwrap();
         }
     });
-
-    connection_result_rx
 }
 
 pub fn server_endpoint(
@@ -253,8 +250,6 @@ pub fn server_endpoint(
 ) -> anyhow::Result<Endpoint> {
     let mut seed = [0; 32];
     quinn_rng.fill(&mut seed);
-
-    let server_qlog_file = File::create("server.qlog")?;
 
     let default_provider = rustls::crypto::ring::default_provider();
     let provider = rustls::crypto::CryptoProvider {
@@ -272,12 +267,13 @@ pub fn server_endpoint(
     crypto.max_early_data_size = u32::MAX;
     crypto.key_log = keylog;
 
+    let qlog_file = File::create(format!("{}.qlog", server_socket.node().id()))?;
     let mut server_config =
         quinn::ServerConfig::with_crypto(Arc::new(QuicServerConfig::try_from(crypto).unwrap()));
     server_config.transport = Arc::new(crate::quic::transport_config(
         start,
         quinn_config,
-        server_qlog_file,
+        qlog_file,
     ));
     Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),

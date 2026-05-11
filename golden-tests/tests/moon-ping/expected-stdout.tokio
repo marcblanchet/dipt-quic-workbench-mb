@@ -1,3 +1,9 @@
+--- Params ---
+* Quinn seed: 0
+* Network seed: 42
+* Network graph path: test-data/earth-moon/networkgraph-1orbiter-1moonasset.json
+* Network events path: test-data/earth-moon/events.json
+* Traffic patterns path: test-data/earth-moon/ping.traffic.json
 --- Network ---
 * Initial link statuses (derived from events):
   * Earth1-MoonOrbiter1: UP
@@ -8,6 +14,8 @@
   * Earth1: UP
   * MoonOrbiter1: UP
   * MoonAsset1: UP
+* Running connectivity check for the following node pairs:
+  * 192.168.40.1 <-> 192.168.41.2 ... passed (packets arrived after 1800 ms and 1800 ms)
 --- Ping ---
 P0 | 0.00s - SENT | 3.60s - RECEIVED | 3.60s - DURATION
 P1 | 60.00s - SENT | 63.60s - RECEIVED | 3.60s - DURATION
@@ -73,14 +81,14 @@ P59 | 3540.00s - SENT | 3543.60s - RECEIVED | 3.60s - DURATION
 --- Replay log ---
 * Replay log available at replay-log.json
 --- Node stats ---
-* Earth1 (client)
+* Earth1 (ping client)
   * Sent packets: 60 (2160 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
   * Received packets: 60 (2160 bytes)
     | 0 packets received out of order (0 bytes)
-* MoonAsset1 (server)
+* MoonAsset1 (ping server)
   * Sent packets: 60 (2160 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)

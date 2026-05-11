@@ -21,35 +21,31 @@ A command-line application written in Rust to simulate QUIC connections in diffe
 After [installing Rust](https://rustup.rs/), you can get started with:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  quic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
-  --client-ip-address 192.168.40.1 \
-  --server-ip-address 192.168.43.2
+  --traffic test-data/earth-mars/request-response.traffic.json
 ```
 
 Here's an example issuing a single request and receiving a 10 MiB response:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  quic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
-  --client-ip-address 192.168.40.1 \
-  --server-ip-address 192.168.43.2 \
-  --requests 1 --response-size 10485760
+  --traffic test-data/earth-mars/request-response-big.traffic.json
 ```
 
 Here's an example controlling the random seeds (which otherwise use a hardcoded constant):
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  quic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
-  --client-ip-address 192.168.40.1 \
-  --server-ip-address 192.168.43.2 \
+  --traffic test-data/earth-mars/request-response.traffic.json \
   --network-rng-seed 1337 \
   --quinn-rng-seed 1234
 ```
@@ -57,25 +53,26 @@ cargo run --release --bin quinn-workbench -- \
 Here's an example using random seeds derived from a source of entropy:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  quic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
-  --client-ip-address 192.168.40.1 \
-  --server-ip-address 192.168.43.2 \
+  --traffic test-data/earth-mars/request-response.traffic.json \
   --non-deterministic
 ```
 
 ## Network topology configuration
 
-The topology configuration defines each node and each link of the network in a JSON file. It shall be self-documenting. See for instance
+The topology configuration defines each node and each link of the network in a JSON file. See for instance
 [networkgraph-fullmars.json](test-data/earth-mars/networkgraph-fullmars.json) and
 [networkgraph-5nodes.json](test-data/earth-mars/networkgraph-5nodes.json)
 
 ### Meta Information
+
 The top JSON object has a property "type" which must be set to "NetworkGraph" to identify a network topology configuration file. It also contains an array of "nodes" and an array of "links", as described below.
 
 ### Nodes
+
 Each node is defined with the following properties:
 
 - `id` (required): a unique identifier string.
@@ -87,6 +84,7 @@ Each node is defined with the following properties:
   value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 
 ###### QUIC config
+
 This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each node in a network graph's json file may have a `quic` field, specifying the QUIC
 parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](https://github.com/quinn-rs/quinn/blob/main/quinn-proto/src/config/transport.rs). **Important**: Quinn stack defaults assume a terrestrial communication scenario. For how to configure for deepspace simulation, see [draft-many-tiptop-quic-profile](https://datatracker.ietf.org/doc/draft-many-tiptop-quic-profile/)
 
@@ -139,6 +137,7 @@ Here's the meaning of the different parameters:
   a value suitable for terrestrial communication.
 
 ###### Links
+
 Links are point to point and uni-directional, so two entries are necessary to describe a bidirectional link.
 Each link is defined with the following properties:
 
@@ -163,9 +162,11 @@ simulate an orbiter being unreachable at specific intervals), defined in a JSON 
 as you can see in [events.json](test-data/earth-mars/events.json). If no link up/down events are necessary, specify an empty events file like [events.json](test-data/events-empty.json)
 
 ### Meta Information
+
 The top JSON object has a property "type" which must be set to "NetworkEvents" to identify a network events configuration file. It also contains an array of "events", as described below.
 
 ### Events
+
 Each event is defined with the following properties:
 
 - `relative_time_ms` (required): The time (in ms) at which the event is happening, relative to the start of the simulation.
@@ -180,40 +181,59 @@ Each event is defined with the following properties:
 
 Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
+## Traffic patterns configuration
+
+Simulated traffic patterns are specified through a JSON file. See for instance [request-response.traffic.json](test-data/earth-mars/request-response.traffic.json).
+
+The top JSON object has a single `traffic_patterns` property, which is an array. Currently the following item types are supported:
+
+#### `udp_ping`
+
+Sends ping packets from a client node to a server node. The following properties are available:
+
+- `type` (required): must be set to `udp_ping`
+- `client_ip` (required): the IP address of the node used as a client. Must correspond to an address defined in the network graph.
+- `server_ip` (required): the IP address of the node used as a server. Must correspond to an address defined in the network graph.
+- `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
+- `duration_ms` (required): the duration of the run, after which we will stop sending pings and listening to their responses.
+- `interval_ms` (required): the interval at which ping packets will be sent
+- `deadline_ms`: the deadline between sending a ping and receiving a reply (after which the ping itself or its reply are considered lost) [default: 10_000].
+
+#### `quic_request_response`
+
+Issues HTTP-like requests over QUIC from a client node to a server node. The following properties are available:
+
+- `type` (required): must be set to `quic_request_response`
+- `client_ip` (required): the IP address of the node used as a client. Must correspond to an address defined in the network graph.
+- `server_ip` (required): the IP address of the node used as a server. Must correspond to an address defined in the network graph.
+- `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
+- `requests`: the number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
+- `concurrent_connections`: the number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
+- `concurrent_streams_per_connection`: the number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
+- `response_size_bytes`: the size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
+- `request_interval_ms`: the number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). If set to something other than `0`, requires that `concurrent_streams_per_connection` is `1`. [default: 0]
+
 ## Command line arguments
 
 The tool is self-documenting, so running it with `--help` will show up-to-date information about
 command line arguments.
 
-- `cargo run --release --bin quinn-workbench -- --help` shows types of simulations. Tool arguments include:
-  -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
-  -  `quic`: run a quic simulation. see below for more details
-  -  `ping`: run a ping simulation at UDP level
-  -  `throughput`: run a throughput simulation at the UDP level
+- `cargo run --release -- --help` shows available commands and options. The main ones are:
+  - `simulate`: run a simulation with traffic patterns from a JSON configuration file (see below for details)
+  - `debug`: additional commands for debugging the workbench
 
-- `cargo run --release --bin quinn-workbench -- quic --help` shows arguments for Quic simulation:
-   - `--client-ip-address <CLIENT_IP_ADDRESS>` (required):
-          The IP address of the node used as a client
-   -  `--server-ip-address <SERVER_IP_ADDRESS>` (required):
-          The IP address of the node used as a server
-   -  `--network-graph <NETWORK_GRAPH>` (required):
+- `cargo run --release -- simulate --help` shows arguments for the simulation.
+   - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification
+   - `--network-graph <NETWORK_GRAPH>` (required):
           Path to the JSON file containing the network graph
-    - `--network-events <NETWORK_EVENTS>` (required):
+   - `--network-events <NETWORK_EVENTS>` (required):
           Path to the JSON file containing the network events
-   - `--requests <REQUESTS>`: The number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
-   - `--concurrent-connections <CONCURRENT_CONNECTIONS>`:
-          The number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
-   - `--concurrent-streams-per-connection <CONCURRENT_STREAMS_PER_CONNECTION>`:
-          The number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
-   - `--request-interval-ms <REQUEST_INTERVAL_MS>`:
-          The number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). Requires that `--concurrent-streams-per-connection` is `1`.
-   - `--response-size <RESPONSE_SIZE>`:
-          A number. The size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
+   - `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
    - `--non-deterministic`:
           Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
-    - `--quinn-rng-seed <QUINN_RNG_SEED>`:
+   - `--quinn-rng-seed <QUINN_RNG_SEED>`:
           A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
-    - `--network-rng-seed <NETWORK_RNG_SEED>`:
+   - `--network-rng-seed <NETWORK_RNG_SEED>`:
           A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
 
 ## Forwarding

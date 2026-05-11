@@ -1,8 +1,8 @@
 use event_listener::Event;
 use in_memory_network::network::InMemoryNetwork;
-use in_memory_network::network::node::Node;
 use in_memory_network::tracing::simulation_verifier::VerifiedSimulation;
 use in_memory_network::tracing::stats::NodeStats;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -47,25 +47,28 @@ pub fn print_link_stats(verified_simulation: &VerifiedSimulation, network: &InMe
 pub fn print_node_stats(
     node_ids: &[Arc<str>],
     verified_simulation: &VerifiedSimulation,
-    server_node: &Node,
-    client_node: &Node,
+    node_ids_by_role: &HashMap<&str, Vec<&str>>,
     verbose: bool,
 ) {
-    for node in ["client", "server"] {
-        let id = match node {
-            "server" => server_node.id().clone(),
-            "client" => client_node.id().clone(),
-            _ => unreachable!(),
-        };
+    let mut roles = node_ids_by_role.keys().copied().collect::<Vec<_>>();
+    roles.sort();
 
-        let stats = &verified_simulation.stats.stats_by_node[&id];
-        println!("* {id} ({node})");
-        print_single_node_stats(stats);
+    let mut already_reported_ids = HashSet::<&str>::new();
+
+    for role in roles {
+        let ids = &node_ids_by_role[role];
+        for &id in ids {
+            let stats = &verified_simulation.stats.stats_by_node[id];
+            println!("* {id} ({role})");
+            print_single_node_stats(stats);
+        }
+
+        already_reported_ids.extend(ids);
     }
 
     if verbose {
         for id in node_ids {
-            if id == server_node.id() || id == client_node.id() {
+            if already_reported_ids.contains(&id.as_ref()) {
                 continue;
             }
 
@@ -164,4 +167,17 @@ impl CancellationToken {
     pub fn is_cancelled(&self) -> bool {
         self.cancelled.load(Ordering::Relaxed)
     }
+}
+
+pub fn duplicates<'a>(items: impl Iterator<Item = &'a str>) -> Vec<&'a str> {
+    let mut seen = HashSet::new();
+    let mut duplicates = Vec::new();
+    for item in items {
+        let new = seen.insert(item);
+        if !new {
+            duplicates.push(item);
+        }
+    }
+
+    duplicates
 }

@@ -1,13 +1,15 @@
 mod config;
 mod quic;
 mod quinn_extensions;
+mod simulation;
 mod udp;
 mod util;
 
 use crate::config::NetworkConfig;
-use crate::config::cli::{Command, NetworkOpt};
+use crate::config::cli::{Command, DebugCommand, NetworkOpt, SimulateOpt};
 use crate::config::network::NetworkEventsJson;
-use crate::udp::{ping, throughput};
+use crate::config::traffic::TrafficJson;
+use crate::udp::throughput;
 use anyhow::Context;
 use clap::Parser;
 use config::cli::CliOpt;
@@ -30,21 +32,18 @@ fn main() -> anyhow::Result<()> {
     let opt = CliOpt::parse();
 
     match &opt.command {
-        Command::Quic(quic_opt) => {
-            let delay_mode = if quic_opt.disable_time_warping {
+        Command::Simulate(quic_traffic_opt) => {
+            let delay_mode = if quic_traffic_opt.rt.disable_time_warping {
                 DelayMode::Wait
             } else {
                 DelayMode::TimeWarp
             };
             let rt = async_rt::new_rt(delay_mode);
-            rt.block_on(quic::run_and_report_stats(quic_opt))
+            rt.block_on(simulation::run_and_report_stats(quic_traffic_opt))
         }
-        Command::Ping(ping_opt) => {
-            let network_config = load_network_config(&ping_opt.network)?;
-            let rt = async_rt::new_rt(DelayMode::TimeWarp);
-            rt.block_on(ping::run(ping_opt, network_config))
-        }
-        Command::Throughput(throughput_opt) => {
+        Command::Debug {
+            command: DebugCommand::Throughput(throughput_opt),
+        } => {
             let network_config = load_network_config(&throughput_opt.network)?;
             let rt = async_rt::new_rt(DelayMode::TimeWarp);
             rt.block_on(throughput::run(throughput_opt, network_config))
@@ -54,6 +53,10 @@ fn main() -> anyhow::Result<()> {
             Ok(())
         }
     }
+}
+
+fn load_traffic(cli: &SimulateOpt) -> anyhow::Result<TrafficJson> {
+    load_json(&cli.traffic)
 }
 
 fn load_network_config(cli: &NetworkOpt) -> anyhow::Result<NetworkConfig> {
