@@ -41,7 +41,9 @@ fn main() -> anyhow::Result<()> {
             let rt = async_rt::new_rt(delay_mode);
             rt.block_on(simulation::run_and_report_stats(quic_traffic_opt))
         }
-        Command::Debug { command: DebugCommand::Throughput(throughput_opt) } => {
+        Command::Debug {
+            command: DebugCommand::Throughput(throughput_opt),
+        } => {
             let network_config = load_network_config(&throughput_opt.network)?;
             let rt = async_rt::new_rt(DelayMode::TimeWarp);
             rt.block_on(throughput::run(throughput_opt, network_config))
