@@ -1,5 +1,4 @@
-quic
+traffic
 --network-graph test-data/earth-mars/networkgraph-fullmars.json
 --network-events test-data/earth-mars/events.json
---client-ip-address 192.168.40.1
---server-ip-address 192.168.43.2
+--traffic test-data/earth-mars/request-response.traffic.json

@@ -7048,5 +7048,25 @@
       "packet_size_bytes": 36,
       "node_id": "Earth1"
     }
+  },
+  {
+    "relative_time_ns": 3600000000000,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "Earth1-MoonOrbiter1",
+        "status": "down"
+      }
+    }
+  },
+  {
+    "relative_time_ns": 3600000000000,
+    "type": "networkEvent",
+    "data": {
+      "link": {
+        "linkId": "MoonOrbiter1-Earth1",
+        "status": "down"
+      }
+    }
   }
 ]

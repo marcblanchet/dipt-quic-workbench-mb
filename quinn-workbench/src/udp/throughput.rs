@@ -201,13 +201,14 @@ pub async fn run(
     let server_node = network.node(throughput_opt.peers.server_ip_address);
     let client_node = network.node(throughput_opt.peers.client_ip_address);
 
-    print_node_stats(
-        &[],
-        &verified_simulation,
-        &[server_node.id().as_ref()],
-        &[client_node.id().as_ref()],
-        false,
-    );
+    let node_ids_by_role = &[
+        ("server", vec![server_node.id().as_ref()]),
+        ("client", vec![client_node.id().as_ref()]),
+    ]
+    .into_iter()
+    .collect();
+
+    print_node_stats(&[], &verified_simulation, node_ids_by_role, false);
     print_max_buffer_usage_per_node(&verified_simulation);
     print_link_stats(&verified_simulation, &network);
 

@@ -20,7 +20,7 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
-pub async fn run_one_traffic(
+pub async fn run_traffic_pattern(
     network: Arc<InMemoryNetwork>,
     traffic: QuicRequestResponseTraffic,
     simulation_start: Instant,
@@ -197,12 +197,12 @@ pub fn client_endpoint(
     server_cert: CertificateDer<'_>,
     client_socket: InMemoryUdpSocket,
     quinn_config: &QuinnJsonConfig,
-    qlog_file: File,
     quinn_rng: &mut Rng,
 ) -> anyhow::Result<Endpoint> {
     let mut seed = [0; 32];
     quinn_rng.fill(&mut seed);
 
+    let qlog_file = File::create(format!("{}.qlog", client_socket.node().id()))?;
     let mut endpoint = Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),
         None,

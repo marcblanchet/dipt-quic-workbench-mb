@@ -1,0 +1,11 @@
+{
+  "traffic_patterns": [
+    {
+      "type": "udp_ping",
+      "client_ip": "192.168.40.1",
+      "server_ip": "192.168.41.2",
+      "duration_ms": 15000,
+      "interval_ms": 1000
+    }
+  ]
+}

@@ -2,7 +2,7 @@ use event_listener::Event;
 use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::tracing::simulation_verifier::VerifiedSimulation;
 use in_memory_network::tracing::stats::NodeStats;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -47,27 +47,28 @@ pub fn print_link_stats(verified_simulation: &VerifiedSimulation, network: &InMe
 pub fn print_node_stats(
     node_ids: &[Arc<str>],
     verified_simulation: &VerifiedSimulation,
-    server_node_ids: &[&str],
-    client_node_ids: &[&str],
+    node_ids_by_role: &HashMap<&str, Vec<&str>>,
     verbose: bool,
 ) {
-    for role in ["client", "server"] {
-        let ids = match role {
-            "server" => server_node_ids,
-            "client" => client_node_ids,
-            _ => unreachable!(),
-        };
+    let mut roles = node_ids_by_role.keys().copied().collect::<Vec<_>>();
+    roles.sort();
 
+    let mut already_reported_ids = HashSet::<&str>::new();
+
+    for role in roles {
+        let ids = &node_ids_by_role[role];
         for &id in ids {
             let stats = &verified_simulation.stats.stats_by_node[id];
             println!("* {id} ({role})");
             print_single_node_stats(stats);
         }
+
+        already_reported_ids.extend(ids);
     }
 
     if verbose {
         for id in node_ids {
-            if server_node_ids.contains(&id.as_ref()) || client_node_ids.contains(&id.as_ref()) {
+            if already_reported_ids.contains(&id.as_ref()) {
                 continue;
             }
 

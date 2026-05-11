@@ -246,7 +246,6 @@ pub fn server_endpoint(
     key: PrivateKeyDer<'static>,
     server_socket: InMemoryUdpSocket,
     quinn_config: &QuinnJsonConfig,
-    qlog_file: File,
     quinn_rng: &mut Rng,
 ) -> anyhow::Result<Endpoint> {
     let mut seed = [0; 32];
@@ -268,6 +267,7 @@ pub fn server_endpoint(
     crypto.max_early_data_size = u32::MAX;
     crypto.key_log = keylog;
 
+    let qlog_file = File::create(format!("{}.qlog", server_socket.node().id()))?;
     let mut server_config =
         quinn::ServerConfig::with_crypto(Arc::new(QuicServerConfig::try_from(crypto).unwrap()));
     server_config.transport = Arc::new(crate::quic::transport_config(

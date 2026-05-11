@@ -39,6 +39,10 @@ impl Debug for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
+    pub fn node(&self) -> &Node {
+        &self.node
+    }
+
     pub fn from_node(
         network: Arc<InMemoryNetwork>,
         node: Arc<Node>,

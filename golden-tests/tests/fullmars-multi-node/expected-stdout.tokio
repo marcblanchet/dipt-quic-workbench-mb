@@ -3,6 +3,7 @@
 * Network seed: 42
 * Network graph path: test-data/earth-mars/networkgraph-fullmars.json
 * Network events path: test-data/earth-mars/events.json
+* Traffic patterns path: test-data/earth-mars/request-response-multi.traffic.json
 --- Network ---
 * Initial link statuses (derived from events):
   * GND-DSN: UP
@@ -47,7 +48,7 @@
   * 192.168.40.1 <-> 192.168.43.2 ... passed (packets arrived after 901200 ms and 901200 ms)
   * 192.168.50.1 <-> 192.168.50.2 ... passed (packets arrived after 6001000 ms and 6001000 ms)
 --- Requests ---
-There are multiple clients (on separate nodes). We will only display request-response logs for MSL.
+(We are simulating multiple traffic patterns and will only display logs for the first one.)
 0.00s CONNECT (conn = A)
 2.00s CONNECTED (conn = A)
 2.00s GET /index.html (stream = A1)
@@ -65,28 +66,28 @@ There are multiple clients (on separate nodes). We will only display request-res
 --- Replay log ---
 * Replay log available at replay-log.json
 --- Node stats ---
-* MSL (client)
+* MSL (quic client)
   * Sent packets: 26 (4180 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
   * Received packets: 28 (16063 bytes)
     | 0 packets received out of order (0 bytes)
-* GND (client)
+* GND (quic client)
   * Sent packets: 24 (4082 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
   * Received packets: 25 (13632 bytes)
     | 0 packets received out of order (0 bytes)
-* MRO (server)
+* MRO (quic server)
   * Sent packets: 28 (16063 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
   * Received packets: 28 (4310 bytes)
     | 0 packets received out of order (0 bytes)
-* ING (server)
+* ING (quic server)
   * Sent packets: 26 (13698 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)

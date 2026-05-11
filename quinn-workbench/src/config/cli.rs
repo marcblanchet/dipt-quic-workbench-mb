@@ -10,12 +10,8 @@ pub struct CliOpt {
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum Command {
-    /// Run the QUIC simulation
-    Quic(QuicOpt),
-    /// Run the QUIC simulation with a json-based traffic configuration
-    QuicTraffic(QuicTrafficOpt),
-    /// Run a ping simulation at the UDP level
-    Ping(PingOpt),
+    /// Run a simulation with traffic patterns from a JSON configuration file
+    Traffic(TrafficOpt),
     /// Run a throughput simulation at the UDP level
     Throughput(ThroughputOpt),
     /// Return the identifier of the async runtime used
@@ -71,75 +67,13 @@ pub struct RtOpt {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct QuicOpt {
-    /// The number of requests that should be made
-    #[arg(long, default_value_t = 10)]
-    pub requests: u32,
-
-    /// The number of concurrent connections used when making the requests
-    #[arg(long, default_value_t = 1)]
-    pub concurrent_connections: u32,
-
-    /// The number of concurrent streams per connection used when making the requests
-    #[arg(long, default_value_t = 1)]
-    pub concurrent_streams_per_connection: u32,
-
-    /// The size of each response, in bytes
-    #[arg(long, default_value_t = 1024)]
-    pub response_size: usize,
-
-    /// The number of milliseconds to wait between receiving a request's response and sending the
-    /// next request (useful for checking if the connection gets terminated due to being idle)
-    ///
-    /// Note 1: when multiple connections are used, this interval is applied per connection (e.g.,
-    /// if two connections are active, two requests will be sent in parallel, then each connection
-    /// will independently wait for the interval to elapse).
-    ///
-    /// Note 2: this option is only valid when `concurrent-streams-per-connection` is set to `1`
-    #[clap(long, default_value_t = 0)]
-    pub request_interval_ms: u64,
-
-    #[command(flatten)]
-    pub rt: RtOpt,
-
-    #[command(flatten)]
-    pub peers: PeerOpt,
-
-    #[command(flatten)]
-    pub network: NetworkOpt,
-}
-
-#[derive(Parser, Debug, Clone)]
-pub struct QuicTrafficOpt {
+pub struct TrafficOpt {
     /// Path to the JSON file containing the traffic specification
     #[arg(long)]
     pub traffic: PathBuf,
 
     #[command(flatten)]
     pub rt: RtOpt,
-
-    #[command(flatten)]
-    pub network: NetworkOpt,
-}
-
-#[derive(Parser, Debug, Clone)]
-pub struct PingOpt {
-    /// The duration of the run, after which we will stop sending pings and the program will
-    /// terminate
-    #[arg(long)]
-    pub duration_ms: u64,
-
-    /// The interval at which ping packets will be sent
-    #[arg(long)]
-    pub interval_ms: u64,
-
-    /// The deadline between sending a ping and receiving a reply (after which the ping itself or
-    /// its reply are considered lost)
-    #[arg(long, default_value_t = 10_000)]
-    pub deadline_ms: u64,
-
-    #[command(flatten)]
-    pub peers: PeerOpt,
 
     #[command(flatten)]
     pub network: NetworkOpt,

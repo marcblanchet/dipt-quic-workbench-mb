@@ -3,13 +3,14 @@ use std::net::IpAddr;
 
 #[derive(Deserialize)]
 pub struct TrafficJson {
-    pub traffic: Vec<TrafficKind>,
+    pub traffic_patterns: Vec<TrafficKind>,
 }
 
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum TrafficKind {
     QuicRequestResponse(QuicRequestResponseTraffic),
+    UdpPing(PingTraffic),
 }
 
 #[derive(Deserialize, Clone)]
@@ -32,7 +33,7 @@ pub struct QuicRequestResponseTraffic {
     pub concurrent_streams_per_connection: u32,
     /// The size of each response, in bytes (defaults to 1024)
     #[serde(default = "default_response_size")]
-    pub response_size: usize,
+    pub response_size_bytes: usize,
     /// The number of milliseconds to wait between receiving a request's response and sending the
     /// next request (defaults to 0)
     ///
@@ -56,4 +57,28 @@ fn default_concurrent_streams_per_connection() -> u32 {
 }
 fn default_response_size() -> usize {
     1024
+}
+
+#[derive(Deserialize, Clone)]
+pub struct PingTraffic {
+    /// The time at which traffic should start, in milliseconds (defaults to 0)
+    #[serde(default)]
+    pub start_at_ms: u64,
+    /// The ping source's IP address
+    pub client_ip: IpAddr,
+    /// The ping destination's IP address
+    pub server_ip: IpAddr,
+    /// The duration of the run, after which we will stop sending pings and the program will
+    /// terminate
+    pub duration_ms: u64,
+    /// The interval at which ping packets will be sent
+    pub interval_ms: u64,
+    /// The deadline between sending a ping and receiving a reply (after which the ping itself or
+    /// its reply are considered lost)
+    #[serde(default = "default_deadline_ms")]
+    pub deadline_ms: u64,
+}
+
+fn default_deadline_ms() -> u64 {
+    10_000
 }

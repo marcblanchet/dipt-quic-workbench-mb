@@ -3,6 +3,7 @@
 * Network seed: 42
 * Network graph path: test-data/earth-mars/networkgraph-fullmars.json
 * Network events path: test-data/earth-mars/events.json
+* Traffic patterns path: test-data/earth-mars/request-response.traffic.json
 --- Network ---
 * Initial link statuses (derived from events):
   * GND-DSN: UP
@@ -63,14 +64,14 @@
 --- Replay log ---
 * Replay log available at replay-log.json
 --- Node stats ---
-* GND (client)
+* GND (quic client)
   * Sent packets: 24 (4082 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
   * Received packets: 25 (13638 bytes)
     | 0 packets received out of order (0 bytes)
-* ING (server)
+* ING (quic server)
   * Sent packets: 26 (13704 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)

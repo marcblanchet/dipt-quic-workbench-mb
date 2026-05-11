@@ -1,5 +1,5 @@
 {
-  "traffic": [
+  "traffic_patterns": [
     {
       "type": "quic_request_response",
       "client_ip": "192.168.50.2",

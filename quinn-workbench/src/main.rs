@@ -1,14 +1,15 @@
 mod config;
 mod quic;
 mod quinn_extensions;
+mod simulation;
 mod udp;
 mod util;
 
 use crate::config::NetworkConfig;
-use crate::config::cli::{Command, NetworkOpt, QuicTrafficOpt};
+use crate::config::cli::{Command, NetworkOpt, TrafficOpt};
 use crate::config::network::NetworkEventsJson;
-use crate::config::traffic::{QuicRequestResponseTraffic, TrafficJson, TrafficKind};
-use crate::udp::{ping, throughput};
+use crate::config::traffic::TrafficJson;
+use crate::udp::throughput;
 use anyhow::Context;
 use clap::Parser;
 use config::cli::CliOpt;
@@ -31,50 +32,14 @@ fn main() -> anyhow::Result<()> {
     let opt = CliOpt::parse();
 
     match &opt.command {
-        Command::Quic(quic_opt) => {
-            let delay_mode = if quic_opt.rt.disable_time_warping {
-                DelayMode::Wait
-            } else {
-                DelayMode::TimeWarp
-            };
-            let rt = async_rt::new_rt(delay_mode);
-            let traffic = vec![TrafficKind::QuicRequestResponse(
-                QuicRequestResponseTraffic {
-                    start_at_ms: 0,
-                    client_ip: quic_opt.peers.client_ip_address,
-                    server_ip: quic_opt.peers.server_ip_address,
-                    requests: quic_opt.requests,
-                    concurrent_connections: quic_opt.concurrent_connections,
-                    concurrent_streams_per_connection: quic_opt.concurrent_streams_per_connection,
-                    response_size: quic_opt.response_size,
-                    request_interval_ms: quic_opt.request_interval_ms,
-                },
-            )];
-
-            rt.block_on(quic::run_and_report_stats(
-                &quic_opt.rt,
-                &quic_opt.network,
-                traffic,
-            ))
-        }
-        Command::QuicTraffic(quic_traffic_opt) => {
+        Command::Traffic(quic_traffic_opt) => {
             let delay_mode = if quic_traffic_opt.rt.disable_time_warping {
                 DelayMode::Wait
             } else {
                 DelayMode::TimeWarp
             };
             let rt = async_rt::new_rt(delay_mode);
-            let traffic = load_traffic(quic_traffic_opt)?;
-            rt.block_on(quic::run_and_report_stats(
-                &quic_traffic_opt.rt,
-                &quic_traffic_opt.network,
-                traffic.traffic,
-            ))
-        }
-        Command::Ping(ping_opt) => {
-            let network_config = load_network_config(&ping_opt.network)?;
-            let rt = async_rt::new_rt(DelayMode::TimeWarp);
-            rt.block_on(ping::run(ping_opt, network_config))
+            rt.block_on(simulation::run_and_report_stats(quic_traffic_opt))
         }
         Command::Throughput(throughput_opt) => {
             let network_config = load_network_config(&throughput_opt.network)?;
@@ -88,7 +53,7 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-fn load_traffic(cli: &QuicTrafficOpt) -> anyhow::Result<TrafficJson> {
+fn load_traffic(cli: &TrafficOpt) -> anyhow::Result<TrafficJson> {
     load_json(&cli.traffic)
 }
 
