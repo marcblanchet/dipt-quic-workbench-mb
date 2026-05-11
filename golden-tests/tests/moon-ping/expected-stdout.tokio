@@ -2,8 +2,8 @@
 * Initial link statuses (derived from events):
   * Earth1-MoonOrbiter1: UP
   * MoonOrbiter1-Earth1: UP
-  * MoonOrbiter1-MoonAsset1: DOWN
-  * MoonAsset1-MoonOrbiter1: DOWN
+  * MoonOrbiter1-MoonAsset1: UP
+  * MoonAsset1-MoonOrbiter1: UP
 * Initial node statuses (derived from events):
   * Earth1: UP
   * MoonOrbiter1: UP
