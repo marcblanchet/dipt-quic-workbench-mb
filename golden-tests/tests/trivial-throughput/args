@@ -1,4 +1,4 @@
-throughput
+debug throughput
 --network-graph test-data/trivial/networkgraph-2nodes.json
 --network-events test-data/events-empty.json
 --duration-ms 1000

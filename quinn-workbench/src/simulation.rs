@@ -1,5 +1,5 @@
 use crate::config::NetworkConfig;
-use crate::config::cli::TrafficOpt;
+use crate::config::cli::SimulateOpt;
 use crate::config::traffic::{QuicRequestResponseTraffic, TrafficJson, TrafficKind};
 use crate::quic;
 use crate::udp::ping;
@@ -33,7 +33,7 @@ fn validate_traffic(opts: &QuicRequestResponseTraffic) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub async fn run_and_report_stats(cli_options: &TrafficOpt) -> anyhow::Result<()> {
+pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<()> {
     let network_config = load_network_config(&cli_options.network)?;
     let traffic = load_traffic(cli_options)?;
 
@@ -167,7 +167,7 @@ impl Simulation {
 
     pub async fn run(
         &mut self,
-        cli_options: &TrafficOpt,
+        cli_options: &SimulateOpt,
         network_config: NetworkConfig,
         traffic: TrafficJson,
         main_traffic_pattern: &str,

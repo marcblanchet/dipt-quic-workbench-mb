@@ -21,8 +21,8 @@ A command-line application written in Rust to simulate QUIC connections in diffe
 After [installing Rust](https://rustup.rs/), you can get started with:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  traffic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
   --traffic test-data/earth-mars/request-response.traffic.json
@@ -31,8 +31,8 @@ cargo run --release --bin quinn-workbench -- \
 Here's an example issuing a single request and receiving a 10 MiB response:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  traffic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
   --traffic test-data/earth-mars/request-response-big.traffic.json
@@ -41,8 +41,8 @@ cargo run --release --bin quinn-workbench -- \
 Here's an example controlling the random seeds (which otherwise use a hardcoded constant):
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  traffic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
   --traffic test-data/earth-mars/request-response.traffic.json \
@@ -53,8 +53,8 @@ cargo run --release --bin quinn-workbench -- \
 Here's an example using random seeds derived from a source of entropy:
 
 ```bash
-cargo run --release --bin quinn-workbench -- \
-  traffic \
+cargo run --release -- \
+  simulate \
   --network-graph test-data/earth-mars/networkgraph-fullmars.json \
   --network-events test-data/earth-mars/events.json \
   --traffic test-data/earth-mars/request-response.traffic.json \
@@ -181,32 +181,9 @@ Each event is defined with the following properties:
 
 Note that it is planned to support more types of events such as modifying properties of links (delays, bandwidth, etc).
 
-## Command line arguments
+## Traffic patterns configuration
 
-The tool is self-documenting, so running it with `--help` will show up-to-date information about
-command line arguments.
-
-- `cargo run --release --bin quinn-workbench -- --help` shows types of simulations. Possible arguments include:
-  -  `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
-  -  `traffic`: run a simulation with traffic patterns from a JSON configuration file (see below for details)
-  -  `throughput`: run a throughput simulation at the UDP level
-
-- `cargo run --release --bin quinn-workbench -- traffic --help` shows arguments for the JSON-driven simulation.
-   - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification. See the [Traffic configuration](#traffic-configuration) section.
-   - `--network-graph <NETWORK_GRAPH>` (required):
-          Path to the JSON file containing the network graph
-   - `--network-events <NETWORK_EVENTS>` (required):
-          Path to the JSON file containing the network events
-   - `--non-deterministic`:
-          Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
-   - `--quinn-rng-seed <QUINN_RNG_SEED>`:
-          A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
-   - `--network-rng-seed <NETWORK_RNG_SEED>`:
-          A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
-
-## Traffic patterns
-
-The `traffic` subcommand reads the desired traffic patterns from a JSON file. See for instance [request-response.traffic.json](test-data/earth-mars/request-response.traffic.json).
+Simulated traffic patterns are specified through a JSON file. See for instance [request-response.traffic.json](test-data/earth-mars/request-response.traffic.json).
 
 The top JSON object has a single `traffic_patterns` property, which is an array. Currently the following item types are supported:
 
@@ -235,6 +212,29 @@ Issues HTTP-like requests over QUIC from a client node to a server node. The fol
 - `concurrent_streams_per_connection`: the number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
 - `response_size_bytes`: the size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
 - `request_interval_ms`: the number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). If set to something other than `0`, requires that `concurrent_streams_per_connection` is `1`. [default: 0]
+
+## Command line arguments
+
+The tool is self-documenting, so running it with `--help` will show up-to-date information about
+command line arguments.
+
+- `cargo run --release -- --help` shows available commands and options. The main ones are:
+  - `simulate`: run a simulation with traffic patterns from a JSON configuration file (see below for details)
+  - `debug`: additional commands for debugging the workbench
+
+- `cargo run --release -- simulate --help` shows arguments for the simulation.
+   - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification
+   - `--network-graph <NETWORK_GRAPH>` (required):
+          Path to the JSON file containing the network graph
+   - `--network-events <NETWORK_EVENTS>` (required):
+          Path to the JSON file containing the network events
+   - `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
+   - `--non-deterministic`:
+          Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators
+   - `--quinn-rng-seed <QUINN_RNG_SEED>`:
+          A number. Quinn's random seed, which you can control to generate deterministic results (Quinn uses randomness internally) [default: 0]
+   - `--network-rng-seed <NETWORK_RNG_SEED>`:
+          A number. The random seed used for the simulated network (governing packet loss, duplication and reordering) [default: 42]
 
 ## Forwarding
 

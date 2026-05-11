@@ -2,6 +2,7 @@
 name = "quinn-workbench"
 version = "0.1.0"
 edition = "2024"
+default-run = "quinn-workbench"
 
 [dependencies]
 anyhow.workspace = true

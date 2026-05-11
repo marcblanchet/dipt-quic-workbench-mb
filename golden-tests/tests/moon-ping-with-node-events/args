@@ -1,4 +1,4 @@
-traffic
+simulate
 --network-graph test-data/earth-moon/networkgraph-1orbiter-1moonasset.json
 --network-events test-data/earth-moon/events-with-downtime.json
 --traffic test-data/earth-moon/ping-short.traffic.json

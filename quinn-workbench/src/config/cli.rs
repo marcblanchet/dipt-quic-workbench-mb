@@ -11,11 +11,20 @@ pub struct CliOpt {
 #[derive(Subcommand, Debug, Clone)]
 pub enum Command {
     /// Run a simulation with traffic patterns from a JSON configuration file
-    Traffic(TrafficOpt),
-    /// Run a throughput simulation at the UDP level
-    Throughput(ThroughputOpt),
+    Simulate(SimulateOpt),
+    /// Commands for debugging the workbench
+    Debug {
+        #[command(subcommand)]
+        command: DebugCommand,
+    },
     /// Return the identifier of the async runtime used
     Rt,
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum DebugCommand {
+    /// Run a throughput simulation at the UDP level
+    Throughput(ThroughputOpt),
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -67,7 +76,7 @@ pub struct RtOpt {
 }
 
 #[derive(Parser, Debug, Clone)]
-pub struct TrafficOpt {
+pub struct SimulateOpt {
     /// Path to the JSON file containing the traffic specification
     #[arg(long)]
     pub traffic: PathBuf,

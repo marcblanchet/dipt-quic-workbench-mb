@@ -6,7 +6,7 @@ mod udp;
 mod util;
 
 use crate::config::NetworkConfig;
-use crate::config::cli::{Command, NetworkOpt, TrafficOpt};
+use crate::config::cli::{Command, DebugCommand, NetworkOpt, SimulateOpt};
 use crate::config::network::NetworkEventsJson;
 use crate::config::traffic::TrafficJson;
 use crate::udp::throughput;
@@ -32,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     let opt = CliOpt::parse();
 
     match &opt.command {
-        Command::Traffic(quic_traffic_opt) => {
+        Command::Simulate(quic_traffic_opt) => {
             let delay_mode = if quic_traffic_opt.rt.disable_time_warping {
                 DelayMode::Wait
             } else {
@@ -41,7 +41,7 @@ fn main() -> anyhow::Result<()> {
             let rt = async_rt::new_rt(delay_mode);
             rt.block_on(simulation::run_and_report_stats(quic_traffic_opt))
         }
-        Command::Throughput(throughput_opt) => {
+        Command::Debug { command: DebugCommand::Throughput(throughput_opt) } => {
             let network_config = load_network_config(&throughput_opt.network)?;
             let rt = async_rt::new_rt(DelayMode::TimeWarp);
             rt.block_on(throughput::run(throughput_opt, network_config))
@@ -53,7 +53,7 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-fn load_traffic(cli: &TrafficOpt) -> anyhow::Result<TrafficJson> {
+fn load_traffic(cli: &SimulateOpt) -> anyhow::Result<TrafficJson> {
     load_json(&cli.traffic)
 }
 
