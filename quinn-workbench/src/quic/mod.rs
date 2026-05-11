@@ -77,7 +77,9 @@ pub async fn run_and_report_stats(quic_options: &QuicOpt) -> anyhow::Result<()> 
         }
 
         println!(" ---");
-        println!("(These errors might indicate a bug in the workbench, please report them to the project's maintainers.)");
+        println!(
+            "(These errors might indicate a bug in the workbench, please report them to the project's maintainers.)"
+        );
     }
     for error in verified_simulation
         .non_fatal_errors
