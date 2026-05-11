@@ -103,6 +103,13 @@ fn get_initial_status_for_links_with_events(
                 continue;
             }
 
+            // If an event is present at time 0, that event itself becomes the init event (instead
+            // of a synthetic one)
+            if event.relative_time.is_zero() {
+                initial_events.push(link_payload.clone());
+                continue;
+            }
+
             let initial_status = match updated_status {
                 UpdateLinkStatus::Up => UpdateLinkStatus::Down,
                 UpdateLinkStatus::Down => UpdateLinkStatus::Up,
