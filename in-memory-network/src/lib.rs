@@ -5,7 +5,7 @@ pub mod network;
 pub mod pcap_exporter;
 pub mod quinn_interop;
 pub mod tracing;
-mod transmit;
+pub mod transmit;
 mod util;
 
 use std::sync::Arc;

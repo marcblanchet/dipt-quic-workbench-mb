@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_arguments)]
+
 mod config;
 mod quic;
 mod quinn_extensions;

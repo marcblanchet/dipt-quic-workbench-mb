@@ -10,10 +10,9 @@ use fastrand::Rng;
 use futures::StreamExt;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
-use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::{InMemoryKeyLog, PcapExporter};
+use in_memory_network::network::{InMemoryNetwork, PcapOptions};
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use parking_lot::Mutex;
 use rustls::pki_types::{CertificateDer, PrivatePkcs8KeyDer};
@@ -241,6 +240,7 @@ impl Simulation {
             Rng::with_seed(simulated_network_rng_seed),
             start,
             cli_options.rt.disable_time_warping,
+            PcapOptions::Disabled,
         )?;
 
         println!("--- Network ---");
@@ -298,6 +298,7 @@ impl Simulation {
             Rng::with_seed(simulated_network_rng_seed),
             start,
             cli_options.rt.disable_time_warping,
+            PcapOptions::WithTlsKeys,
         )?;
         self.tracer_and_network = Some((tracer.clone(), network.clone()));
 
@@ -314,20 +315,12 @@ impl Simulation {
             match traffic {
                 TrafficKind::QuicRequestResponse(t) => {
                     let server_node = network.node(t.server.ip());
-                    let server_keylog = Arc::new(InMemoryKeyLog::default());
-                    let server_pcap_exporter =
-                        PcapExporter::for_node(server_node.id(), Some(server_keylog.clone()))
-                            .context("failed to create pcap exporter")?;
                     let server_socket = network
-                        .udp_socket_for_node(
-                            server_pcap_exporter,
-                            server_node.clone(),
-                            t.server.port(),
-                        )
+                        .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
                     let server = quic::server::server_endpoint(
                         start,
-                        server_keylog,
+                        server_node.keylog().clone(),
                         cert.clone(),
                         key.clone_key().into(),
                         server_socket,
@@ -342,14 +335,8 @@ impl Simulation {
                 }
                 TrafficKind::UdpPing(t) => {
                     let server_node = network.node(t.server.ip());
-                    let server_pcap_exporter = PcapExporter::for_node(server_node.id(), None)
-                        .context("failed to create pcap exporter")?;
                     let server_socket = network
-                        .udp_socket_for_node(
-                            server_pcap_exporter,
-                            server_node.clone(),
-                            t.server.port(),
-                        )
+                        .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
                     ping::run_server_forever(server_socket, t.client.ip());
                 }
@@ -380,20 +367,12 @@ impl Simulation {
             match traffic_kind {
                 TrafficKind::QuicRequestResponse(t) => {
                     let client_node = network.node(t.client.ip());
-                    let client_keylog = Arc::new(InMemoryKeyLog::default());
-                    let client_pcap_exporter =
-                        PcapExporter::for_node(client_node.id(), Some(client_keylog.clone()))
-                            .context("failed to create pcap exporter")?;
                     let client_socket = network
-                        .udp_socket_for_node(
-                            client_pcap_exporter,
-                            client_node.clone(),
-                            t.client.port(),
-                        )
+                        .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
                     let client = quic::client::client_endpoint(
                         start,
-                        client_keylog,
+                        client_node.keylog().clone(),
                         cert.clone(),
                         client_socket,
                         &quic_configs[client_node.id().as_ref()],
@@ -410,31 +389,15 @@ impl Simulation {
                 }
                 TrafficKind::UdpPing(t) => {
                     let client_node = network.node(t.client.ip());
-                    let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
-                        .context("failed to create pcap exporter")?;
                     let client_socket = network
-                        .udp_socket_for_node(
-                            client_pcap_exporter,
-                            client_node.clone(),
-                            t.client.port(),
-                        )
+                        .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
                     let task = ping::run_traffic_pattern(client_socket, t, start);
                     ping_client_tasks.push(task);
                 }
                 TrafficKind::UdpOneDirection(t) => {
-                    let client_node = network.node(t.source.ip());
-                    let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
-                        .context("failed to create pcap exporter")?;
-                    let client_socket = network
-                        .udp_socket_for_node(
-                            client_pcap_exporter,
-                            client_node.clone(),
-                            t.source.port(),
-                        )
-                        .unwrap();
-                    let task = udp::one_direction::run_traffic_pattern(client_socket, t);
-                    udp_client_tasks.push(task);
+                    udp_client_tasks
+                        .push(udp::one_direction::run_traffic_pattern(network.clone(), t));
                 }
             }
         }

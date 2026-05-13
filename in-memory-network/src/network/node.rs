@@ -1,10 +1,11 @@
-use crate::network::InMemoryNetwork;
 use crate::network::event::UpdateNodeStatus;
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::BufferedPacket;
 use crate::network::outbound_buffer::OutboundBuffer;
 use crate::network::route::Route;
 use crate::network::spec::NetworkNodeSpec;
+use crate::network::{InMemoryNetwork, PcapOptions};
+use crate::pcap_exporter::{InMemoryKeyLog, PcapExporter};
 use crate::{InTransitData, async_rt};
 use anyhow::bail;
 use futures_util::FutureExt;
@@ -49,6 +50,8 @@ pub struct Node {
     pub(crate) injected_failures: NodeInjectedFailures,
     pub(crate) status: Mutex<NodeStatus>,
     pub(crate) last_buffer_clear: Mutex<Option<async_rt::time::Instant>>,
+    pub(crate) pcap_exporter: PcapExporter,
+    keylog: Arc<InMemoryKeyLog>,
     udp_endpoints: Mutex<HashMap<u16, Arc<UdpEndpoint>>>,
     outbound_buffer: Arc<OutboundBuffer>,
     outbound_tx: futures::channel::mpsc::UnboundedSender<BufferedPacket>,
@@ -57,6 +60,7 @@ pub struct Node {
 impl Node {
     pub(crate) fn new(
         node: &NetworkNodeSpec,
+        pcap_options: PcapOptions,
     ) -> anyhow::Result<(
         Self,
         futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
@@ -83,6 +87,12 @@ impl Node {
             .collect::<Vec<_>>();
         routes.sort_by(|(dest1, r1), (dest2, r2)| r1.cost.cmp(&r2.cost).then(dest1.cmp(dest2)));
 
+        let keylog = Arc::new(InMemoryKeyLog::default());
+        let pcap_exporter = match pcap_options {
+            PcapOptions::Disabled => PcapExporter::noop(),
+            PcapOptions::WithTlsKeys => PcapExporter::for_node(&node.id, Some(keylog.clone()))?,
+        };
+
         let (tx, rx) = futures::channel::mpsc::unbounded();
         let node = Self {
             injected_failures: NodeInjectedFailures::from_spec(node),
@@ -91,10 +101,12 @@ impl Node {
             addresses,
             routes,
             outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
-            udp_endpoints: Mutex::new(HashMap::new()),
+            udp_endpoints: Default::default(),
             outbound_tx: tx,
             status: Mutex::new(NodeStatus::Up),
-            last_buffer_clear: Mutex::default(),
+            last_buffer_clear: Default::default(),
+            pcap_exporter,
+            keylog,
         };
         Ok((node, rx))
     }
@@ -140,6 +152,10 @@ impl Node {
 
     pub fn id(&self) -> &Arc<str> {
         &self.id
+    }
+
+    pub fn keylog(&self) -> &Arc<InMemoryKeyLog> {
+        &self.keylog
     }
 
     pub fn addresses(&self) -> impl Iterator<Item = IpAddr> + use<> {

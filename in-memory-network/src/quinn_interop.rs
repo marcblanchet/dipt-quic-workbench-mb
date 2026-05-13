@@ -1,7 +1,6 @@
 use crate::network::InMemoryNetwork;
 use crate::network::inbound_queue::NextPacketDelivery;
 use crate::network::node::{Node, UdpEndpoint};
-use crate::pcap_exporter::PcapExporter;
 use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
 use bytes::Bytes;
 use parking_lot::Mutex;
@@ -29,7 +28,6 @@ pub struct InMemoryUdpSocket {
     endpoint: Arc<UdpEndpoint>,
     node: Arc<Node>,
     next_packet_delivery: Mutex<Option<Pin<Box<NextPacketDelivery>>>>,
-    pcap_exporter: PcapExporter,
 }
 
 impl Debug for InMemoryUdpSocket {
@@ -43,18 +41,12 @@ impl InMemoryUdpSocket {
         self.node.id()
     }
 
-    pub fn from_node(
-        network: Arc<InMemoryNetwork>,
-        node: Arc<Node>,
-        port: u16,
-        pcap_exporter: PcapExporter,
-    ) -> Self {
+    pub fn from_node(network: Arc<InMemoryNetwork>, node: Arc<Node>, port: u16) -> Self {
         InMemoryUdpSocket {
             endpoint: node.udp_endpoint(port),
             node,
             network: network.clone(),
             next_packet_delivery: Mutex::new(None),
-            pcap_exporter,
         }
     }
 }
@@ -106,7 +98,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
             buf[..transmit.contents.len()].copy_from_slice(&transmit.contents);
 
             // Track in pcap
-            self.pcap_exporter.track_transmit(&transmit);
+            self.node.pcap_exporter.track_transmit(&transmit);
         }
 
         Poll::Ready(Ok(delivered_len))
@@ -133,7 +125,7 @@ impl InMemoryUdpSocket {
         };
 
         // Track in pcap
-        self.pcap_exporter.track_transmit(&transmit);
+        self.node.pcap_exporter.track_transmit(&transmit);
 
         let data = self.network.in_transit_data(self.node.id.clone(), transmit);
         self.network.forward(self.node.clone(), data);

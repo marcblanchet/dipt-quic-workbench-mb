@@ -19,7 +19,6 @@ use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::{BufferedPacket, OutgoingPacket};
 use crate::network::node::Node;
 use crate::network::spec::NetworkSpec;
-use crate::pcap_exporter::PcapExporter;
 use crate::quinn_interop::InMemoryUdpSocket;
 use crate::tracing::tracer::SimulationStepTracer;
 use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
@@ -59,6 +58,12 @@ pub struct InMemoryNetwork {
     next_transmit_number: AtomicU64,
 }
 
+#[derive(Copy, Clone)]
+pub enum PcapOptions {
+    Disabled,
+    WithTlsKeys,
+}
+
 impl InMemoryNetwork {
     /// Initializes a new [`InMemoryNetwork`] based on the provided spec
     pub fn initialize(
@@ -68,6 +73,7 @@ impl InMemoryNetwork {
         rng: Rng,
         start: Instant,
         disable_time_warping: bool,
+        pcap_opts: PcapOptions,
     ) -> anyhow::Result<Arc<Self>> {
         if !disable_time_warping {
             // Time warping is enabled, so the start instant should be zero
@@ -121,7 +127,7 @@ impl InMemoryNetwork {
         let mut nodes_by_id = HashMap::new();
         let mut nodes_and_outbound_rx = Vec::new();
         for n in &network_spec.nodes {
-            let (node, outbound_rx) = Node::new(n)?;
+            let (node, outbound_rx) = Node::new(n, pcap_opts)?;
             let node = Arc::new(node);
 
             for &address in &node.addresses {
@@ -313,7 +319,6 @@ impl InMemoryNetwork {
     /// Returns `Some` when the function is first called for a specific node, and `None` afterwards
     pub fn udp_socket_for_node(
         self: &Arc<InMemoryNetwork>,
-        pcap_exporter: PcapExporter,
         node: Arc<Node>,
         port: u16,
     ) -> Option<InMemoryUdpSocket> {
@@ -322,12 +327,7 @@ impl InMemoryNetwork {
             .lock()
             .insert((node.id.clone(), port))
         {
-            Some(InMemoryUdpSocket::from_node(
-                self.clone(),
-                node,
-                port,
-                pcap_exporter,
-            ))
+            Some(InMemoryUdpSocket::from_node(self.clone(), node, port))
         } else {
             None
         }
@@ -467,6 +467,13 @@ impl InMemoryNetwork {
             transmit,
             number: self.next_transmit_number.fetch_add(1, Ordering::Relaxed),
         }
+    }
+
+    /// Sends an [`OwnedTransmit`] from `node` to its destination, routing it through the network
+    pub fn send_udp(self: &Arc<InMemoryNetwork>, node: Arc<Node>, transmit: OwnedTransmit) {
+        node.pcap_exporter.track_transmit(&transmit);
+        let data = self.in_transit_data(node.id.clone(), transmit);
+        self.forward(node.clone(), data);
     }
 
     /// Forwards an [`InTransitData`] to the next node in the network.
