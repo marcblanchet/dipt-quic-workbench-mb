@@ -118,10 +118,7 @@ impl NetworkLink {
     }
 
     pub(crate) fn update_delay(&mut self, update: Duration) {
-        if let LinkStatus::Up = self.status {
-            return;
-        }
-
+        assert!(self.is_down());
         self.delay = update;
     }
 

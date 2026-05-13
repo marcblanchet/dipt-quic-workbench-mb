@@ -22,7 +22,7 @@ use crate::network::spec::NetworkSpec;
 use crate::quinn_interop::InMemoryUdpSocket;
 use crate::tracing::tracer::SimulationStepTracer;
 use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
-use anyhow::{anyhow, bail};
+use anyhow::bail;
 use fastrand::Rng;
 use futures_util::StreamExt;
 use link::NetworkLink;
@@ -401,15 +401,61 @@ impl InMemoryNetwork {
             }
             (a_to_b, b_to_a) => {
                 let report = |failed| if failed { "failed" } else { "succeeded" };
-                Err(anyhow!(
-                    "failed to deliver packets between the nodes after {days} days ({} to {} {}, {} to {} {})",
+
+                let peers = [(node_a, node_b, &a_to_b), (node_b, node_a, &b_to_a)];
+                let mut msg = String::new();
+
+                for (source, target, result) in peers {
+                    if result.is_err() {
+                        let info = self.tracer.stepper().get_dropped_packet_info(source.id());
+                        let total_dropped = info.total_dropped_packets();
+                        if total_dropped > 0 {
+                            msg.push_str(&format!("\n{total_dropped} packets where dropped on their way from {} to {}:\n\
+                                * {} because a node's buffer was full\n\
+                                * {} because a node had a 'clear buffer' event while the packet was waiting to be sent\n\
+                                * {} because of a randomly injected failure\n\
+                                * {} because of routing loops that brought the packet's TTL to zero",
+                                source.id(),
+                                target.id(),
+                                info.buffer_full,
+                                info.buffer_cleared,
+                                info.random,
+                                info.loops.len(),
+                            ));
+
+                            if !info.loops.is_empty() {
+                                let mut paths = info.loops;
+                                paths.sort();
+                                paths.dedup();
+
+                                let max = 5;
+                                msg.push_str(&format!(" (the list below shows {} of {} unique paths that ended in loops):", paths.len().min(max), paths.len()));
+                                for path in paths {
+                                    msg.push_str("\n  * ");
+                                    msg.push_str(&path.join("-> "));
+                                }
+                            }
+                        } else {
+                            msg.push_str(&format!(
+                                "\nNo packets where dropped on their way from {} to {}",
+                                source.id(),
+                                target.id()
+                            ));
+                        }
+                    }
+                }
+
+                let error = format!(
+                    "failed to deliver packets between the nodes after {days} days ({} to {} {}, {} to {} {}).\nError details:{msg}",
                     node_a.id(),
                     node_b.id(),
                     report(a_to_b.is_err()),
                     node_b.id(),
                     node_a.id(),
                     report(b_to_a.is_err())
-                ))
+                );
+
+                bail!(error)
             }
         }
     }
