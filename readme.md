@@ -117,6 +117,7 @@ Here's the meaning of the different parameters:
   delays. Defaults to `30000` (30 seconds).
 - `packet_threshold`: Maximum reordering in packet numbers before considering a packet lost.
   Should not be less than 3, as per RFC5681. Defaults to `3`.
+- `time_threshold`: Maximum time for a packet to be declared lost when a later packet has been acknowledged. See RFC9002 section 6.1.2. It is expressed as an RTT multiplier. Defaults to 9/8 
 - `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `true`.
 - `maximize_send_and_receive_windows`: Boolean flag to maximize send and receive windows,
   allowing an unlimited number of unacknowledged in-flight packets. Defaults to `false`.
