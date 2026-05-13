@@ -117,7 +117,7 @@ Here's the meaning of the different parameters:
   delays. Defaults to `30000` (30 seconds).
 - `packet_threshold`: Maximum reordering in packet numbers before considering a packet lost.
   Should not be less than 3, as per RFC5681. Defaults to `3`.
-- `time_threshold`: Maximum time for a packet to be declared lost when a later packet has been acknowledged. See RFC9002 section 6.1.2. It is expressed as an RTT multiplier. Defaults to 9/8 
+- `time_threshold`: Maximum time for a packet to be declared lost when a later packet has been acknowledged. See RFC9002 section 6.1.2. It is expressed as an RTT multiplier. Defaults to 9/8
 - `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `true`.
 - `maximize_send_and_receive_windows`: Boolean flag to maximize send and receive windows,
   allowing an unlimited number of unacknowledged in-flight packets. Defaults to `false`.
@@ -188,13 +188,24 @@ Simulated traffic patterns are specified through a JSON file. See for instance [
 
 The top JSON object has a single `traffic_patterns` property, which is an array. Currently the following item types are supported:
 
+#### `udp_one_direction`
+
+Sends UDP traffic in a single direction from a source node to a target node, at a configurable interval. The following properties are available:
+
+- `type` (required): must be set to `udp_one_direction`
+- `source` (required): the socket address (IP and port) of the sender. Must correspond to an address defined in the network graph.
+- `target` (required): the socket address (IP and port) of the receiver. Must correspond to an address defined in the network graph.
+- `payload_bytes` (required): the size of the payload (potentially split across multiple UDP packets).
+- `send_interval_ms` (required): the interval at which the payload should be sent.
+- `duration_ms`: the duration of the run, after which we will stop sending packets [default: 600000 (10 minutes)].
+
 #### `udp_ping`
 
 Sends ping packets from a client node to a server node. The following properties are available:
 
 - `type` (required): must be set to `udp_ping`
-- `client_ip` (required): the IP address of the node used as a client. Must correspond to an address defined in the network graph.
-- `server_ip` (required): the IP address of the node used as a server. Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.
+- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.
 - `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `duration_ms` (required): the duration of the run, after which we will stop sending pings and listening to their responses.
 - `interval_ms` (required): the interval at which ping packets will be sent
@@ -205,8 +216,8 @@ Sends ping packets from a client node to a server node. The following properties
 Issues HTTP-like requests over QUIC from a client node to a server node. The following properties are available:
 
 - `type` (required): must be set to `quic_request_response`
-- `client_ip` (required): the IP address of the node used as a client. Must correspond to an address defined in the network graph.
-- `server_ip` (required): the IP address of the node used as a server. Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.
+- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.
 - `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `requests`: the number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
 - `concurrent_connections`: the number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
