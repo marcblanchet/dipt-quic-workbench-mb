@@ -5,7 +5,6 @@ use async_lock::Semaphore;
 use fastrand::Rng;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
-use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::pcap_exporter::InMemoryKeyLog;
 use in_memory_network::quinn_interop::InMemoryUdpSocket;
 use parking_lot::Mutex;
@@ -21,7 +20,6 @@ use std::sync::Arc;
 use std::time::Duration;
 
 pub async fn run_traffic_pattern(
-    network: Arc<InMemoryNetwork>,
     traffic: QuicRequestResponseTraffic,
     simulation_start: Instant,
     client: Endpoint,
@@ -48,7 +46,6 @@ pub async fn run_traffic_pattern(
     let requests_left = Arc::new(Mutex::new(traffic.requests));
     for i in 0..traffic.concurrent_connections {
         let client = client.clone();
-        let server_node = network.node(traffic.server_ip).clone();
         let requests_left = requests_left.clone();
         let request_interval = Duration::from_millis(traffic.request_interval_ms);
         let connection_name = (i as u8 + b'A') as char;
@@ -59,7 +56,7 @@ pub async fn run_traffic_pattern(
             let _permit = connections_semaphore.acquire().await;
             run_connection(
                 client,
-                server_node.quic_addr(),
+                traffic.server,
                 connection_name.to_string(),
                 requests_left,
                 request_interval,
@@ -202,7 +199,7 @@ pub fn client_endpoint(
     let mut seed = [0; 32];
     quinn_rng.fill(&mut seed);
 
-    let qlog_file = File::create(format!("{}.qlog", client_socket.node().id()))?;
+    let qlog_file = File::create(format!("{}.qlog", client_socket.node_id()))?;
     let mut endpoint = Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),
         None,

@@ -41,7 +41,7 @@ pub fn run_traffic_pattern(
     let interval = Duration::from_millis(t.interval_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let deadline = Duration::from_millis(t.deadline_ms);
-    let server_ip = t.server_ip;
+    let server_socket = t.server;
 
     let in_flight = Arc::new(Mutex::new(HashMap::new()));
     let lost = Arc::new(Mutex::new(Vec::new()));
@@ -67,7 +67,7 @@ pub fn run_traffic_pattern(
             let payload = ping_nr.to_le_bytes();
 
             client_socket_cp.send(&Transmit {
-                destination: SocketAddr::new(server_ip, 8080),
+                destination: server_socket,
                 ecn: None,
                 contents: &payload,
                 segment_size: None,
@@ -120,7 +120,7 @@ pub fn run_traffic_pattern(
             };
 
             for packet in packets {
-                assert_eq!(packet.source_addr.ip(), server_ip);
+                assert_eq!(packet.source_addr, server_socket);
 
                 let ping_nr = u64::from_le_bytes(packet.payload.try_into().unwrap());
 

@@ -9,6 +9,8 @@ pub const DEFAULT_TTL: u8 = 30;
 
 #[derive(Clone, Debug)]
 pub struct OwnedTransmit {
+    /// The socket this datagram is being sent from
+    pub source: SocketAddr,
     /// The socket this datagram should be sent to
     pub destination: SocketAddr,
     /// Explicit congestion notification bits to set on the packet

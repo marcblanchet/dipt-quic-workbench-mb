@@ -52,8 +52,8 @@ pub struct InMemoryNetwork {
     links_by_addr: Arc<HashMap<(IpAddr, IpAddr), Arc<Mutex<NetworkLink>>>>,
     /// Map from ids the corresponding links
     links_by_id: Arc<HashMap<Arc<str>, Arc<Mutex<NetworkLink>>>>,
-    /// Set indicating whether an udp socket has been created for this node (by id)
-    udp_socket_created: Mutex<HashSet<Arc<str>>>,
+    /// Set indicating whether an udp socket has been created for a node (by id) and port
+    udp_socket_created: Mutex<HashSet<(Arc<str>, u16)>>,
     pub(crate) tracer: Arc<SimulationStepTracer>,
     rng: Mutex<Rng>,
     next_transmit_number: AtomicU64,
@@ -315,11 +315,17 @@ impl InMemoryNetwork {
         self: &Arc<InMemoryNetwork>,
         pcap_exporter: PcapExporter,
         node: Arc<Node>,
+        port: u16,
     ) -> Option<InMemoryUdpSocket> {
-        if self.udp_socket_created.lock().insert(node.id.clone()) {
+        if self
+            .udp_socket_created
+            .lock()
+            .insert((node.id.clone(), port))
+        {
             Some(InMemoryUdpSocket::from_node(
                 self.clone(),
                 node,
+                port,
                 pcap_exporter,
             ))
         } else {
@@ -338,6 +344,7 @@ impl InMemoryNetwork {
         node_b: &Arc<Node>,
     ) -> anyhow::Result<(Duration, Duration)> {
         let peers = [(node_a, node_b), (node_b, node_a)];
+        let port = 8080;
 
         // Send 100 packets both ways
         //
@@ -346,9 +353,10 @@ impl InMemoryNetwork {
         for _ in 0..100 {
             for (source, target) in peers {
                 let data = self.in_transit_data(
-                    source,
+                    source.id.clone(),
                     OwnedTransmit {
-                        destination: target.udp_endpoint.addr,
+                        source: source.socket_addr(port),
+                        destination: target.socket_addr(port),
                         ecn: None,
                         contents: vec![42].into(),
                         segment_size: None,
@@ -370,12 +378,12 @@ impl InMemoryNetwork {
         // Ensure the packets arrived at each node (one successful delivery is sufficient)
         let a_to_b = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(node_b.udp_endpoint.inbound.clone(), 1),
+            InboundQueue::receive(node_b.udp_endpoint(port).inbound.clone(), 1),
         )
         .await;
         let b_to_a = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(node_a.udp_endpoint.inbound.clone(), 1),
+            InboundQueue::receive(node_a.udp_endpoint(port).inbound.clone(), 1),
         )
         .await;
 
@@ -447,12 +455,15 @@ impl InMemoryNetwork {
         None
     }
 
-    pub(crate) fn in_transit_data(&self, source: &Node, transmit: OwnedTransmit) -> InTransitData {
+    pub(crate) fn in_transit_data(
+        &self,
+        source_node_id: Arc<str>,
+        transmit: OwnedTransmit,
+    ) -> InTransitData {
         InTransitData {
             id: self.new_packet_id(),
             duplicate: false,
-            source_id: source.id.clone(),
-            source_endpoint: source.udp_endpoint.clone(),
+            source_id: source_node_id,
             transmit,
             number: self.next_transmit_number.fetch_add(1, Ordering::Relaxed),
         }
@@ -475,16 +486,9 @@ impl InMemoryNetwork {
 
         self.tracer.track_packet_in_node(&current_node, &data);
 
-        if current_node.udp_endpoint.addr == data.transmit.destination {
-            // The packet has arrived to its destination, so we forward it directly to the nodes's
-            // inbound queue
-            current_node
-                .udp_endpoint
-                .inbound
-                .clone()
-                .lock()
-                .send(data, Duration::default());
-
+        if current_node.canonical_address == data.transmit.destination.ip() {
+            // The packet has arrived to its destination
+            current_node.deliver_packet(data);
             return;
         }
 

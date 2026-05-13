@@ -39,17 +39,18 @@ impl Debug for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
-    pub fn node(&self) -> &Node {
-        &self.node
+    pub fn node_id(&self) -> &str {
+        self.node.id()
     }
 
     pub fn from_node(
         network: Arc<InMemoryNetwork>,
         node: Arc<Node>,
+        port: u16,
         pcap_exporter: PcapExporter,
     ) -> Self {
         InMemoryUdpSocket {
-            endpoint: node.udp_endpoint.clone(),
+            endpoint: node.udp_endpoint(port),
             node,
             network: network.clone(),
             next_packet_delivery: Mutex::new(None),
@@ -95,7 +96,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
             let transmit = in_transit.data.transmit;
 
             // Meta
-            meta.addr = in_transit.data.source_endpoint.addr;
+            meta.addr = transmit.source;
             meta.ecn = transmit.ecn;
             meta.dst_ip = Some(transmit.destination.ip());
             meta.len = transmit.contents.len();
@@ -105,8 +106,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
             buf[..transmit.contents.len()].copy_from_slice(&transmit.contents);
 
             // Track in pcap
-            let source_addr = in_transit.data.source_endpoint.addr;
-            self.pcap_exporter.track_transmit(source_addr, &transmit);
+            self.pcap_exporter.track_transmit(&transmit);
         }
 
         Poll::Ready(Ok(delivered_len))
@@ -124,6 +124,7 @@ impl InMemoryUdpSocket {
         assert!(transmit.segment_size.is_none());
 
         let transmit = OwnedTransmit {
+            source: self.endpoint.addr,
             destination: transmit.destination,
             ecn: transmit.ecn,
             contents: Bytes::copy_from_slice(transmit.contents),
@@ -132,10 +133,9 @@ impl InMemoryUdpSocket {
         };
 
         // Track in pcap
-        let source_addr = self.node.quic_addr();
-        self.pcap_exporter.track_transmit(source_addr, &transmit);
+        self.pcap_exporter.track_transmit(&transmit);
 
-        let data = self.network.in_transit_data(&self.node, transmit);
+        let data = self.network.in_transit_data(self.node.id.clone(), transmit);
         self.network.forward(self.node.clone(), data);
     }
 

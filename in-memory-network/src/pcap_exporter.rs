@@ -15,7 +15,7 @@ use rustls::KeyLog;
 use std::fmt::{Debug, Formatter};
 use std::fs;
 use std::io::{BufWriter, Write};
-use std::net::{IpAddr, SocketAddr};
+use std::net::IpAddr;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::Duration;
@@ -45,7 +45,7 @@ pub struct PcapExporter {
     capture_start: Instant,
     total_tracked_packets: AtomicU64,
     writer: Mutex<PcapNgWriter<BufWriter<Box<dyn Write + Send + Sync + 'static>>>>,
-    buffered_packets: Mutex<Vec<(SocketAddr, OwnedTransmit, Instant)>>,
+    buffered_packets: Mutex<Vec<(OwnedTransmit, Instant)>>,
     keylog: Option<Arc<InMemoryKeyLog>>,
     keylog_written: AtomicBool,
 }
@@ -97,7 +97,7 @@ impl PcapExporter {
         Self::new(std::io::sink(), None)
     }
 
-    pub fn track_transmit(&self, source_addr: SocketAddr, transmit: &OwnedTransmit) {
+    pub fn track_transmit(&self, transmit: &OwnedTransmit) {
         if let Some(keylog) = &self.keylog
             && let log = keylog.log.lock()
             && let keylog_written = self.keylog_written.load(Ordering::Relaxed)
@@ -106,8 +106,8 @@ impl PcapExporter {
             // Buffer packets internally if not enough key material is present to decrypt them yet
             if log.len() < 5 {
                 self.buffered_packets.lock().push((
-                    source_addr,
                     OwnedTransmit {
+                        source: transmit.source,
                         destination: transmit.destination,
                         ecn: transmit.ecn,
                         contents: transmit.contents.clone(),
@@ -156,24 +156,17 @@ impl PcapExporter {
                 self.writer.lock().write_raw_block(&raw_block).unwrap();
 
                 // Write previously buffered packets
-                for (source_addr, transmit, sent) in
-                    std::mem::take(&mut *self.buffered_packets.lock())
-                {
-                    self.write_pcapng_transmit(source_addr, &transmit, sent);
+                for (transmit, sent) in std::mem::take(&mut *self.buffered_packets.lock()) {
+                    self.write_pcapng_transmit(&transmit, sent);
                 }
             }
         }
 
-        self.write_pcapng_transmit(source_addr, transmit, Instant::now());
+        self.write_pcapng_transmit(transmit, Instant::now());
     }
 
-    fn write_pcapng_transmit(
-        &self,
-        source_addr: SocketAddr,
-        transmit: &OwnedTransmit,
-        sent: Instant,
-    ) {
-        let IpAddr::V4(source) = source_addr.ip() else {
+    fn write_pcapng_transmit(&self, transmit: &OwnedTransmit, sent: Instant) {
+        let IpAddr::V4(source) = transmit.source.ip() else {
             unreachable!()
         };
 
@@ -186,7 +179,7 @@ impl PcapExporter {
         // Wrap the data in a UDP packet
         let mut udp_writer = MutableUdpPacket::new(&mut buffer).unwrap();
         let udp_packet_length = 8 + transmit.contents.len() as u16;
-        udp_writer.set_source(source_addr.port());
+        udp_writer.set_source(transmit.source.port());
         udp_writer.set_destination(transmit.destination.port());
         udp_writer.set_length(udp_packet_length);
         udp_writer.set_payload(&transmit.contents);
@@ -236,8 +229,8 @@ impl PcapExporter {
 impl Drop for PcapExporter {
     fn drop(&mut self) {
         let packets = std::mem::take(&mut *self.buffered_packets.lock());
-        for (source, transmit, sent) in packets {
-            self.write_pcapng_transmit(source, &transmit, sent);
+        for (transmit, sent) in packets {
+            self.write_pcapng_transmit(&transmit, sent);
         }
     }
 }

@@ -46,31 +46,31 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
                 node_ips_by_role
                     .entry("quic client")
                     .or_default()
-                    .push(t.client_ip);
+                    .push(t.client.ip());
                 node_ips_by_role
                     .entry("quic server")
                     .or_default()
-                    .push(t.server_ip);
+                    .push(t.server.ip());
             }
             TrafficKind::UdpPing(t) => {
                 node_ips_by_role
                     .entry("ping client")
                     .or_default()
-                    .push(t.client_ip);
+                    .push(t.client.ip());
                 node_ips_by_role
                     .entry("ping server")
                     .or_default()
-                    .push(t.server_ip);
+                    .push(t.server.ip());
             }
             TrafficKind::UdpOneDirection(t) => {
                 node_ips_by_role
                     .entry("udp sender")
                     .or_default()
-                    .push((*t.source.ip()).into());
+                    .push(t.source.ip());
                 node_ips_by_role
                     .entry("udp receiver")
                     .or_default()
-                    .push((*t.target.ip()).into());
+                    .push(t.target.ip());
             }
         }
     }
@@ -257,7 +257,7 @@ impl Simulation {
         if cli_options.rt.disable_time_warping {
             println!("* Connectivity check skipped to save time (time warping is disabled)");
         } else {
-            let pairs = ip_pairs_from_traffic(&traffic_patterns);
+            let pairs = socket_pairs_from_traffic(&traffic_patterns);
             println!("* Running connectivity check for the following node pairs:");
             for &(ip1, ip2) in &pairs {
                 let node1 = connectivity_check_network.node(ip1);
@@ -313,13 +313,17 @@ impl Simulation {
         for traffic in &traffic_patterns {
             match traffic {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let server_node = network.node(t.server_ip);
+                    let server_node = network.node(t.server.ip());
                     let server_keylog = Arc::new(InMemoryKeyLog::default());
                     let server_pcap_exporter =
                         PcapExporter::for_node(server_node.id(), Some(server_keylog.clone()))
                             .context("failed to create pcap exporter")?;
                     let server_socket = network
-                        .udp_socket_for_node(server_pcap_exporter, server_node.clone())
+                        .udp_socket_for_node(
+                            server_pcap_exporter,
+                            server_node.clone(),
+                            t.server.port(),
+                        )
                         .unwrap();
                     let server = quic::server::server_endpoint(
                         start,
@@ -337,14 +341,17 @@ impl Simulation {
                     );
                 }
                 TrafficKind::UdpPing(t) => {
-                    let server_node = network.node(t.server_ip);
+                    let server_node = network.node(t.server.ip());
                     let server_pcap_exporter = PcapExporter::for_node(server_node.id(), None)
                         .context("failed to create pcap exporter")?;
                     let server_socket = network
-                        .udp_socket_for_node(server_pcap_exporter, server_node.clone())
+                        .udp_socket_for_node(
+                            server_pcap_exporter,
+                            server_node.clone(),
+                            t.server.port(),
+                        )
                         .unwrap();
-                    let client_ip = t.client_ip;
-                    ping::run_server_forever(server_socket, client_ip);
+                    ping::run_server_forever(server_socket, t.client.ip());
                 }
                 TrafficKind::UdpOneDirection(_) => {
                     // No background server is used with unidirectional UDP traffic
@@ -372,13 +379,17 @@ impl Simulation {
 
             match traffic_kind {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let client_node = network.node(t.client_ip);
+                    let client_node = network.node(t.client.ip());
                     let client_keylog = Arc::new(InMemoryKeyLog::default());
                     let client_pcap_exporter =
                         PcapExporter::for_node(client_node.id(), Some(client_keylog.clone()))
                             .context("failed to create pcap exporter")?;
                     let client_socket = network
-                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .udp_socket_for_node(
+                            client_pcap_exporter,
+                            client_node.clone(),
+                            t.client.port(),
+                        )
                         .unwrap();
                     let client = quic::client::client_endpoint(
                         start,
@@ -390,7 +401,6 @@ impl Simulation {
                     )?;
 
                     let task = async_rt::spawn(quic::client::run_traffic_pattern(
-                        network.clone(),
                         t.clone(),
                         start,
                         client,
@@ -399,21 +409,29 @@ impl Simulation {
                     quic_client_tasks.push(task);
                 }
                 TrafficKind::UdpPing(t) => {
-                    let client_node = network.node(t.client_ip);
+                    let client_node = network.node(t.client.ip());
                     let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
                         .context("failed to create pcap exporter")?;
                     let client_socket = network
-                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .udp_socket_for_node(
+                            client_pcap_exporter,
+                            client_node.clone(),
+                            t.client.port(),
+                        )
                         .unwrap();
                     let task = ping::run_traffic_pattern(client_socket, t, start);
                     ping_client_tasks.push(task);
                 }
                 TrafficKind::UdpOneDirection(t) => {
-                    let client_node = network.node((*t.source.ip()).into());
+                    let client_node = network.node(t.source.ip());
                     let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
                         .context("failed to create pcap exporter")?;
                     let client_socket = network
-                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .udp_socket_for_node(
+                            client_pcap_exporter,
+                            client_node.clone(),
+                            t.source.port(),
+                        )
                         .unwrap();
                     let task = udp::one_direction::run_traffic_pattern(client_socket, t);
                     udp_client_tasks.push(task);
@@ -459,27 +477,27 @@ impl Simulation {
     }
 }
 
-fn ip_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
+fn socket_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
     let mut pairs = HashSet::new();
     for kind in traffic {
         match kind {
             TrafficKind::QuicRequestResponse(t) => {
-                // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(t.client_ip, t.server_ip);
-                let snd = cmp::max(t.client_ip, t.server_ip);
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.client.ip(), t.server.ip());
+                let snd = cmp::max(t.client.ip(), t.server.ip());
                 pairs.insert((fst, snd));
             }
             TrafficKind::UdpPing(t) => {
-                // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(t.client_ip, t.server_ip);
-                let snd = cmp::max(t.client_ip, t.server_ip);
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.client.ip(), t.server.ip());
+                let snd = cmp::max(t.client.ip(), t.server.ip());
                 pairs.insert((fst, snd));
             }
             TrafficKind::UdpOneDirection(t) => {
-                // Order IPs to prevent duplicates in `pairs`
-                let fst = *cmp::min(t.source.ip(), t.target.ip());
-                let snd = *cmp::max(t.source.ip(), t.target.ip());
-                pairs.insert((fst.into(), snd.into()));
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.source.ip(), t.target.ip());
+                let snd = cmp::max(t.source.ip(), t.target.ip());
+                pairs.insert((fst, snd));
             }
         }
     }

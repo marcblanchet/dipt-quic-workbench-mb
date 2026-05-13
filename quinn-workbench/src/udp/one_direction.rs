@@ -26,7 +26,7 @@ pub fn run_traffic_pattern(
                 pending_send -= next_chunk_size_bytes;
 
                 client_socket.send(&Transmit {
-                    destination: target.into(),
+                    destination: target,
                     ecn: None,
                     contents: &chunk[..next_chunk_size_bytes],
                     segment_size: None,

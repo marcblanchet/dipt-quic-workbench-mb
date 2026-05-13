@@ -64,11 +64,12 @@ pub async fn run(
     println!("--- Throughput test ---");
     let duration = Duration::from_millis(throughput_opt.duration_ms);
 
+    let port = 8080;
     let server_ip = throughput_opt.peers.server_ip_address;
     let server_node = network.node(server_ip);
     let server_socket = Arc::pin(
         network
-            .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+            .udp_socket_for_node(PcapExporter::noop(), server_node.clone(), port)
             .unwrap(),
     );
 
@@ -76,7 +77,7 @@ pub async fn run(
     let client_node = network.node(client_ip);
     let client_socket = Arc::pin(
         network
-            .udp_socket_for_node(PcapExporter::noop(), client_node.clone())
+            .udp_socket_for_node(PcapExporter::noop(), client_node.clone(), port)
             .unwrap(),
     );
 
