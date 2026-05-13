@@ -46,6 +46,7 @@ mod test {
     use std::net::Ipv4Addr;
     use std::sync::Arc;
     use std::time::Duration;
+    use crate::transmit::DEFAULT_TTL;
 
     const SERVER_ADDR: Ipv4Cidr = Ipv4Cidr::from_ipv4(Ipv4Addr::new(88, 88, 88, 88), 24);
     const ROUTER1_ADDR: Ipv4Cidr = Ipv4Cidr::from_ipv4(Ipv4Addr::new(200, 200, 200, 1), 24);
@@ -337,6 +338,7 @@ mod test {
                 ecn: None,
                 contents: b"hello world".to_vec().into(),
                 segment_size: None,
+                ttl: DEFAULT_TTL,
             },
         );
         let packet_id = data.id;
@@ -406,6 +408,7 @@ mod test {
                     ecn: None,
                     contents: vec![42; packet_size_bytes].into(),
                     segment_size: None,
+                    ttl: DEFAULT_TTL,
                 },
             );
 
@@ -489,6 +492,7 @@ mod test {
                 ecn: None,
                 contents: vec![42; 1200].into(),
                 segment_size: None,
+                ttl: DEFAULT_TTL,
             },
         );
         let packet_id = data.id;

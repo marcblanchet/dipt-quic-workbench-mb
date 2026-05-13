@@ -1,7 +1,6 @@
 use crate::async_rt::time::Instant;
-use crate::transmit::OwnedTransmit;
+use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
 use anyhow::Context;
-use bytes::Bytes;
 use parking_lot::Mutex;
 use pcap_file::pcapng::blocks::enhanced_packet::EnhancedPacketBlock;
 use pcap_file::pcapng::blocks::interface_description::InterfaceDescriptionBlock;
@@ -12,7 +11,6 @@ use pnet_packet::ip::IpNextHeaderProtocol;
 use pnet_packet::ipv4::MutableIpv4Packet;
 use pnet_packet::udp::MutableUdpPacket;
 use pnet_packet::{PacketSize, ipv4, udp};
-use quinn::udp::Transmit;
 use rustls::KeyLog;
 use std::fmt::{Debug, Formatter};
 use std::fs;
@@ -99,7 +97,7 @@ impl PcapExporter {
         Self::new(std::io::sink(), None)
     }
 
-    pub fn track_transmit(&self, source_addr: SocketAddr, transmit: &Transmit) {
+    pub fn track_transmit(&self, source_addr: SocketAddr, transmit: &OwnedTransmit) {
         if let Some(keylog) = &self.keylog
             && let log = keylog.log.lock()
             && let keylog_written = self.keylog_written.load(Ordering::Relaxed)
@@ -112,8 +110,9 @@ impl PcapExporter {
                     OwnedTransmit {
                         destination: transmit.destination,
                         ecn: transmit.ecn,
-                        contents: Bytes::copy_from_slice(transmit.contents),
+                        contents: transmit.contents.clone(),
                         segment_size: transmit.segment_size,
+                        ttl: DEFAULT_TTL,
                     },
                     Instant::now(),
                 ));
@@ -160,7 +159,7 @@ impl PcapExporter {
                 for (source_addr, transmit, sent) in
                     std::mem::take(&mut *self.buffered_packets.lock())
                 {
-                    self.write_pcapng_transmit(source_addr, &transmit.as_transmit(), sent);
+                    self.write_pcapng_transmit(source_addr, &transmit, sent);
                 }
             }
         }
@@ -168,7 +167,12 @@ impl PcapExporter {
         self.write_pcapng_transmit(source_addr, transmit, Instant::now());
     }
 
-    fn write_pcapng_transmit(&self, source_addr: SocketAddr, transmit: &Transmit, sent: Instant) {
+    fn write_pcapng_transmit(
+        &self,
+        source_addr: SocketAddr,
+        transmit: &OwnedTransmit,
+        sent: Instant,
+    ) {
         let IpAddr::V4(source) = source_addr.ip() else {
             unreachable!()
         };
@@ -185,7 +189,7 @@ impl PcapExporter {
         udp_writer.set_source(source_addr.port());
         udp_writer.set_destination(transmit.destination.port());
         udp_writer.set_length(udp_packet_length);
-        udp_writer.set_payload(transmit.contents);
+        udp_writer.set_payload(&transmit.contents);
         let checksum = udp::ipv4_checksum(&udp_writer.to_immutable(), &source, &destination);
         udp_writer.set_checksum(checksum);
         drop(udp_writer);
@@ -200,7 +204,7 @@ impl PcapExporter {
         ip_writer.set_identification(0); // We never fragment
         ip_writer.set_flags(0b010); // We never fragment
         ip_writer.set_fragment_offset(0); // We never fragment
-        ip_writer.set_ttl(64);
+        ip_writer.set_ttl(transmit.ttl);
         ip_writer.set_next_level_protocol(IpNextHeaderProtocol::new(17)); // 17 = UDP
         ip_writer.set_source(source);
         ip_writer.set_destination(destination);
@@ -233,7 +237,7 @@ impl Drop for PcapExporter {
     fn drop(&mut self) {
         let packets = std::mem::take(&mut *self.buffered_packets.lock());
         for (source, transmit, sent) in packets {
-            self.write_pcapng_transmit(source, &transmit.as_transmit(), sent);
+            self.write_pcapng_transmit(source, &transmit, sent);
         }
     }
 }

@@ -1,6 +1,7 @@
 use quinn_proto::{ConnectionId, ConnectionIdGenerator};
 use std::time::Duration;
 
+#[allow(dead_code)]
 pub struct NoConnectionIdGenerator;
 
 impl ConnectionIdGenerator for NoConnectionIdGenerator {

@@ -1,10 +1,10 @@
 use crate::config::NetworkConfig;
 use crate::config::cli::SimulateOpt;
 use crate::config::traffic::{QuicRequestResponseTraffic, TrafficJson, TrafficKind};
-use crate::quic;
 use crate::udp::ping;
 use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
 use crate::{load_network_config, load_traffic, util};
+use crate::{quic, udp};
 use anyhow::{Context, anyhow, bail};
 use fastrand::Rng;
 use futures::StreamExt;
@@ -62,6 +62,16 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
                     .or_default()
                     .push(t.server_ip);
             }
+            TrafficKind::UdpOneDirection(t) => {
+                node_ips_by_role
+                    .entry("udp sender")
+                    .or_default()
+                    .push((*t.source.ip()).into());
+                node_ips_by_role
+                    .entry("udp receiver")
+                    .or_default()
+                    .push((*t.target.ip()).into());
+            }
         }
     }
 
@@ -71,7 +81,13 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
     let (main_traffic_name, force_verbose_stats) = match first_traffic {
         TrafficKind::QuicRequestResponse(_) => ("Requests", false),
         TrafficKind::UdpPing(_) => ("Ping", true),
+        TrafficKind::UdpOneDirection(_) => ("UDP", true),
     };
+
+    let all_traffic_is_udp = traffic
+        .traffic_patterns
+        .iter()
+        .all(|t| matches!(t, TrafficKind::UdpOneDirection(_)));
 
     let mut simulation = Simulation::new();
     let result = simulation
@@ -109,7 +125,7 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
         })
         .collect();
     let duplicate_ids = util::duplicates(node_ids_by_role.values().flatten().copied());
-    if !duplicate_ids.is_empty() {
+    if !duplicate_ids.is_empty() && !all_traffic_is_udp {
         let duplicates = duplicate_ids.join(", ");
         bail!(
             "it is currently not allowed to use the same node in different traffic specs, but the following nodes were reused: {duplicates}"
@@ -244,20 +260,29 @@ impl Simulation {
             let pairs = ip_pairs_from_traffic(&traffic_patterns);
             println!("* Running connectivity check for the following node pairs:");
             for &(ip1, ip2) in &pairs {
-                print!("  * {ip1} <-> {ip2} ... ");
-                io::stdout().flush()?;
-
                 let node1 = connectivity_check_network.node(ip1);
                 let node2 = connectivity_check_network.node(ip2);
-                let (arrived1, arrived2) = connectivity_check_network
-                    .assert_connectivity_between_nodes(node1, node2)
-                    .await?;
 
-                println!(
-                    "passed (packets arrived after {} ms and {} ms)",
-                    arrived1.as_millis(),
-                    arrived2.as_millis()
-                );
+                print!("  * {} ({ip1}) <-> {} ({ip2}) ... ", node1.id(), node2.id());
+                io::stdout().flush()?;
+
+                let connectivity_check_result = connectivity_check_network
+                    .assert_connectivity_between_nodes(node1, node2)
+                    .await;
+
+                match connectivity_check_result {
+                    Ok((arrived1, arrived2)) => {
+                        println!(
+                            "passed (packets arrived after {} ms and {} ms)",
+                            arrived1.as_millis(),
+                            arrived2.as_millis()
+                        );
+                    }
+                    Err(e) => {
+                        println!("failed!");
+                        return Err(e);
+                    }
+                }
             }
         }
         drop(connectivity_check_network);
@@ -321,6 +346,9 @@ impl Simulation {
                     let client_ip = t.client_ip;
                     ping::run_server_forever(server_socket, client_ip);
                 }
+                TrafficKind::UdpOneDirection(_) => {
+                    // No background server is used with unidirectional UDP traffic
+                }
             }
         }
 
@@ -334,6 +362,7 @@ impl Simulation {
         // Spawn client tasks
         let mut quic_client_tasks = Vec::new();
         let mut ping_client_tasks = Vec::new();
+        let mut udp_client_tasks = Vec::new();
         for (i, traffic_kind) in traffic_patterns.iter().enumerate() {
             let log_writer: Arc<Mutex<dyn Write + Send + Sync>> = if i == 0 {
                 Arc::new(Mutex::new(io::stdout()))
@@ -379,12 +408,25 @@ impl Simulation {
                     let task = ping::run_traffic_pattern(client_socket, t, start);
                     ping_client_tasks.push(task);
                 }
+                TrafficKind::UdpOneDirection(t) => {
+                    let client_node = network.node((*t.source.ip()).into());
+                    let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
+                        .context("failed to create pcap exporter")?;
+                    let client_socket = network
+                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .unwrap();
+                    let task = udp::one_direction::run_traffic_pattern(client_socket, t);
+                    udp_client_tasks.push(task);
+                }
             }
         }
 
         // Wait for all ping tasks to finish
         for task in ping_client_tasks {
             task.await.context("ping client task crashed")?;
+        } // Wait for all udp tasks to finish
+        for task in udp_client_tasks {
+            task.await.context("udp client task crashed")?;
         }
 
         // Wait for all quic traffic tasks to finish
@@ -419,19 +461,25 @@ impl Simulation {
 
 fn ip_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
     let mut pairs = HashSet::new();
-    for t in traffic {
-        match t {
-            TrafficKind::QuicRequestResponse(request_response) => {
+    for kind in traffic {
+        match kind {
+            TrafficKind::QuicRequestResponse(t) => {
                 // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(request_response.client_ip, request_response.server_ip);
-                let snd = cmp::max(request_response.client_ip, request_response.server_ip);
+                let fst = cmp::min(t.client_ip, t.server_ip);
+                let snd = cmp::max(t.client_ip, t.server_ip);
                 pairs.insert((fst, snd));
             }
-            TrafficKind::UdpPing(ping) => {
+            TrafficKind::UdpPing(t) => {
                 // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(ping.client_ip, ping.server_ip);
-                let snd = cmp::max(ping.client_ip, ping.server_ip);
+                let fst = cmp::min(t.client_ip, t.server_ip);
+                let snd = cmp::max(t.client_ip, t.server_ip);
                 pairs.insert((fst, snd));
+            }
+            TrafficKind::UdpOneDirection(t) => {
+                // Order IPs to prevent duplicates in `pairs`
+                let fst = *cmp::min(t.source.ip(), t.target.ip());
+                let snd = *cmp::max(t.source.ip(), t.target.ip());
+                pairs.insert((fst.into(), snd.into()));
             }
         }
     }

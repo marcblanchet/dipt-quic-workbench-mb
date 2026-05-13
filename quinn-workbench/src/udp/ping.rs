@@ -4,7 +4,6 @@ use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
 use in_memory_network::quinn_interop::{BufsAndMeta, InMemoryUdpSocket};
 use parking_lot::Mutex;
-use quinn::AsyncUdpSocket;
 use quinn::udp::Transmit;
 use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
@@ -21,15 +20,13 @@ pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_ip: IpAddr) {
                 assert_eq!(packet.source_addr.ip(), client_ip);
 
                 // Echo transmit
-                server_socket
-                    .try_send(&Transmit {
-                        destination: SocketAddr::new(client_ip, 8080),
-                        ecn: None,
-                        contents: packet.payload,
-                        segment_size: None,
-                        src_ip: None,
-                    })
-                    .unwrap();
+                server_socket.send(&Transmit {
+                    destination: SocketAddr::new(client_ip, 8080),
+                    ecn: None,
+                    contents: packet.payload,
+                    segment_size: None,
+                    src_ip: None,
+                });
             }
         }
     });
@@ -69,15 +66,13 @@ pub fn run_traffic_pattern(
             // Send ping
             let payload = ping_nr.to_le_bytes();
 
-            client_socket_cp
-                .try_send(&Transmit {
-                    destination: SocketAddr::new(server_ip, 8080),
-                    ecn: None,
-                    contents: &payload,
-                    segment_size: None,
-                    src_ip: None,
-                })
-                .unwrap();
+            client_socket_cp.send(&Transmit {
+                destination: SocketAddr::new(server_ip, 8080),
+                ecn: None,
+                contents: &payload,
+                segment_size: None,
+                src_ip: None,
+            });
 
             let sent_ping_nr = ping_nr;
             in_flight_cp.lock().insert(sent_ping_nr, Instant::now());

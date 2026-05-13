@@ -14,7 +14,6 @@ use in_memory_network::network::spec::NetworkSpec;
 use in_memory_network::pcap_exporter::PcapExporter;
 use in_memory_network::quinn_interop::BufsAndMeta;
 use in_memory_network::tracing::tracer::SimulationStepTracer;
-use quinn::AsyncUdpSocket;
 use quinn::udp::Transmit;
 use std::collections::VecDeque;
 use std::net::SocketAddr;
@@ -136,15 +135,13 @@ pub async fn run(
                 bytes_left -= next_packet_size_bytes;
 
                 // Send packet
-                client_socket_cp
-                    .try_send(&Transmit {
-                        destination: SocketAddr::new(server_ip, 8080),
-                        ecn: None,
-                        contents: &payload[..next_packet_size_bytes],
-                        segment_size: None,
-                        src_ip: None,
-                    })
-                    .unwrap();
+                client_socket_cp.send(&Transmit {
+                    destination: SocketAddr::new(server_ip, 8080),
+                    ecn: None,
+                    contents: &payload[..next_packet_size_bytes],
+                    segment_size: None,
+                    src_ip: None,
+                });
             }
 
             // Sleep before sending the next packet

@@ -2,7 +2,7 @@ use crate::network::InMemoryNetwork;
 use crate::network::inbound_queue::NextPacketDelivery;
 use crate::network::node::{Node, UdpEndpoint};
 use crate::pcap_exporter::PcapExporter;
-use crate::transmit::OwnedTransmit;
+use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
 use bytes::Bytes;
 use parking_lot::Mutex;
 use quinn::udp::{RecvMeta, Transmit};
@@ -64,25 +64,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
     }
 
     fn try_send(&self, transmit: &Transmit) -> io::Result<()> {
-        // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
-        // packet
-        assert!(transmit.segment_size.is_none());
-
-        // Track in pcap
-        let source_addr = self.node.quic_addr();
-        self.pcap_exporter.track_transmit(source_addr, transmit);
-
-        let data = self.network.in_transit_data(
-            &self.node,
-            OwnedTransmit {
-                destination: transmit.destination,
-                ecn: transmit.ecn,
-                contents: Bytes::copy_from_slice(transmit.contents),
-                segment_size: transmit.segment_size,
-            },
-        );
-        self.network.forward(self.node.clone(), data);
-
+        self.send(transmit);
         Ok(())
     }
 
@@ -124,8 +106,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
 
             // Track in pcap
             let source_addr = in_transit.data.source_endpoint.addr;
-            self.pcap_exporter
-                .track_transmit(source_addr, &transmit.as_transmit());
+            self.pcap_exporter.track_transmit(source_addr, &transmit);
         }
 
         Poll::Ready(Ok(delivered_len))
@@ -137,6 +118,27 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
+    pub fn send(&self, transmit: &Transmit) {
+        // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
+        // packet
+        assert!(transmit.segment_size.is_none());
+
+        let transmit = OwnedTransmit {
+            destination: transmit.destination,
+            ecn: transmit.ecn,
+            contents: Bytes::copy_from_slice(transmit.contents),
+            segment_size: transmit.segment_size,
+            ttl: DEFAULT_TTL,
+        };
+
+        // Track in pcap
+        let source_addr = self.node.quic_addr();
+        self.pcap_exporter.track_transmit(source_addr, &transmit);
+
+        let data = self.network.in_transit_data(&self.node, transmit);
+        self.network.forward(self.node.clone(), data);
+    }
+
     pub async fn receive<'a>(
         &self,
         bufs_and_meta: &'a mut BufsAndMeta,

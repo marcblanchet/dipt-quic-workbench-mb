@@ -123,6 +123,12 @@ fn print_single_node_stats(stats: &NodeStats) {
         }
         if stats.dropped_injected.packets != 0 {
             println!(
+                "      | TTL reached 0 ({} packets, {} bytes)",
+                stats.dropped_zero_ttl.packets, stats.dropped_zero_ttl.bytes
+            );
+        }
+        if stats.dropped_injected.packets != 0 {
+            println!(
                 "      | randomly dropped ({} packets, {} bytes)",
                 stats.dropped_injected.packets, stats.dropped_injected.bytes
             );

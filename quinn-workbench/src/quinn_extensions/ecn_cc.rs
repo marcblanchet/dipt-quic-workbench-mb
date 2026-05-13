@@ -4,6 +4,7 @@ use std::any::Any;
 use std::sync::Arc;
 use std::time::Instant;
 
+#[allow(dead_code)]
 pub struct EcnCc(Box<dyn Controller>);
 
 impl Controller for EcnCc {

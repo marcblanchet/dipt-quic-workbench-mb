@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::net::IpAddr;
+use std::net::{IpAddr, SocketAddrV4};
 
 #[derive(Deserialize)]
 pub struct TrafficJson {
@@ -11,6 +11,7 @@ pub struct TrafficJson {
 pub enum TrafficKind {
     QuicRequestResponse(QuicRequestResponseTraffic),
     UdpPing(PingTraffic),
+    UdpOneDirection(UdpOneDirectionTraffic),
 }
 
 #[derive(Deserialize, Clone)]
@@ -70,8 +71,7 @@ pub struct PingTraffic {
     pub client_ip: IpAddr,
     /// The ping destination's IP address
     pub server_ip: IpAddr,
-    /// The duration of the run, after which we will stop sending pings and the program will
-    /// terminate
+    /// The duration of the run, after which we will stop sending pings
     pub duration_ms: u64,
     /// The interval at which ping packets will be sent
     pub interval_ms: u64,
@@ -83,4 +83,23 @@ pub struct PingTraffic {
 
 fn default_deadline_ms() -> u64 {
     10_000
+}
+
+#[derive(Deserialize)]
+pub struct UdpOneDirectionTraffic {
+    /// The socket address of the sender
+    pub source: SocketAddrV4,
+    /// The socket address of the receiver
+    pub target: SocketAddrV4,
+    /// The size of the payload (potentially split across multiple UDP packets)
+    pub payload_bytes: u32,
+    /// The interval at which the payload should be sent
+    pub send_interval_ms: u64,
+    /// The duration of the run, after which we will stop sending packets (defaults to 2 hours)
+    #[serde(default = "default_udp_duration_ms")]
+    pub duration_ms: u64,
+}
+
+fn default_udp_duration_ms() -> u64 {
+    1000 * 3600 * 60
 }

@@ -29,7 +29,7 @@ pub struct NetworkLink {
     pacer: Mutex<PacketPacer>,
     sleep_until_ready_to_send_semaphore: Arc<Semaphore>,
     status: LinkStatus,
-    last_down: Option<async_rt::time::Instant>,
+    last_down: Option<Instant>,
     delay: Duration,
     pub(crate) bandwidth_bps: usize,
     pub(crate) congestion_event_ratio: f64,
@@ -107,6 +107,22 @@ impl NetworkLink {
             LinkStatus::Up => "UP",
             LinkStatus::Down { .. } => "DOWN",
         }
+    }
+
+    pub fn is_down(&self) -> bool {
+        self.status.is_down()
+    }
+
+    pub fn current_delay(&self) -> Duration {
+        self.delay
+    }
+
+    pub(crate) fn update_delay(&mut self, update: Duration) {
+        if let LinkStatus::Up = self.status {
+            return;
+        }
+
+        self.delay = update;
     }
 
     pub(crate) fn update_status(&mut self, update: UpdateLinkStatus) {
