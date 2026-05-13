@@ -15,10 +15,9 @@
   * MoonOrbiter1: DOWN
   * MoonAsset1: UP
 * Running connectivity check for the following node pairs:
-  * 192.168.40.1 <-> 192.168.41.2 ... 3.90s WARN: no more network events left to process. Did the simulation keep running indefinitely?
-passed (packets arrived after 61800 ms and 61800 ms)
+  * Earth1 (192.168.40.1) <-> MoonAsset1 (192.168.41.2) ... passed (packets arrived after 61800 ms and 61800 ms)
 --- Ping ---
-3.90s WARN: no more network events left to process. Did the simulation keep running indefinitely?
+3.90s WARN no more network events left to process. Did the simulation keep running indefinitely?
 P2 | 2.00s - SENT | 6.00s - RECEIVED | 4.00s - DURATION
 P3 | 3.00s - SENT | 6.60s - RECEIVED | 3.60s - DURATION
 P4 | 4.00s - SENT | 7.60s - RECEIVED | 3.60s - DURATION

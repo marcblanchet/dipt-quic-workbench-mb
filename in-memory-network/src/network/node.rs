@@ -3,6 +3,7 @@ use crate::network::event::UpdateNodeStatus;
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::BufferedPacket;
 use crate::network::outbound_buffer::OutboundBuffer;
+use crate::network::route::Route;
 use crate::network::spec::NetworkNodeSpec;
 use crate::{HOST_PORT, async_rt};
 use anyhow::bail;
@@ -39,8 +40,9 @@ impl NodeStatus {
 }
 
 pub struct Node {
-    pub(crate) addresses: Vec<IpAddr>,
     pub(crate) id: Arc<str>,
+    pub(crate) addresses: Vec<IpAddr>,
+    pub(crate) routes: Vec<(IpAddr, Route)>,
     pub(crate) udp_endpoint: Arc<UdpEndpoint>,
     pub(crate) injected_failures: NodeInjectedFailures,
     pub(crate) status: Mutex<NodeStatus>,
@@ -64,6 +66,18 @@ impl Node {
         }
 
         let addresses = node.addresses();
+        let mut routes = node
+            .interfaces
+            .iter()
+            .flat_map(|i| {
+                i.routes.iter().flat_map(move |r| {
+                    i.addresses
+                        .iter()
+                        .map(|addr| (IpAddr::V4(addr.address), r.clone()))
+                })
+            })
+            .collect::<Vec<_>>();
+        routes.sort_by(|(dest1, r1), (dest2, r2)| r1.cost.cmp(&r2.cost).then(dest1.cmp(dest2)));
 
         // The QUIC endpoint is bound to the node's address in the first network interface
         //
@@ -80,6 +94,7 @@ impl Node {
             injected_failures: NodeInjectedFailures::from_spec(node),
             id: node.id.clone(),
             addresses,
+            routes,
             outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
             udp_endpoint: quinn_endpoint.clone(),
             outbound_tx: tx,

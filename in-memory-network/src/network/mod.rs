@@ -28,7 +28,6 @@ use fastrand::Rng;
 use futures_util::StreamExt;
 use link::NetworkLink;
 use parking_lot::Mutex;
-use route::Route;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::net::IpAddr;
 use std::ops::ControlFlow;
@@ -49,8 +48,6 @@ pub struct InMemoryNetwork {
     nodes_by_addr: Arc<HashMap<IpAddr, Arc<Node>>>,
     /// Map from ids to the corresponding nodes
     nodes_by_id: Arc<HashMap<Arc<str>, Arc<Node>>>,
-    /// Map from ip addresses to the available route information
-    routes_by_addr: Arc<HashMap<IpAddr, Arc<Vec<Route>>>>,
     /// Map from ip address pairs to the corresponding links
     links_by_addr: Arc<HashMap<(IpAddr, IpAddr), Arc<Mutex<NetworkLink>>>>,
     /// Map from ids the corresponding links
@@ -80,18 +77,6 @@ impl InMemoryNetwork {
 
             if !start.elapsed().is_zero() {
                 bail!("attempted to initialize network with an old start instant");
-            }
-        }
-
-        let mut routes_by_addr = HashMap::new();
-        let all_node_interfaces = network_spec.nodes.iter().map(|n| &n.interfaces);
-        for single_node_interfaces in all_node_interfaces {
-            for interface in single_node_interfaces {
-                for interface_addr in &interface.addresses {
-                    let mut routes = interface.routes.clone();
-                    routes.sort_by_key(|r| r.cost); // ascending order
-                    routes_by_addr.insert(interface_addr.as_ip_addr(), Arc::new(routes));
-                }
             }
         }
 
@@ -169,7 +154,6 @@ impl InMemoryNetwork {
         let network = Arc::new(Self {
             nodes_by_addr: Arc::new(nodes_by_addr),
             nodes_by_id: Arc::new(nodes_by_id),
-            routes_by_addr: Arc::new(routes_by_addr),
             links_by_addr: Arc::new(links_by_addr),
             links_by_id: Arc::new(links_by_id),
             udp_socket_created: Default::default(),
@@ -449,15 +433,12 @@ impl InMemoryNetwork {
         }
 
         // Use routing when no direct links are available
-        for node_addr in node.addresses() {
-            let routes = &self.routes_by_addr[&node_addr];
-            let candidate_links = routes
-                .iter()
-                .flat_map(|r| r.next_hop_towards_destination(dest))
-                .flat_map(|next_hop_addr| self.links_by_addr.get(&(node_addr, next_hop_addr)));
-
-            for link in candidate_links {
-                if let ControlFlow::Break(value) = walk_fn(link) {
+        for (node_addr, route) in &node.routes {
+            if let Some(next_hop_addr) = route.next_hop_towards_destination(dest)
+                && let Some(link) = self.links_by_addr.get(&(*node_addr, next_hop_addr))
+            {
+                let walk_fn_result = walk_fn(link);
+                if let ControlFlow::Break(value) = walk_fn_result {
                     return Some(value);
                 }
             }
