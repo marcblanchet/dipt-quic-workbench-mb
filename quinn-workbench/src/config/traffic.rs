@@ -95,11 +95,11 @@ pub struct UdpOneDirectionTraffic {
     pub payload_bytes: u32,
     /// The interval at which the payload should be sent
     pub send_interval_ms: u64,
-    /// The duration of the run, after which we will stop sending packets (defaults to 2 hours)
+    /// The duration of the run, after which we will stop sending packets (defaults to 10 minutes)
     #[serde(default = "default_udp_duration_ms")]
     pub duration_ms: u64,
 }
 
 fn default_udp_duration_ms() -> u64 {
-    1000 * 3600 * 60
+    1000 * 60 * 10
 }

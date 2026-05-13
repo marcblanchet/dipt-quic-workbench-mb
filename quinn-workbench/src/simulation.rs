@@ -392,12 +392,16 @@ impl Simulation {
                     let client_socket = network
                         .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
-                    let task = ping::run_traffic_pattern(client_socket, t, start);
+                    let task = ping::run_traffic_pattern(client_socket, t, start, log_writer);
                     ping_client_tasks.push(task);
                 }
                 TrafficKind::UdpOneDirection(t) => {
-                    udp_client_tasks
-                        .push(udp::one_direction::run_traffic_pattern(network.clone(), t));
+                    udp_client_tasks.push(udp::one_direction::run_traffic_pattern(
+                        network.clone(),
+                        t,
+                        start,
+                        log_writer,
+                    ));
                 }
             }
         }
