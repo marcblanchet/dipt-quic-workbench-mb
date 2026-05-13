@@ -23,14 +23,13 @@ pub struct InTransitData {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::network::InMemoryNetwork;
     use crate::network::event::{
         LinkEventPayload, NetworkEvent, NetworkEventKind, NetworkEvents, UpdateLinkStatus,
     };
     use crate::network::ip::Ipv4Cidr;
     use crate::network::route::{IpRange, Route};
     use crate::network::spec::{NetworkInterface, NetworkLinkSpec, NetworkNodeSpec, NetworkSpec};
-    use crate::pcap_exporter::PcapExporter;
+    use crate::network::{InMemoryNetwork, PcapOptions};
     use crate::quinn_interop::BufsAndMeta;
     use crate::tracing::tracer::SimulationStepTracer;
     use crate::transmit::DEFAULT_TTL;
@@ -212,6 +211,7 @@ mod test {
             Rng::with_seed(42),
             async_rt::time::Instant::now(),
             false,
+            PcapOptions::Disabled,
         )
         .unwrap()
     }
@@ -264,7 +264,7 @@ mod test {
             Some(server_config),
             Arc::new(
                 network
-                    .udp_socket_for_node(PcapExporter::noop(), server_socket.clone(), HOST_PORT)
+                    .udp_socket_for_node(server_socket.clone(), HOST_PORT)
                     .unwrap(),
             ),
             rt.clone(),
@@ -275,7 +275,7 @@ mod test {
             None,
             Arc::new(
                 network
-                    .udp_socket_for_node(PcapExporter::noop(), client_socket.clone(), HOST_PORT)
+                    .udp_socket_for_node(client_socket.clone(), HOST_PORT)
                     .unwrap(),
             ),
             rt,
@@ -329,7 +329,7 @@ mod test {
         let server_node = network.node(SERVER_ADDR.as_ip_addr());
         let client_node = network.node(CLIENT_ADDR.as_ip_addr());
         let data = network.in_transit_data(
-            &client_node,
+            client_node.id().clone(),
             OwnedTransmit {
                 source: client_node.socket_addr(HOST_PORT),
                 destination: server_node.socket_addr(HOST_PORT),
@@ -344,7 +344,7 @@ mod test {
 
         let mut recv_result = BufsAndMeta::new(1200, 10);
         let server_socket = network
-            .udp_socket_for_node(PcapExporter::noop(), server_node.clone(), HOST_PORT)
+            .udp_socket_for_node(server_node.clone(), HOST_PORT)
             .unwrap();
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
 
@@ -400,7 +400,7 @@ mod test {
         let mut packet_ids = Vec::new();
         for _ in 0..4 {
             let data = network.in_transit_data(
-                &client_node,
+                client_node.id().clone(),
                 OwnedTransmit {
                     source: client_node.socket_addr(HOST_PORT),
                     destination: server_node.socket_addr(HOST_PORT),
@@ -418,7 +418,7 @@ mod test {
         let mut recv_result = BufsAndMeta::new(packet_size_bytes, 10);
         let server_socket = Arc::new(
             network
-                .udp_socket_for_node(PcapExporter::noop(), server_node.clone(), HOST_PORT)
+                .udp_socket_for_node(server_node.clone(), HOST_PORT)
                 .unwrap(),
         );
         let mut received = 0;
@@ -485,7 +485,7 @@ mod test {
         let client_node = network.node(CLIENT_ADDR.as_ip_addr());
 
         let data = network.in_transit_data(
-            &client_node,
+            client_node.id().clone(),
             OwnedTransmit {
                 source: client_node.socket_addr(HOST_PORT),
                 destination: server_node.socket_addr(HOST_PORT),
@@ -501,7 +501,7 @@ mod test {
         let mut recv_result = BufsAndMeta::new(1200, 10);
         let server_socket = Arc::new(
             network
-                .udp_socket_for_node(PcapExporter::noop(), server_node.clone(), HOST_PORT)
+                .udp_socket_for_node(server_node.clone(), HOST_PORT)
                 .unwrap(),
         );
         let received = server_socket.receive_raw(&mut recv_result).await.unwrap();
