@@ -206,10 +206,13 @@ impl Simulation {
             "* Network graph path: {}",
             cli_options.network.network_graph.display()
         );
-        println!(
-            "* Network events path: {}",
-            cli_options.network.network_events.display()
-        );
+        let network_events_path = cli_options
+            .network
+            .network_events
+            .as_ref()
+            .map(|p| p.display().to_string())
+            .unwrap_or_else(|| "<none>".to_string());
+        println!("* Network events path: {network_events_path}");
         println!("* Traffic patterns path: {}", cli_options.traffic.display(),);
 
         let start = Instant::now();

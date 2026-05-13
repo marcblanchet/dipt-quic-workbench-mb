@@ -63,11 +63,16 @@ fn load_traffic(cli: &SimulateOpt) -> anyhow::Result<TrafficJson> {
 
 fn load_network_config(cli: &NetworkOpt) -> anyhow::Result<NetworkConfig> {
     let network_graph = load_json(&cli.network_graph)?;
-    let network_events: NetworkEventsJson = load_json(&cli.network_events)?;
+
+    let network_events: Option<NetworkEventsJson> = cli
+        .network_events
+        .as_ref()
+        .map(|p| load_json(p))
+        .transpose()?;
 
     Ok(NetworkConfig {
         network_graph,
-        network_events: network_events.events,
+        network_events: network_events.map(|e| e.events).unwrap_or_default(),
     })
 }
 
