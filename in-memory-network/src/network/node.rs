@@ -1,17 +1,21 @@
-use crate::network::InMemoryNetwork;
 use crate::network::event::UpdateNodeStatus;
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::BufferedPacket;
 use crate::network::outbound_buffer::OutboundBuffer;
+use crate::network::route::Route;
 use crate::network::spec::NetworkNodeSpec;
-use crate::{HOST_PORT, async_rt};
+use crate::network::{InMemoryNetwork, PcapOptions};
+use crate::pcap_exporter::{InMemoryKeyLog, PcapExporter};
+use crate::{InTransitData, async_rt};
 use anyhow::bail;
 use futures_util::FutureExt;
 use futures_util::future::Shared;
 use parking_lot::Mutex;
+use std::collections::HashMap;
 use std::mem;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
+use std::time::Duration;
 
 pub enum NodeStatus {
     Up,
@@ -39,12 +43,16 @@ impl NodeStatus {
 }
 
 pub struct Node {
-    pub(crate) addresses: Vec<IpAddr>,
     pub(crate) id: Arc<str>,
-    pub(crate) udp_endpoint: Arc<UdpEndpoint>,
+    pub(crate) canonical_address: IpAddr,
+    pub(crate) addresses: Vec<IpAddr>,
+    pub(crate) routes: Vec<(IpAddr, Route)>,
     pub(crate) injected_failures: NodeInjectedFailures,
     pub(crate) status: Mutex<NodeStatus>,
     pub(crate) last_buffer_clear: Mutex<Option<async_rt::time::Instant>>,
+    pub(crate) pcap_exporter: PcapExporter,
+    keylog: Arc<InMemoryKeyLog>,
+    udp_endpoints: Mutex<HashMap<u16, Arc<UdpEndpoint>>>,
     outbound_buffer: Arc<OutboundBuffer>,
     outbound_tx: futures::channel::mpsc::UnboundedSender<BufferedPacket>,
 }
@@ -52,6 +60,7 @@ pub struct Node {
 impl Node {
     pub(crate) fn new(
         node: &NetworkNodeSpec,
+        pcap_options: PcapOptions,
     ) -> anyhow::Result<(
         Self,
         futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
@@ -64,29 +73,65 @@ impl Node {
         }
 
         let addresses = node.addresses();
+        let canonical_address = addresses[0];
+        let mut routes = node
+            .interfaces
+            .iter()
+            .flat_map(|i| {
+                i.routes.iter().flat_map(move |r| {
+                    i.addresses
+                        .iter()
+                        .map(|addr| (IpAddr::V4(addr.address), r.clone()))
+                })
+            })
+            .collect::<Vec<_>>();
+        routes.sort_by(|(dest1, r1), (dest2, r2)| r1.cost.cmp(&r2.cost).then(dest1.cmp(dest2)));
 
-        // The QUIC endpoint is bound to the node's address in the first network interface
-        //
-        // If there are nodes with multiple network interfaces, routing tables must be properly set
-        // up so packets addressed to the QUIC endpoint can be transmitted over any of the links
-        let quic_address = addresses[0];
-        let quinn_endpoint = Arc::new(UdpEndpoint {
-            addr: SocketAddr::new(quic_address, HOST_PORT),
-            inbound: Arc::new(Mutex::new(InboundQueue::new())),
-        });
+        let keylog = Arc::new(InMemoryKeyLog::default());
+        let pcap_exporter = match pcap_options {
+            PcapOptions::Disabled => PcapExporter::noop(),
+            PcapOptions::WithTlsKeys => PcapExporter::for_node(&node.id, Some(keylog.clone()))?,
+        };
 
         let (tx, rx) = futures::channel::mpsc::unbounded();
         let node = Self {
             injected_failures: NodeInjectedFailures::from_spec(node),
             id: node.id.clone(),
+            canonical_address,
             addresses,
+            routes,
             outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
-            udp_endpoint: quinn_endpoint.clone(),
+            udp_endpoints: Default::default(),
             outbound_tx: tx,
             status: Mutex::new(NodeStatus::Up),
-            last_buffer_clear: Mutex::default(),
+            last_buffer_clear: Default::default(),
+            pcap_exporter,
+            keylog,
         };
         Ok((node, rx))
+    }
+
+    pub(crate) fn deliver_packet(&self, data: InTransitData) {
+        let port = data.transmit.destination.port();
+        self.udp_endpoint(port)
+            .inbound
+            .clone()
+            .lock()
+            .send(data, Duration::default());
+    }
+
+    pub fn udp_endpoint(&self, port: u16) -> Arc<UdpEndpoint> {
+        // Lazily create endpoints as needed
+        self.udp_endpoints
+            .lock()
+            .entry(port)
+            .or_insert_with(|| {
+                Arc::new(UdpEndpoint {
+                    inbound: Arc::new(Mutex::new(InboundQueue::new())),
+                    addr: SocketAddr::new(self.canonical_address, port),
+                })
+            })
+            .clone()
     }
 
     pub(crate) fn enqueue_outbound(&self, network: &Arc<InMemoryNetwork>, packet: BufferedPacket) {
@@ -105,16 +150,20 @@ impl Node {
         }
     }
 
-    pub fn quic_addr(&self) -> SocketAddr {
-        self.udp_endpoint.addr
-    }
-
     pub fn id(&self) -> &Arc<str> {
         &self.id
     }
 
+    pub fn keylog(&self) -> &Arc<InMemoryKeyLog> {
+        &self.keylog
+    }
+
     pub fn addresses(&self) -> impl Iterator<Item = IpAddr> + use<> {
         self.addresses.clone().into_iter()
+    }
+
+    pub fn socket_addr(&self, port: u16) -> SocketAddr {
+        SocketAddr::new(self.canonical_address, port)
     }
 
     pub(crate) fn status_str(&self) -> &'static str {

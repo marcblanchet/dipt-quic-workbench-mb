@@ -5,9 +5,12 @@ use std::net::SocketAddr;
 pub const UDP_OVERHEAD: usize = 8;
 pub const IPV4_OVERHEAD: usize = 20;
 pub const IPV6_OVERHEAD: usize = 40;
+pub const DEFAULT_TTL: u8 = 30;
 
 #[derive(Clone, Debug)]
 pub struct OwnedTransmit {
+    /// The socket this datagram is being sent from
+    pub source: SocketAddr,
     /// The socket this datagram should be sent to
     pub destination: SocketAddr,
     /// Explicit congestion notification bits to set on the packet
@@ -17,6 +20,8 @@ pub struct OwnedTransmit {
     /// The segment size if this transmission contains multiple datagrams.
     /// This is `None` if the transmit only contains a single datagram
     pub segment_size: Option<usize>,
+    /// Time to live (the number of hops until the packet gets dropped)
+    pub ttl: u8,
 }
 
 impl OwnedTransmit {

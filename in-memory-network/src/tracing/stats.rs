@@ -10,6 +10,7 @@ pub struct NodeStats {
     pub received: PacketStats,
     pub dropped_on_arrival: PacketStats,
     pub dropped_injected: PacketStats,
+    pub dropped_zero_ttl: PacketStats,
     pub dropped_buffer_full: PacketStats,
     pub dropped_buffer_cleared: PacketStats,
     pub duplicates: PacketStats,

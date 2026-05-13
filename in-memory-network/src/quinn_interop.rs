@@ -1,8 +1,7 @@
 use crate::network::InMemoryNetwork;
 use crate::network::inbound_queue::NextPacketDelivery;
 use crate::network::node::{Node, UdpEndpoint};
-use crate::pcap_exporter::PcapExporter;
-use crate::transmit::OwnedTransmit;
+use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
 use bytes::Bytes;
 use parking_lot::Mutex;
 use quinn::udp::{RecvMeta, Transmit};
@@ -29,7 +28,6 @@ pub struct InMemoryUdpSocket {
     endpoint: Arc<UdpEndpoint>,
     node: Arc<Node>,
     next_packet_delivery: Mutex<Option<Pin<Box<NextPacketDelivery>>>>,
-    pcap_exporter: PcapExporter,
 }
 
 impl Debug for InMemoryUdpSocket {
@@ -39,21 +37,16 @@ impl Debug for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
-    pub fn node(&self) -> &Node {
-        &self.node
+    pub fn node_id(&self) -> &str {
+        self.node.id()
     }
 
-    pub fn from_node(
-        network: Arc<InMemoryNetwork>,
-        node: Arc<Node>,
-        pcap_exporter: PcapExporter,
-    ) -> Self {
+    pub fn from_node(network: Arc<InMemoryNetwork>, node: Arc<Node>, port: u16) -> Self {
         InMemoryUdpSocket {
-            endpoint: node.udp_endpoint.clone(),
+            endpoint: node.udp_endpoint(port),
             node,
             network: network.clone(),
             next_packet_delivery: Mutex::new(None),
-            pcap_exporter,
         }
     }
 }
@@ -64,25 +57,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
     }
 
     fn try_send(&self, transmit: &Transmit) -> io::Result<()> {
-        // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
-        // packet
-        assert!(transmit.segment_size.is_none());
-
-        // Track in pcap
-        let source_addr = self.node.quic_addr();
-        self.pcap_exporter.track_transmit(source_addr, transmit);
-
-        let data = self.network.in_transit_data(
-            &self.node,
-            OwnedTransmit {
-                destination: transmit.destination,
-                ecn: transmit.ecn,
-                contents: Bytes::copy_from_slice(transmit.contents),
-                segment_size: transmit.segment_size,
-            },
-        );
-        self.network.forward(self.node.clone(), data);
-
+        self.send(transmit);
         Ok(())
     }
 
@@ -113,7 +88,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
             let transmit = in_transit.data.transmit;
 
             // Meta
-            meta.addr = in_transit.data.source_endpoint.addr;
+            meta.addr = transmit.source;
             meta.ecn = transmit.ecn;
             meta.dst_ip = Some(transmit.destination.ip());
             meta.len = transmit.contents.len();
@@ -123,9 +98,7 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
             buf[..transmit.contents.len()].copy_from_slice(&transmit.contents);
 
             // Track in pcap
-            let source_addr = in_transit.data.source_endpoint.addr;
-            self.pcap_exporter
-                .track_transmit(source_addr, &transmit.as_transmit());
+            self.node.pcap_exporter.track_transmit(&transmit);
         }
 
         Poll::Ready(Ok(delivered_len))
@@ -137,6 +110,27 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
 }
 
 impl InMemoryUdpSocket {
+    pub fn send(&self, transmit: &Transmit) {
+        // We don't have code to handle GSO, so let's ensure transmits are always a single UDP
+        // packet
+        assert!(transmit.segment_size.is_none());
+
+        let transmit = OwnedTransmit {
+            source: self.endpoint.addr,
+            destination: transmit.destination,
+            ecn: transmit.ecn,
+            contents: Bytes::copy_from_slice(transmit.contents),
+            segment_size: transmit.segment_size,
+            ttl: DEFAULT_TTL,
+        };
+
+        // Track in pcap
+        self.node.pcap_exporter.track_transmit(&transmit);
+
+        let data = self.network.in_transit_data(self.node.id.clone(), transmit);
+        self.network.forward(self.node.clone(), data);
+    }
+
     pub async fn receive<'a>(
         &self,
         bufs_and_meta: &'a mut BufsAndMeta,

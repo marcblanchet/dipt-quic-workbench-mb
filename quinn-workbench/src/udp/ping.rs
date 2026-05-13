@@ -4,9 +4,9 @@ use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
 use in_memory_network::quinn_interop::{BufsAndMeta, InMemoryUdpSocket};
 use parking_lot::Mutex;
-use quinn::AsyncUdpSocket;
 use quinn::udp::Transmit;
 use std::collections::HashMap;
+use std::io::Write;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
 use std::time::Duration;
@@ -21,15 +21,13 @@ pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_ip: IpAddr) {
                 assert_eq!(packet.source_addr.ip(), client_ip);
 
                 // Echo transmit
-                server_socket
-                    .try_send(&Transmit {
-                        destination: SocketAddr::new(client_ip, 8080),
-                        ecn: None,
-                        contents: packet.payload,
-                        segment_size: None,
-                        src_ip: None,
-                    })
-                    .unwrap();
+                server_socket.send(&Transmit {
+                    destination: SocketAddr::new(client_ip, 8080),
+                    ecn: None,
+                    contents: packet.payload,
+                    segment_size: None,
+                    src_ip: None,
+                });
             }
         }
     });
@@ -39,12 +37,13 @@ pub fn run_traffic_pattern(
     client_socket: InMemoryUdpSocket,
     t: &PingTraffic,
     simulation_start: Instant,
+    log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
 ) -> async_rt::JoinHandle<()> {
     let client_socket = Arc::new(client_socket);
     let interval = Duration::from_millis(t.interval_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let deadline = Duration::from_millis(t.deadline_ms);
-    let server_ip = t.server_ip;
+    let server_socket = t.server;
 
     let in_flight = Arc::new(Mutex::new(HashMap::new()));
     let lost = Arc::new(Mutex::new(Vec::new()));
@@ -55,6 +54,7 @@ pub fn run_traffic_pattern(
     let client_socket_cp = client_socket.clone();
     let in_flight_cp = in_flight.clone();
     let lost_cp = lost.clone();
+    let log_writer_cp = log_writer.clone();
     let start_at = Duration::from_millis(t.start_at_ms);
     let task = async_rt::spawn(async move {
         // Don't start until the specified moment
@@ -69,15 +69,13 @@ pub fn run_traffic_pattern(
             // Send ping
             let payload = ping_nr.to_le_bytes();
 
-            client_socket_cp
-                .try_send(&Transmit {
-                    destination: SocketAddr::new(server_ip, 8080),
-                    ecn: None,
-                    contents: &payload,
-                    segment_size: None,
-                    src_ip: None,
-                })
-                .unwrap();
+            client_socket_cp.send(&Transmit {
+                destination: server_socket,
+                ecn: None,
+                contents: &payload,
+                segment_size: None,
+                src_ip: None,
+            });
 
             let sent_ping_nr = ping_nr;
             in_flight_cp.lock().insert(sent_ping_nr, Instant::now());
@@ -86,12 +84,14 @@ pub fn run_traffic_pattern(
             // Track pings as lost after the deadline has passed
             let in_flight_cp = in_flight_cp.clone();
             let lost_cp = lost_cp.clone();
+            let log_writer_cp = log_writer_cp.clone();
             async_rt::spawn(async move {
                 async_rt::time::sleep(deadline).await;
                 if let Some(ping_sent) = in_flight_cp.lock().remove(&sent_ping_nr) {
                     lost_cp.lock().push(sent_ping_nr);
                     let ping_lost = Instant::now();
-                    println!(
+                    _ = writeln!(
+                        log_writer_cp.lock(),
                         "P{} | {:.2}s - SENT | {:.2}s - LOST | {:.2}s - DURATION",
                         sent_ping_nr,
                         (ping_sent - simulation_start).as_secs_f64(),
@@ -106,7 +106,11 @@ pub fn run_traffic_pattern(
         }
 
         _ = sender_done_tx.send(());
-        println!("{:.2}s Done", simulation_start.elapsed().as_secs_f64());
+        _ = writeln!(
+            log_writer_cp.lock(),
+            "{:.2}s Done",
+            simulation_start.elapsed().as_secs_f64()
+        );
     });
 
     // Receiver
@@ -125,13 +129,14 @@ pub fn run_traffic_pattern(
             };
 
             for packet in packets {
-                assert_eq!(packet.source_addr.ip(), server_ip);
+                assert_eq!(packet.source_addr, server_socket);
 
                 let ping_nr = u64::from_le_bytes(packet.payload.try_into().unwrap());
 
                 if let Some(ping_sent) = in_flight.lock().remove(&ping_nr) {
                     let ping_received = Instant::now();
-                    println!(
+                    _ = writeln!(
+                        log_writer.lock(),
                         "P{ping_nr} | {:.2}s - SENT | {:.2}s - RECEIVED | {:.2}s - DURATION",
                         (ping_sent - simulation_start).as_secs_f64(),
                         (ping_received - simulation_start).as_secs_f64(),

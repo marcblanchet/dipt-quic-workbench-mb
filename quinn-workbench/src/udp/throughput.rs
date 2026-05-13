@@ -8,13 +8,11 @@ use fastrand::Rng;
 use futures::FutureExt;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
-use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::PcapExporter;
+use in_memory_network::network::{InMemoryNetwork, PcapOptions};
 use in_memory_network::quinn_interop::BufsAndMeta;
 use in_memory_network::tracing::tracer::SimulationStepTracer;
-use quinn::AsyncUdpSocket;
 use quinn::udp::Transmit;
 use std::collections::VecDeque;
 use std::net::SocketAddr;
@@ -48,6 +46,7 @@ pub async fn run(
         Rng::with_seed(throughput_opt.network.network_rng_seed),
         simulation_start,
         false,
+        PcapOptions::Disabled,
     )?;
 
     println!("--- Network ---");
@@ -65,11 +64,12 @@ pub async fn run(
     println!("--- Throughput test ---");
     let duration = Duration::from_millis(throughput_opt.duration_ms);
 
+    let port = 8080;
     let server_ip = throughput_opt.peers.server_ip_address;
     let server_node = network.node(server_ip);
     let server_socket = Arc::pin(
         network
-            .udp_socket_for_node(PcapExporter::noop(), server_node.clone())
+            .udp_socket_for_node(server_node.clone(), port)
             .unwrap(),
     );
 
@@ -77,7 +77,7 @@ pub async fn run(
     let client_node = network.node(client_ip);
     let client_socket = Arc::pin(
         network
-            .udp_socket_for_node(PcapExporter::noop(), client_node.clone())
+            .udp_socket_for_node(client_node.clone(), port)
             .unwrap(),
     );
 
@@ -136,15 +136,13 @@ pub async fn run(
                 bytes_left -= next_packet_size_bytes;
 
                 // Send packet
-                client_socket_cp
-                    .try_send(&Transmit {
-                        destination: SocketAddr::new(server_ip, 8080),
-                        ecn: None,
-                        contents: &payload[..next_packet_size_bytes],
-                        segment_size: None,
-                        src_ip: None,
-                    })
-                    .unwrap();
+                client_socket_cp.send(&Transmit {
+                    destination: SocketAddr::new(server_ip, 8080),
+                    ecn: None,
+                    contents: &payload[..next_packet_size_bytes],
+                    segment_size: None,
+                    src_ip: None,
+                });
             }
 
             // Sleep before sending the next packet

@@ -267,7 +267,7 @@ pub fn server_endpoint(
     crypto.max_early_data_size = u32::MAX;
     crypto.key_log = keylog;
 
-    let qlog_file = File::create(format!("{}.qlog", server_socket.node().id()))?;
+    let qlog_file = File::create(format!("{}.qlog", server_socket.node_id()))?;
     let mut server_config =
         quinn::ServerConfig::with_crypto(Arc::new(QuicServerConfig::try_from(crypto).unwrap()));
     server_config.transport = Arc::new(crate::quic::transport_config(

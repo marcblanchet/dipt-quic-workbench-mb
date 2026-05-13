@@ -83,6 +83,7 @@ pub struct PacketDropped {
 #[derive(Clone, Serialize, Deserialize)]
 pub enum DropReason {
     Random,
+    ZeroTtl,
     BufferFull,
     BufferCleared,
 }

@@ -45,8 +45,8 @@
   * MSL: UP
   * ING: UP
 * Running connectivity check for the following node pairs:
-  * 192.168.40.1 <-> 192.168.43.2 ... passed (packets arrived after 901200 ms and 901200 ms)
-  * 192.168.50.1 <-> 192.168.50.2 ... passed (packets arrived after 6001000 ms and 6001000 ms)
+  * GND (192.168.40.1) <-> ING (192.168.43.2) ... passed (packets arrived after 901200 ms and 901200 ms)
+  * MRO (192.168.50.1) <-> MSL (192.168.50.2) ... passed (packets arrived after 6001000 ms and 6001000 ms)
 --- Requests ---
 (We are simulating multiple traffic patterns and will only display logs for the first one.)
 0.00s CONNECT (conn = A)

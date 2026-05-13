@@ -7,7 +7,7 @@
   * B: UP
 --- Throughput test ---
 Sending at 177721600 bps
-0.00s WARN: no more network events left to process. Did the simulation keep running indefinitely?
+0.00s WARN no more network events left to process. Did the simulation keep running indefinitely?
 1.00s Done
 --- Replay log ---
 * Replay log available at replay-log.json

@@ -481,6 +481,7 @@ impl SimulationVerifier {
                         received_out_of_order: v.reordered_packets_received,
                         duplicates: v.duplicated_packets,
                         dropped_injected: v.dropped_packets_injected,
+                        dropped_zero_ttl: v.dropped_packets_zero_ttl,
                         dropped_buffer_full: v.dropped_packets_buffer_full,
                         max_buffer_usage: v.max_buffer_usage,
                         congestion_experienced: v.ecn_packets,
@@ -560,6 +561,7 @@ struct ReplayedNode {
     ecn_packets: PacketStats,
     duplicated_packets: PacketStats,
     dropped_packets_injected: PacketStats,
+    dropped_packets_zero_ttl: PacketStats,
     dropped_packets_buffer_full: PacketStats,
     dropped_packets_buffer_cleared: PacketStats,
     dropped_packets_down: PacketStats,
@@ -584,6 +586,7 @@ impl ReplayedNode {
             ecn_packets: Default::default(),
             duplicated_packets: Default::default(),
             dropped_packets_injected: Default::default(),
+            dropped_packets_zero_ttl: Default::default(),
             dropped_packets_buffer_full: Default::default(),
             dropped_packets_buffer_cleared: Default::default(),
             dropped_packets_down: Default::default(),
@@ -690,6 +693,7 @@ impl ReplayedNode {
         let packet = self.remove_packet_from_buffer(s.packet_id)?;
         match s.reason {
             DropReason::Random => self.dropped_packets_injected.track_one(packet.size_bytes),
+            DropReason::ZeroTtl => self.dropped_packets_injected.track_one(packet.size_bytes),
             DropReason::BufferFull => self
                 .dropped_packets_buffer_full
                 .track_one(packet.size_bytes),

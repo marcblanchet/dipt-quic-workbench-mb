@@ -40,7 +40,7 @@ impl SimulationStepTracer {
         self
     }
 
-    fn warn(&self, message: &str) {
+    pub fn warn(&self, message: &str) {
         if self.enable_warnings {
             println!(
                 "{:.2}s WARN {message}",
@@ -121,6 +121,21 @@ impl SimulationStepTracer {
             node_id: node.id().clone(),
             reason: DropReason::BufferCleared,
         }));
+    }
+
+    pub fn track_dropped_zero_ttl(&self, node: &Node, packet: &InTransitData) {
+        self.record(SimulationStepKind::PacketDropped(PacketDropped {
+            packet_id: packet.id,
+            node_id: node.id().clone(),
+            reason: DropReason::ZeroTtl,
+        }));
+
+        let nodes = self.stepper().get_packet_path(packet.id);
+        let path = nodes.join(" -> ");
+        self.warn(&format!(
+            "{} packet dropped after TTL reached 0 (#{}). The path was: {path}.",
+            packet.source_id, packet.number,
+        ));
     }
 
     pub fn track_dropped_randomly(&self, node: &Node, packet: &InTransitData) {

@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::net::IpAddr;
+use std::net::SocketAddr;
 
 #[derive(Deserialize)]
 pub struct TrafficJson {
@@ -11,17 +11,19 @@ pub struct TrafficJson {
 pub enum TrafficKind {
     QuicRequestResponse(QuicRequestResponseTraffic),
     UdpPing(PingTraffic),
+    UdpOneDirection(UdpOneDirectionTraffic),
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct QuicRequestResponseTraffic {
     /// The time at which traffic should start, in milliseconds (defaults to 0)
     #[serde(default)]
     pub start_at_ms: u64,
-    /// The client's IP address
-    pub client_ip: IpAddr,
-    /// The server's IP address
-    pub server_ip: IpAddr,
+    /// The client's socket address
+    pub client: SocketAddr,
+    /// The server's socket address
+    pub server: SocketAddr,
     /// The number of requests that should be made (defaults to 10)
     #[serde(default = "default_requests")]
     pub requests: u32,
@@ -60,16 +62,16 @@ fn default_response_size() -> usize {
 }
 
 #[derive(Deserialize, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct PingTraffic {
     /// The time at which traffic should start, in milliseconds (defaults to 0)
     #[serde(default)]
     pub start_at_ms: u64,
-    /// The ping source's IP address
-    pub client_ip: IpAddr,
-    /// The ping destination's IP address
-    pub server_ip: IpAddr,
-    /// The duration of the run, after which we will stop sending pings and the program will
-    /// terminate
+    /// The ping source's socket address
+    pub client: SocketAddr,
+    /// The ping destination's socket address
+    pub server: SocketAddr,
+    /// The duration of the run, after which we will stop sending pings
     pub duration_ms: u64,
     /// The interval at which ping packets will be sent
     pub interval_ms: u64,
@@ -81,4 +83,23 @@ pub struct PingTraffic {
 
 fn default_deadline_ms() -> u64 {
     10_000
+}
+
+#[derive(Deserialize)]
+pub struct UdpOneDirectionTraffic {
+    /// The socket address of the sender
+    pub source: SocketAddr,
+    /// The socket address of the receiver
+    pub target: SocketAddr,
+    /// The size of the payload (potentially split across multiple UDP packets)
+    pub payload_bytes: u32,
+    /// The interval at which the payload should be sent
+    pub send_interval_ms: u64,
+    /// The duration of the run, after which we will stop sending packets (defaults to 10 minutes)
+    #[serde(default = "default_udp_duration_ms")]
+    pub duration_ms: u64,
+}
+
+fn default_udp_duration_ms() -> u64 {
+    1000 * 60 * 10
 }

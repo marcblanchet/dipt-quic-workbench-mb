@@ -226,8 +226,8 @@ command line arguments.
    - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification
    - `--network-graph <NETWORK_GRAPH>` (required):
           Path to the JSON file containing the network graph
-   - `--network-events <NETWORK_EVENTS>` (required):
-          Path to the JSON file containing the network events
+   - `--network-events <NETWORK_EVENTS>` (optional):
+          Path to the JSON file containing the network events, if any
    - `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
    - `--non-deterministic`:
           Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators

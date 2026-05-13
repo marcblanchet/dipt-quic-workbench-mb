@@ -59,9 +59,9 @@ pub struct NetworkOpt {
     #[arg(long)]
     pub network_graph: PathBuf,
 
-    /// Path to the JSON file containing the network events
+    /// Path to the JSON file containing the network events (optional)
     #[arg(long)]
-    pub network_events: PathBuf,
+    pub network_events: Option<PathBuf>,
 }
 
 #[derive(Parser, Debug, Clone)]

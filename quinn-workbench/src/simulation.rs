@@ -1,19 +1,18 @@
 use crate::config::NetworkConfig;
 use crate::config::cli::SimulateOpt;
 use crate::config::traffic::{QuicRequestResponseTraffic, TrafficJson, TrafficKind};
-use crate::quic;
 use crate::udp::ping;
 use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
 use crate::{load_network_config, load_traffic, util};
+use crate::{quic, udp};
 use anyhow::{Context, anyhow, bail};
 use fastrand::Rng;
 use futures::StreamExt;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::time::Instant;
-use in_memory_network::network::InMemoryNetwork;
 use in_memory_network::network::event::NetworkEvents;
 use in_memory_network::network::spec::NetworkSpec;
-use in_memory_network::pcap_exporter::{InMemoryKeyLog, PcapExporter};
+use in_memory_network::network::{InMemoryNetwork, PcapOptions};
 use in_memory_network::tracing::tracer::SimulationStepTracer;
 use parking_lot::Mutex;
 use rustls::pki_types::{CertificateDer, PrivatePkcs8KeyDer};
@@ -46,21 +45,31 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
                 node_ips_by_role
                     .entry("quic client")
                     .or_default()
-                    .push(t.client_ip);
+                    .push(t.client.ip());
                 node_ips_by_role
                     .entry("quic server")
                     .or_default()
-                    .push(t.server_ip);
+                    .push(t.server.ip());
             }
             TrafficKind::UdpPing(t) => {
                 node_ips_by_role
                     .entry("ping client")
                     .or_default()
-                    .push(t.client_ip);
+                    .push(t.client.ip());
                 node_ips_by_role
                     .entry("ping server")
                     .or_default()
-                    .push(t.server_ip);
+                    .push(t.server.ip());
+            }
+            TrafficKind::UdpOneDirection(t) => {
+                node_ips_by_role
+                    .entry("udp sender")
+                    .or_default()
+                    .push(t.source.ip());
+                node_ips_by_role
+                    .entry("udp receiver")
+                    .or_default()
+                    .push(t.target.ip());
             }
         }
     }
@@ -71,7 +80,13 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
     let (main_traffic_name, force_verbose_stats) = match first_traffic {
         TrafficKind::QuicRequestResponse(_) => ("Requests", false),
         TrafficKind::UdpPing(_) => ("Ping", true),
+        TrafficKind::UdpOneDirection(_) => ("UDP", true),
     };
+
+    let all_traffic_is_udp = traffic
+        .traffic_patterns
+        .iter()
+        .all(|t| matches!(t, TrafficKind::UdpOneDirection(_)));
 
     let mut simulation = Simulation::new();
     let result = simulation
@@ -109,7 +124,7 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
         })
         .collect();
     let duplicate_ids = util::duplicates(node_ids_by_role.values().flatten().copied());
-    if !duplicate_ids.is_empty() {
+    if !duplicate_ids.is_empty() && !all_traffic_is_udp {
         let duplicates = duplicate_ids.join(", ");
         bail!(
             "it is currently not allowed to use the same node in different traffic specs, but the following nodes were reused: {duplicates}"
@@ -191,10 +206,13 @@ impl Simulation {
             "* Network graph path: {}",
             cli_options.network.network_graph.display()
         );
-        println!(
-            "* Network events path: {}",
-            cli_options.network.network_events.display()
-        );
+        let network_events_path = cli_options
+            .network
+            .network_events
+            .as_ref()
+            .map(|p| p.display().to_string())
+            .unwrap_or_else(|| "<none>".to_string());
+        println!("* Network events path: {network_events_path}");
         println!("* Traffic patterns path: {}", cli_options.traffic.display(),);
 
         let start = Instant::now();
@@ -225,6 +243,7 @@ impl Simulation {
             Rng::with_seed(simulated_network_rng_seed),
             start,
             cli_options.rt.disable_time_warping,
+            PcapOptions::Disabled,
         )?;
 
         println!("--- Network ---");
@@ -241,23 +260,32 @@ impl Simulation {
         if cli_options.rt.disable_time_warping {
             println!("* Connectivity check skipped to save time (time warping is disabled)");
         } else {
-            let pairs = ip_pairs_from_traffic(&traffic_patterns);
+            let pairs = socket_pairs_from_traffic(&traffic_patterns);
             println!("* Running connectivity check for the following node pairs:");
             for &(ip1, ip2) in &pairs {
-                print!("  * {ip1} <-> {ip2} ... ");
-                io::stdout().flush()?;
-
                 let node1 = connectivity_check_network.node(ip1);
                 let node2 = connectivity_check_network.node(ip2);
-                let (arrived1, arrived2) = connectivity_check_network
-                    .assert_connectivity_between_nodes(node1, node2)
-                    .await?;
 
-                println!(
-                    "passed (packets arrived after {} ms and {} ms)",
-                    arrived1.as_millis(),
-                    arrived2.as_millis()
-                );
+                print!("  * {} ({ip1}) <-> {} ({ip2}) ... ", node1.id(), node2.id());
+                io::stdout().flush()?;
+
+                let connectivity_check_result = connectivity_check_network
+                    .assert_connectivity_between_nodes(node1, node2)
+                    .await;
+
+                match connectivity_check_result {
+                    Ok((arrived1, arrived2)) => {
+                        println!(
+                            "passed (packets arrived after {} ms and {} ms)",
+                            arrived1.as_millis(),
+                            arrived2.as_millis()
+                        );
+                    }
+                    Err(e) => {
+                        println!("failed!");
+                        return Err(e);
+                    }
+                }
             }
         }
         drop(connectivity_check_network);
@@ -273,6 +301,7 @@ impl Simulation {
             Rng::with_seed(simulated_network_rng_seed),
             start,
             cli_options.rt.disable_time_warping,
+            PcapOptions::WithTlsKeys,
         )?;
         self.tracer_and_network = Some((tracer.clone(), network.clone()));
 
@@ -288,17 +317,13 @@ impl Simulation {
         for traffic in &traffic_patterns {
             match traffic {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let server_node = network.node(t.server_ip);
-                    let server_keylog = Arc::new(InMemoryKeyLog::default());
-                    let server_pcap_exporter =
-                        PcapExporter::for_node(server_node.id(), Some(server_keylog.clone()))
-                            .context("failed to create pcap exporter")?;
+                    let server_node = network.node(t.server.ip());
                     let server_socket = network
-                        .udp_socket_for_node(server_pcap_exporter, server_node.clone())
+                        .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
                     let server = quic::server::server_endpoint(
                         start,
-                        server_keylog,
+                        server_node.keylog().clone(),
                         cert.clone(),
                         key.clone_key().into(),
                         server_socket,
@@ -312,14 +337,14 @@ impl Simulation {
                     );
                 }
                 TrafficKind::UdpPing(t) => {
-                    let server_node = network.node(t.server_ip);
-                    let server_pcap_exporter = PcapExporter::for_node(server_node.id(), None)
-                        .context("failed to create pcap exporter")?;
+                    let server_node = network.node(t.server.ip());
                     let server_socket = network
-                        .udp_socket_for_node(server_pcap_exporter, server_node.clone())
+                        .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
-                    let client_ip = t.client_ip;
-                    ping::run_server_forever(server_socket, client_ip);
+                    ping::run_server_forever(server_socket, t.client.ip());
+                }
+                TrafficKind::UdpOneDirection(_) => {
+                    // No background server is used with unidirectional UDP traffic
                 }
             }
         }
@@ -334,6 +359,7 @@ impl Simulation {
         // Spawn client tasks
         let mut quic_client_tasks = Vec::new();
         let mut ping_client_tasks = Vec::new();
+        let mut udp_client_tasks = Vec::new();
         for (i, traffic_kind) in traffic_patterns.iter().enumerate() {
             let log_writer: Arc<Mutex<dyn Write + Send + Sync>> = if i == 0 {
                 Arc::new(Mutex::new(io::stdout()))
@@ -343,17 +369,13 @@ impl Simulation {
 
             match traffic_kind {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let client_node = network.node(t.client_ip);
-                    let client_keylog = Arc::new(InMemoryKeyLog::default());
-                    let client_pcap_exporter =
-                        PcapExporter::for_node(client_node.id(), Some(client_keylog.clone()))
-                            .context("failed to create pcap exporter")?;
+                    let client_node = network.node(t.client.ip());
                     let client_socket = network
-                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
                     let client = quic::client::client_endpoint(
                         start,
-                        client_keylog,
+                        client_node.keylog().clone(),
                         cert.clone(),
                         client_socket,
                         &quic_configs[client_node.id().as_ref()],
@@ -361,7 +383,6 @@ impl Simulation {
                     )?;
 
                     let task = async_rt::spawn(quic::client::run_traffic_pattern(
-                        network.clone(),
                         t.clone(),
                         start,
                         client,
@@ -370,14 +391,20 @@ impl Simulation {
                     quic_client_tasks.push(task);
                 }
                 TrafficKind::UdpPing(t) => {
-                    let client_node = network.node(t.client_ip);
-                    let client_pcap_exporter = PcapExporter::for_node(client_node.id(), None)
-                        .context("failed to create pcap exporter")?;
+                    let client_node = network.node(t.client.ip());
                     let client_socket = network
-                        .udp_socket_for_node(client_pcap_exporter, client_node.clone())
+                        .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
-                    let task = ping::run_traffic_pattern(client_socket, t, start);
+                    let task = ping::run_traffic_pattern(client_socket, t, start, log_writer);
                     ping_client_tasks.push(task);
+                }
+                TrafficKind::UdpOneDirection(t) => {
+                    udp_client_tasks.push(udp::one_direction::run_traffic_pattern(
+                        network.clone(),
+                        t,
+                        start,
+                        log_writer,
+                    ));
                 }
             }
         }
@@ -385,6 +412,9 @@ impl Simulation {
         // Wait for all ping tasks to finish
         for task in ping_client_tasks {
             task.await.context("ping client task crashed")?;
+        } // Wait for all udp tasks to finish
+        for task in udp_client_tasks {
+            task.await.context("udp client task crashed")?;
         }
 
         // Wait for all quic traffic tasks to finish
@@ -417,20 +447,26 @@ impl Simulation {
     }
 }
 
-fn ip_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
+fn socket_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
     let mut pairs = HashSet::new();
-    for t in traffic {
-        match t {
-            TrafficKind::QuicRequestResponse(request_response) => {
-                // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(request_response.client_ip, request_response.server_ip);
-                let snd = cmp::max(request_response.client_ip, request_response.server_ip);
+    for kind in traffic {
+        match kind {
+            TrafficKind::QuicRequestResponse(t) => {
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.client.ip(), t.server.ip());
+                let snd = cmp::max(t.client.ip(), t.server.ip());
                 pairs.insert((fst, snd));
             }
-            TrafficKind::UdpPing(ping) => {
-                // Order IPs to prevent duplicates in `pairs`
-                let fst = cmp::min(ping.client_ip, ping.server_ip);
-                let snd = cmp::max(ping.client_ip, ping.server_ip);
+            TrafficKind::UdpPing(t) => {
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.client.ip(), t.server.ip());
+                let snd = cmp::max(t.client.ip(), t.server.ip());
+                pairs.insert((fst, snd));
+            }
+            TrafficKind::UdpOneDirection(t) => {
+                // Order to prevent duplicates in `pairs`
+                let fst = cmp::min(t.source.ip(), t.target.ip());
+                let snd = cmp::max(t.source.ip(), t.target.ip());
                 pairs.insert((fst, snd));
             }
         }

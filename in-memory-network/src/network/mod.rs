@@ -19,16 +19,14 @@ use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::{BufferedPacket, OutgoingPacket};
 use crate::network::node::Node;
 use crate::network::spec::NetworkSpec;
-use crate::pcap_exporter::PcapExporter;
 use crate::quinn_interop::InMemoryUdpSocket;
 use crate::tracing::tracer::SimulationStepTracer;
-use crate::transmit::OwnedTransmit;
-use anyhow::{anyhow, bail};
+use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
+use anyhow::bail;
 use fastrand::Rng;
 use futures_util::StreamExt;
 use link::NetworkLink;
 use parking_lot::Mutex;
-use route::Route;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::net::IpAddr;
 use std::ops::ControlFlow;
@@ -49,17 +47,21 @@ pub struct InMemoryNetwork {
     nodes_by_addr: Arc<HashMap<IpAddr, Arc<Node>>>,
     /// Map from ids to the corresponding nodes
     nodes_by_id: Arc<HashMap<Arc<str>, Arc<Node>>>,
-    /// Map from ip addresses to the available route information
-    routes_by_addr: Arc<HashMap<IpAddr, Arc<Vec<Route>>>>,
     /// Map from ip address pairs to the corresponding links
     links_by_addr: Arc<HashMap<(IpAddr, IpAddr), Arc<Mutex<NetworkLink>>>>,
     /// Map from ids the corresponding links
     links_by_id: Arc<HashMap<Arc<str>, Arc<Mutex<NetworkLink>>>>,
-    /// Set indicating whether an udp socket has been created for this node (by id)
-    udp_socket_created: Mutex<HashSet<Arc<str>>>,
+    /// Set indicating whether an udp socket has been created for a node (by id) and port
+    udp_socket_created: Mutex<HashSet<(Arc<str>, u16)>>,
     pub(crate) tracer: Arc<SimulationStepTracer>,
     rng: Mutex<Rng>,
     next_transmit_number: AtomicU64,
+}
+
+#[derive(Copy, Clone)]
+pub enum PcapOptions {
+    Disabled,
+    WithTlsKeys,
 }
 
 impl InMemoryNetwork {
@@ -71,6 +73,7 @@ impl InMemoryNetwork {
         rng: Rng,
         start: Instant,
         disable_time_warping: bool,
+        pcap_opts: PcapOptions,
     ) -> anyhow::Result<Arc<Self>> {
         if !disable_time_warping {
             // Time warping is enabled, so the start instant should be zero
@@ -80,18 +83,6 @@ impl InMemoryNetwork {
 
             if !start.elapsed().is_zero() {
                 bail!("attempted to initialize network with an old start instant");
-            }
-        }
-
-        let mut routes_by_addr = HashMap::new();
-        let all_node_interfaces = network_spec.nodes.iter().map(|n| &n.interfaces);
-        for single_node_interfaces in all_node_interfaces {
-            for interface in single_node_interfaces {
-                for interface_addr in &interface.addresses {
-                    let mut routes = interface.routes.clone();
-                    routes.sort_by_key(|r| r.cost); // ascending order
-                    routes_by_addr.insert(interface_addr.as_ip_addr(), Arc::new(routes));
-                }
             }
         }
 
@@ -136,7 +127,7 @@ impl InMemoryNetwork {
         let mut nodes_by_id = HashMap::new();
         let mut nodes_and_outbound_rx = Vec::new();
         for n in &network_spec.nodes {
-            let (node, outbound_rx) = Node::new(n)?;
+            let (node, outbound_rx) = Node::new(n, pcap_opts)?;
             let node = Arc::new(node);
 
             for &address in &node.addresses {
@@ -169,11 +160,10 @@ impl InMemoryNetwork {
         let network = Arc::new(Self {
             nodes_by_addr: Arc::new(nodes_by_addr),
             nodes_by_id: Arc::new(nodes_by_id),
-            routes_by_addr: Arc::new(routes_by_addr),
             links_by_addr: Arc::new(links_by_addr),
             links_by_id: Arc::new(links_by_id),
             udp_socket_created: Default::default(),
-            tracer,
+            tracer: tracer.clone(),
             rng: Mutex::new(rng),
             next_transmit_number: Default::default(),
         });
@@ -209,10 +199,7 @@ impl InMemoryNetwork {
                 }
             }
 
-            println!(
-                "{:.2}s WARN: no more network events left to process. Did the simulation keep running indefinitely?",
-                start.elapsed().as_secs_f64()
-            );
+            tracer.warn("no more network events left to process. Did the simulation keep running indefinitely?");
         });
 
         Ok(network)
@@ -255,12 +242,16 @@ impl InMemoryNetwork {
             congestion_event_ratio,
         } = event.clone();
 
-        if bandwidth_bps.is_some() {
-            println!("WARN: changing the bandwidth in events is currently unsupported");
-        }
+        let Some(link) = self.links_by_id.get(&id) else {
+            println!("WARN: skipping received event for link that doesn't exist ({id})");
+            return;
+        };
+        let mut link = link.lock();
 
-        if delay.is_some() {
-            println!("WARN: changing the delay in events is currently unsupported");
+        if let Some(new_bandwidth_bps) = bandwidth_bps
+            && new_bandwidth_bps as usize != link.bandwidth_bps
+        {
+            println!("WARN: changing the bandwidth in events is currently unsupported");
         }
 
         if extra_delay.is_some() {
@@ -287,15 +278,21 @@ impl InMemoryNetwork {
             );
         }
 
-        let Some(link) = self.links_by_id.get(&id) else {
-            println!("WARN: skipping received event for link that doesn't exist ({id})");
-            return;
-        };
-
-        if let Some(status) = status {
-            link.lock().update_status(status);
+        if let Some(new_delay) = delay
+            && link.current_delay() != new_delay
+        {
+            if link.is_down() {
+                link.update_delay(new_delay);
+            } else {
+                println!("WARN: changing the link delay is only allowed when the link is down");
+            }
         }
 
+        if let Some(status) = status {
+            link.update_status(status);
+        }
+
+        drop(link);
         self.tracer.track_link_event(event);
     }
 
@@ -322,15 +319,15 @@ impl InMemoryNetwork {
     /// Returns `Some` when the function is first called for a specific node, and `None` afterwards
     pub fn udp_socket_for_node(
         self: &Arc<InMemoryNetwork>,
-        pcap_exporter: PcapExporter,
         node: Arc<Node>,
+        port: u16,
     ) -> Option<InMemoryUdpSocket> {
-        if self.udp_socket_created.lock().insert(node.id.clone()) {
-            Some(InMemoryUdpSocket::from_node(
-                self.clone(),
-                node,
-                pcap_exporter,
-            ))
+        if self
+            .udp_socket_created
+            .lock()
+            .insert((node.id.clone(), port))
+        {
+            Some(InMemoryUdpSocket::from_node(self.clone(), node, port))
         } else {
             None
         }
@@ -347,6 +344,7 @@ impl InMemoryNetwork {
         node_b: &Arc<Node>,
     ) -> anyhow::Result<(Duration, Duration)> {
         let peers = [(node_a, node_b), (node_b, node_a)];
+        let port = 8080;
 
         // Send 100 packets both ways
         //
@@ -355,12 +353,14 @@ impl InMemoryNetwork {
         for _ in 0..100 {
             for (source, target) in peers {
                 let data = self.in_transit_data(
-                    source,
+                    source.id.clone(),
                     OwnedTransmit {
-                        destination: target.udp_endpoint.addr,
+                        source: source.socket_addr(port),
+                        destination: target.socket_addr(port),
                         ecn: None,
                         contents: vec![42].into(),
                         segment_size: None,
+                        ttl: DEFAULT_TTL,
                     },
                 );
 
@@ -378,12 +378,12 @@ impl InMemoryNetwork {
         // Ensure the packets arrived at each node (one successful delivery is sufficient)
         let a_to_b = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(node_b.udp_endpoint.inbound.clone(), 1),
+            InboundQueue::receive(node_b.udp_endpoint(port).inbound.clone(), 1),
         )
         .await;
         let b_to_a = async_rt::time::timeout(
             timeout,
-            InboundQueue::receive(node_a.udp_endpoint.inbound.clone(), 1),
+            InboundQueue::receive(node_a.udp_endpoint(port).inbound.clone(), 1),
         )
         .await;
 
@@ -401,11 +401,61 @@ impl InMemoryNetwork {
             }
             (a_to_b, b_to_a) => {
                 let report = |failed| if failed { "failed" } else { "succeeded" };
-                Err(anyhow!(
-                    "failed to deliver packets between the nodes after {days} days (A to B {}, B to A {})",
+
+                let peers = [(node_a, node_b, &a_to_b), (node_b, node_a, &b_to_a)];
+                let mut msg = String::new();
+
+                for (source, target, result) in peers {
+                    if result.is_err() {
+                        let info = self.tracer.stepper().get_dropped_packet_info(source.id());
+                        let total_dropped = info.total_dropped_packets();
+                        if total_dropped > 0 {
+                            msg.push_str(&format!("\n{total_dropped} packets where dropped on their way from {} to {}:\n\
+                                * {} because a node's buffer was full\n\
+                                * {} because a node had a 'clear buffer' event while the packet was waiting to be sent\n\
+                                * {} because of a randomly injected failure\n\
+                                * {} because of routing loops that brought the packet's TTL to zero",
+                                source.id(),
+                                target.id(),
+                                info.buffer_full,
+                                info.buffer_cleared,
+                                info.random,
+                                info.loops.len(),
+                            ));
+
+                            if !info.loops.is_empty() {
+                                let mut paths = info.loops;
+                                paths.sort();
+                                paths.dedup();
+
+                                let max = 5;
+                                msg.push_str(&format!(" (the list below shows {} of {} unique paths that ended in loops):", paths.len().min(max), paths.len()));
+                                for path in paths {
+                                    msg.push_str("\n  * ");
+                                    msg.push_str(&path.join("-> "));
+                                }
+                            }
+                        } else {
+                            msg.push_str(&format!(
+                                "\nNo packets where dropped on their way from {} to {}",
+                                source.id(),
+                                target.id()
+                            ));
+                        }
+                    }
+                }
+
+                let error = format!(
+                    "failed to deliver packets between the nodes after {days} days ({} to {} {}, {} to {} {}).\nError details:{msg}",
+                    node_a.id(),
+                    node_b.id(),
                     report(a_to_b.is_err()),
+                    node_b.id(),
+                    node_a.id(),
                     report(b_to_a.is_err())
-                ))
+                );
+
+                bail!(error)
             }
         }
     }
@@ -437,15 +487,12 @@ impl InMemoryNetwork {
         }
 
         // Use routing when no direct links are available
-        for node_addr in node.addresses() {
-            let routes = &self.routes_by_addr[&node_addr];
-            let candidate_links = routes
-                .iter()
-                .flat_map(|r| r.next_hop_towards_destination(dest))
-                .flat_map(|next_hop_addr| self.links_by_addr.get(&(node_addr, next_hop_addr)));
-
-            for link in candidate_links {
-                if let ControlFlow::Break(value) = walk_fn(link) {
+        for (node_addr, route) in &node.routes {
+            if let Some(next_hop_addr) = route.next_hop_towards_destination(dest)
+                && let Some(link) = self.links_by_addr.get(&(*node_addr, next_hop_addr))
+            {
+                let walk_fn_result = walk_fn(link);
+                if let ControlFlow::Break(value) = walk_fn_result {
                     return Some(value);
                 }
             }
@@ -454,15 +501,25 @@ impl InMemoryNetwork {
         None
     }
 
-    pub(crate) fn in_transit_data(&self, source: &Node, transmit: OwnedTransmit) -> InTransitData {
+    pub(crate) fn in_transit_data(
+        &self,
+        source_node_id: Arc<str>,
+        transmit: OwnedTransmit,
+    ) -> InTransitData {
         InTransitData {
             id: self.new_packet_id(),
             duplicate: false,
-            source_id: source.id.clone(),
-            source_endpoint: source.udp_endpoint.clone(),
+            source_id: source_node_id,
             transmit,
             number: self.next_transmit_number.fetch_add(1, Ordering::Relaxed),
         }
+    }
+
+    /// Sends an [`OwnedTransmit`] from `node` to its destination, routing it through the network
+    pub fn send_udp(self: &Arc<InMemoryNetwork>, node: Arc<Node>, transmit: OwnedTransmit) {
+        node.pcap_exporter.track_transmit(&transmit);
+        let data = self.in_transit_data(node.id.clone(), transmit);
+        self.forward(node.clone(), data);
     }
 
     /// Forwards an [`InTransitData`] to the next node in the network.
@@ -473,7 +530,7 @@ impl InMemoryNetwork {
     pub(crate) fn forward(
         self: &Arc<InMemoryNetwork>,
         current_node: Arc<Node>,
-        data: InTransitData,
+        mut data: InTransitData,
     ) {
         if current_node.is_down() {
             self.tracer.track_dropped_on_arrival(&current_node, &data);
@@ -482,21 +539,20 @@ impl InMemoryNetwork {
 
         self.tracer.track_packet_in_node(&current_node, &data);
 
-        if current_node.udp_endpoint.addr == data.transmit.destination {
-            // The packet has arrived to a quinn endpoint, so we forward it directly to the nodes's
-            // inbound queue (from where it will be automatically picked up by quinn)
-            current_node
-                .udp_endpoint
-                .inbound
-                .clone()
-                .lock()
-                .send(data, Duration::default());
-
+        if current_node.canonical_address == data.transmit.destination.ip() {
+            // The packet has arrived to its destination
+            current_node.deliver_packet(data);
             return;
         }
 
         // The packet needs to be transmitted to the next hop. We store it in the node's
         // outbound buffer, and it will automatically be picked up by a background task
+
+        data.transmit.ttl = data.transmit.ttl.saturating_sub(1);
+        if data.transmit.ttl == 0 {
+            self.tracer.track_dropped_zero_ttl(&current_node, &data);
+            return;
+        }
 
         let mut randomly_dropped = false;
         let mut duplicate = false;
