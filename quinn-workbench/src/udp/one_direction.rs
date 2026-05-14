@@ -19,11 +19,18 @@ pub fn run_traffic_pattern(
 ) -> async_rt::JoinHandle<()> {
     let sender_node = network.node(t.source.ip()).clone();
     let send_interval = Duration::from_millis(t.send_interval_ms);
+    let start_at = Duration::from_millis(t.start_at_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let payload_bytes = t.payload_bytes;
     let source = t.source;
     let target = t.target;
     async_rt::spawn(async move {
+        // Don't start until the specified moment
+        let time_until_start = start_at.saturating_sub(simulation_start.elapsed());
+        if !time_until_start.is_zero() {
+            async_rt::time::sleep(time_until_start).await;
+        }
+
         let chunk = Bytes::from(vec![0; PAYLOAD_CHUNK_SIZE_BYTES]);
         let start = Instant::now();
 

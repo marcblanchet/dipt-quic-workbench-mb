@@ -87,6 +87,9 @@ fn default_deadline_ms() -> u64 {
 
 #[derive(Deserialize)]
 pub struct UdpOneDirectionTraffic {
+    /// The time at which traffic should start, in milliseconds (defaults to 0)
+    #[serde(default)]
+    pub start_at_ms: u64,
     /// The socket address of the sender
     pub source: SocketAddr,
     /// The socket address of the receiver
