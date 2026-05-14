@@ -201,7 +201,7 @@ Sends UDP traffic in a single direction from a source node to a target node, at 
 
 #### `udp_ping`
 
-Sends ping packets from a client node to a server node. The following properties are available:
+Sends ping packets from a client node to a server node. Upon receiving such packets, the server node sends a reply packet back to the client. This is mostly useful to check connectivity over time, for debugging. The following properties are available:
 
 - `type` (required): must be set to `udp_ping`
 - `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.
