@@ -65,11 +65,11 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
                 node_ips_by_role
                     .entry("udp sender")
                     .or_default()
-                    .push(t.source.ip());
+                    .push(t.client.ip());
                 node_ips_by_role
                     .entry("udp receiver")
                     .or_default()
-                    .push(t.target.ip());
+                    .push(t.server.ip());
             }
         }
     }
@@ -465,8 +465,8 @@ fn socket_pairs_from_traffic(traffic: &[TrafficKind]) -> Vec<(IpAddr, IpAddr)> {
             }
             TrafficKind::UdpOneDirection(t) => {
                 // Order to prevent duplicates in `pairs`
-                let fst = cmp::min(t.source.ip(), t.target.ip());
-                let snd = cmp::max(t.source.ip(), t.target.ip());
+                let fst = cmp::min(t.client.ip(), t.server.ip());
+                let snd = cmp::max(t.client.ip(), t.server.ip());
                 pairs.insert((fst, snd));
             }
         }

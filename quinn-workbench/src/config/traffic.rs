@@ -90,10 +90,10 @@ pub struct UdpOneDirectionTraffic {
     /// The time at which traffic should start, in milliseconds (defaults to 0)
     #[serde(default)]
     pub start_at_ms: u64,
-    /// The socket address of the sender
-    pub source: SocketAddr,
-    /// The socket address of the receiver
-    pub target: SocketAddr,
+    /// The socket address of the sender (not technically a client, but we use the name for consistency with other traffic patterns)
+    pub client: SocketAddr,
+    /// The socket address of the receiver (not technically a server, but we use the name for consistency with other traffic patterns)
+    pub server: SocketAddr,
     /// The size of the payload, which will potentially be split across multiple UDP packets (defaults to 10 KiB)
     #[serde(default = "default_udp_payload_bytes")]
     pub payload_bytes: u64,

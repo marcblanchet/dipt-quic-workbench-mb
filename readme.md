@@ -193,8 +193,9 @@ The top JSON object has a single `traffic_patterns` property, which is an array.
 Sends UDP traffic in a single direction from a source node to a target node, at a configurable interval. The following properties are available:
 
 - `type` (required): must be set to `udp_one_direction`
-- `source` (required): the socket address (IP and port) of the sender. Must correspond to an address defined in the network graph.
-- `target` (required): the socket address (IP and port) of the receiver. Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the sender (we use the name `client` for consistency with other traffic patterns). Must correspond to an address defined in the network graph.
+- `server` (required): the socket address (IP and port) of the receiver (we use the name `server` for consistency with other traffic patterns). Must correspond to an address defined in the network graph.
+- `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `payload_bytes` (required): the size of the payload, which will potentially be split across multiple UDP packets [default: 10 KiB].
 - `send_interval_ms` (required): the interval at which the payload should be sent [default: 10000 (10 seconds)].
 - `duration_ms`: the duration of the run, after which we will stop sending packets [default: 600000 (10 minutes)].

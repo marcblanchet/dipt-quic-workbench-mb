@@ -17,13 +17,13 @@ pub fn run_traffic_pattern(
     simulation_start: Instant,
     log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
 ) -> async_rt::JoinHandle<()> {
-    let sender_node = network.node(t.source.ip()).clone();
+    let sender_node = network.node(t.client.ip()).clone();
     let send_interval = Duration::from_millis(t.send_interval_ms);
     let start_at = Duration::from_millis(t.start_at_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let payload_bytes = t.payload_bytes;
-    let source = t.source;
-    let target = t.target;
+    let source = t.client;
+    let target = t.server;
     async_rt::spawn(async move {
         // Don't start until the specified moment
         let time_until_start = start_at.saturating_sub(simulation_start.elapsed());
