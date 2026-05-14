@@ -74,7 +74,7 @@ pub struct PingTraffic {
     /// The duration of the run, after which we will stop sending pings
     pub duration_ms: u64,
     /// The interval at which ping packets will be sent
-    pub interval_ms: u64,
+    pub send_interval_ms: u64,
     /// The deadline between sending a ping and receiving a reply (after which the ping itself or
     /// its reply are considered lost)
     #[serde(default = "default_deadline_ms")]

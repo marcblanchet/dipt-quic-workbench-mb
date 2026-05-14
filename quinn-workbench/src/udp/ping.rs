@@ -40,7 +40,7 @@ pub fn run_traffic_pattern(
     log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
 ) -> async_rt::JoinHandle<()> {
     let client_socket = Arc::new(client_socket);
-    let interval = Duration::from_millis(t.interval_ms);
+    let interval = Duration::from_millis(t.send_interval_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let deadline = Duration::from_millis(t.deadline_ms);
     let server_socket = t.server;
