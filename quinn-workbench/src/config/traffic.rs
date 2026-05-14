@@ -91,15 +91,23 @@ pub struct UdpOneDirectionTraffic {
     pub source: SocketAddr,
     /// The socket address of the receiver
     pub target: SocketAddr,
-    /// The size of the payload (potentially split across multiple UDP packets)
-    pub payload_bytes: u32,
-    /// The interval at which the payload should be sent
+    /// The size of the payload, which will potentially be split across multiple UDP packets (defaults to 10 KiB)
+    #[serde(default = "default_udp_payload_bytes")]
+    pub payload_bytes: u64,
+    /// The interval at which the payload should be sent (defaults to 10 seconds)
+    #[serde(default = "default_udp_send_interval_ms")]
     pub send_interval_ms: u64,
     /// The duration of the run, after which we will stop sending packets (defaults to 10 minutes)
     #[serde(default = "default_udp_duration_ms")]
     pub duration_ms: u64,
 }
 
+fn default_udp_payload_bytes() -> u64 {
+    1024 * 10
+}
+fn default_udp_send_interval_ms() -> u64 {
+    10000
+}
 fn default_udp_duration_ms() -> u64 {
     1000 * 60 * 10
 }

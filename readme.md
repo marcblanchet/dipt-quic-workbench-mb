@@ -195,8 +195,8 @@ Sends UDP traffic in a single direction from a source node to a target node, at 
 - `type` (required): must be set to `udp_one_direction`
 - `source` (required): the socket address (IP and port) of the sender. Must correspond to an address defined in the network graph.
 - `target` (required): the socket address (IP and port) of the receiver. Must correspond to an address defined in the network graph.
-- `payload_bytes` (required): the size of the payload (potentially split across multiple UDP packets).
-- `send_interval_ms` (required): the interval at which the payload should be sent.
+- `payload_bytes` (required): the size of the payload, which will potentially be split across multiple UDP packets [default: 10 KiB].
+- `send_interval_ms` (required): the interval at which the payload should be sent [default: 10000 (10 seconds)].
 - `duration_ms`: the duration of the run, after which we will stop sending packets [default: 600000 (10 minutes)].
 
 #### `udp_ping`
