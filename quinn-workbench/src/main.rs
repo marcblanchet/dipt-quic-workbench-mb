@@ -65,7 +65,7 @@ fn load_network_config(cli: &NetworkOpt) -> anyhow::Result<NetworkConfig> {
     let network_graph = load_json(&cli.network_graph)?;
 
     let network_events: Option<NetworkEventsJson> = cli
-        .network_events
+        .network_events()
         .as_ref()
         .map(|p| load_json(p))
         .transpose()?;

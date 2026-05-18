@@ -236,11 +236,13 @@ command line arguments.
   - `debug`: additional commands for debugging the workbench
 
 - `cargo run --release -- simulate --help` shows arguments for the simulation.
-   - `--traffic <TRAFFIC>` (required): Path to the JSON file containing the traffic specification
-   - `--network-graph <NETWORK_GRAPH>` (required):
-          Path to the JSON file containing the network graph
-   - `--network-events <NETWORK_EVENTS>` (optional):
-          Path to the JSON file containing the network events, if any
+   - `--traffic <TRAFFIC>`: Path to the JSON file containing the traffic specification [default: traffic.json]
+   - `--network-graph <NETWORK_GRAPH>`:
+          Path to the JSON file containing the network graph [default: topology.json]
+   - `--network-events <NETWORK_EVENTS>`:
+          Path to the JSON file containing the network events [default: events.json]
+   - `--no-network-events`:
+          Run the simulation without loading any network events file (mutually exclusive with `--network-events`)
    - `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
    - `--non-deterministic`:
           Whether the run should be non-deterministic, i.e. using a non-constant seed for the random number generators

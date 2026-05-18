@@ -208,7 +208,7 @@ impl Simulation {
         );
         let network_events_path = cli_options
             .network
-            .network_events
+            .network_events()
             .as_ref()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "<none>".to_string());

@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::net::IpAddr;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Parser, Debug, Clone)]
 pub struct CliOpt {
@@ -56,12 +56,26 @@ pub struct NetworkOpt {
     pub network_rng_seed: u64,
 
     /// Path to the JSON file containing the network graph
-    #[arg(long)]
+    #[arg(long, default_value = "topology.json")]
     pub network_graph: PathBuf,
 
-    /// Path to the JSON file containing the network events (optional)
-    #[arg(long)]
-    pub network_events: Option<PathBuf>,
+    /// Path to the JSON file containing the network events
+    #[arg(long, default_value = "events.json")]
+    network_events: PathBuf,
+
+    /// Run the simulation without loading any network events file
+    #[arg(long, conflicts_with = "network_events")]
+    no_network_events: bool,
+}
+
+impl NetworkOpt {
+    pub fn network_events(&self) -> Option<&Path> {
+        if self.no_network_events {
+            None
+        } else {
+            Some(&self.network_events)
+        }
+    }
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -78,7 +92,7 @@ pub struct RtOpt {
 #[derive(Parser, Debug, Clone)]
 pub struct SimulateOpt {
     /// Path to the JSON file containing the traffic specification
-    #[arg(long)]
+    #[arg(long, default_value = "traffic.json")]
     pub traffic: PathBuf,
 
     #[command(flatten)]
