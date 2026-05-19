@@ -22,7 +22,7 @@ use crate::network::spec::NetworkSpec;
 use crate::quinn_interop::InMemoryUdpSocket;
 use crate::tracing::tracer::SimulationStepTracer;
 use crate::transmit::{DEFAULT_TTL, OwnedTransmit};
-use anyhow::bail;
+use anyhow::{anyhow, bail};
 use fastrand::Rng;
 use futures_util::StreamExt;
 use link::NetworkLink;
@@ -334,8 +334,10 @@ impl InMemoryNetwork {
     }
 
     /// Returns the node bound to the provided address
-    pub fn node(self: &InMemoryNetwork, ip: IpAddr) -> &Arc<Node> {
-        &self.nodes_by_addr[&ip]
+    pub fn node(self: &InMemoryNetwork, ip: IpAddr) -> anyhow::Result<&Arc<Node>> {
+        self.nodes_by_addr
+            .get(&ip)
+            .ok_or(anyhow!("there is no node with IP {ip}"))
     }
 
     pub async fn assert_connectivity_between_nodes(

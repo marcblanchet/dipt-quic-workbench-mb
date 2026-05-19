@@ -251,8 +251,8 @@ mod test {
 
         // Network
         let network = default_network().call();
-        let server_socket = network.node(SERVER_ADDR.as_ip_addr());
-        let client_socket = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_socket = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_socket = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
 
         // QUIC config
         let (server_name, server_cert, server_config) = default_server_config();
@@ -317,8 +317,8 @@ mod test {
     async fn test_packet_arrives_at_expected_time() {
         // Sanity check
         let network = default_network().call();
-        let server_node = network.node(SERVER_ADDR.as_ip_addr());
-        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
         network
             .assert_connectivity_between_nodes(server_node, client_node)
             .await
@@ -326,8 +326,8 @@ mod test {
 
         // Test
         let network = default_network().call();
-        let server_node = network.node(SERVER_ADDR.as_ip_addr());
-        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
         let data = network.in_transit_data(
             client_node.id().clone(),
             OwnedTransmit {
@@ -385,8 +385,8 @@ mod test {
 
         // Sanity check
         let network = default_network().bandwidth_bps(bandwidth).call();
-        let server_node = network.node(SERVER_ADDR.as_ip_addr());
-        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
         network
             .assert_connectivity_between_nodes(client_node, server_node)
             .await
@@ -394,8 +394,8 @@ mod test {
 
         // Actual test
         let network = default_network().bandwidth_bps(bandwidth).call();
-        let server_node = network.node(SERVER_ADDR.as_ip_addr());
-        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
 
         let mut packet_ids = Vec::new();
         for _ in 0..4 {
@@ -481,8 +481,8 @@ mod test {
             ])
             .call();
 
-        let server_node = network.node(SERVER_ADDR.as_ip_addr());
-        let client_node = network.node(CLIENT_ADDR.as_ip_addr());
+        let server_node = network.node(SERVER_ADDR.as_ip_addr()).unwrap();
+        let client_node = network.node(CLIENT_ADDR.as_ip_addr()).unwrap();
 
         let data = network.in_transit_data(
             client_node.id().clone(),

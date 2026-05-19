@@ -69,7 +69,7 @@ pub async fn run(
     let server_node = network.node(server_ip);
     let server_socket = Arc::pin(
         network
-            .udp_socket_for_node(server_node.clone(), port)
+            .udp_socket_for_node(server_node?.clone(), port)
             .unwrap(),
     );
 
@@ -77,7 +77,7 @@ pub async fn run(
     let client_node = network.node(client_ip);
     let client_socket = Arc::pin(
         network
-            .udp_socket_for_node(client_node.clone(), port)
+            .udp_socket_for_node(client_node?.clone(), port)
             .unwrap(),
     );
 
@@ -200,8 +200,8 @@ pub async fn run(
     let client_node = network.node(throughput_opt.peers.client_ip_address);
 
     let node_ids_by_role = &[
-        ("server", vec![server_node.id().as_ref()]),
-        ("client", vec![client_node.id().as_ref()]),
+        ("server", vec![server_node?.id().as_ref()]),
+        ("client", vec![client_node?.id().as_ref()]),
     ]
     .into_iter()
     .collect();

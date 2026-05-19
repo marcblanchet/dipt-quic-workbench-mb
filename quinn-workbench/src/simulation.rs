@@ -111,18 +111,16 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
         .verify()
         .context("failed to verify simulation")?;
 
-    let node_ids_by_role: HashMap<_, _> = node_ips_by_role
-        .into_iter()
-        .map(|(role, node_ips)| {
-            (
-                role,
-                node_ips
-                    .into_iter()
-                    .map(|ip| network.node(ip).id().as_ref())
-                    .collect::<Vec<_>>(),
-            )
-        })
-        .collect();
+    let mut node_ids_by_role = HashMap::new();
+    for (role, node_ips) in node_ips_by_role {
+        let mut node_ids = Vec::new();
+        for ip in node_ips {
+            let node = network.node(ip)?.id();
+            node_ids.push(node.as_ref());
+        }
+
+        node_ids_by_role.insert(role, node_ids);
+    }
     let duplicate_ids = util::duplicates(node_ids_by_role.values().flatten().copied());
     if !duplicate_ids.is_empty() && !all_traffic_is_udp {
         let duplicates = duplicate_ids.join(", ");
@@ -261,16 +259,22 @@ impl Simulation {
             println!("* Connectivity check skipped to save time (time warping is disabled)");
         } else {
             let pairs = socket_pairs_from_traffic(&traffic_patterns);
-            println!("* Running connectivity check for the following node pairs:");
+            println!(
+                "* Running connectivity check for the following node pairs (derived from the traffic file):"
+            );
             for &(ip1, ip2) in &pairs {
                 let node1 = connectivity_check_network.node(ip1);
                 let node2 = connectivity_check_network.node(ip2);
 
-                print!("  * {} ({ip1}) <-> {} ({ip2}) ... ", node1.id(), node2.id());
+                print!(
+                    "  * {} ({ip1}) <-> {} ({ip2}) ... ",
+                    node1.as_ref().map(|n| n.id().as_ref()).unwrap_or("<error>"),
+                    node2.as_ref().map(|n| n.id().as_ref()).unwrap_or("<error>")
+                );
                 io::stdout().flush()?;
 
                 let connectivity_check_result = connectivity_check_network
-                    .assert_connectivity_between_nodes(node1, node2)
+                    .assert_connectivity_between_nodes(node1?, node2?)
                     .await;
 
                 match connectivity_check_result {
@@ -317,7 +321,7 @@ impl Simulation {
         for traffic in &traffic_patterns {
             match traffic {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let server_node = network.node(t.server.ip());
+                    let server_node = network.node(t.server.ip())?;
                     let server_socket = network
                         .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
@@ -337,7 +341,7 @@ impl Simulation {
                     );
                 }
                 TrafficKind::UdpPing(t) => {
-                    let server_node = network.node(t.server.ip());
+                    let server_node = network.node(t.server.ip())?;
                     let server_socket = network
                         .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
@@ -369,7 +373,7 @@ impl Simulation {
 
             match traffic_kind {
                 TrafficKind::QuicRequestResponse(t) => {
-                    let client_node = network.node(t.client.ip());
+                    let client_node = network.node(t.client.ip())?;
                     let client_socket = network
                         .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
@@ -391,7 +395,7 @@ impl Simulation {
                     quic_client_tasks.push(task);
                 }
                 TrafficKind::UdpPing(t) => {
-                    let client_node = network.node(t.client.ip());
+                    let client_node = network.node(t.client.ip())?;
                     let client_socket = network
                         .udp_socket_for_node(client_node.clone(), t.client.port())
                         .unwrap();
@@ -404,7 +408,7 @@ impl Simulation {
                         t,
                         start,
                         log_writer,
-                    ));
+                    )?);
                 }
             }
         }

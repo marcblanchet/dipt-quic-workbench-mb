@@ -16,15 +16,15 @@ pub fn run_traffic_pattern(
     t: &UdpOneDirectionTraffic,
     simulation_start: Instant,
     log_writer: Arc<Mutex<dyn Write + Sync + Send>>,
-) -> async_rt::JoinHandle<()> {
-    let sender_node = network.node(t.client.ip()).clone();
+) -> anyhow::Result<async_rt::JoinHandle<()>> {
+    let sender_node = network.node(t.client.ip())?.clone();
     let send_interval = Duration::from_millis(t.send_interval_ms);
     let start_at = Duration::from_millis(t.start_at_ms);
     let duration = Duration::from_millis(t.duration_ms);
     let payload_bytes = t.payload_bytes;
     let source = t.client;
     let target = t.server;
-    async_rt::spawn(async move {
+    let handle = async_rt::spawn(async move {
         // Don't start until the specified moment
         let time_until_start = start_at.saturating_sub(simulation_start.elapsed());
         if !time_until_start.is_zero() {
@@ -82,5 +82,7 @@ pub fn run_traffic_pattern(
             "{:.2}s DONE",
             simulation_start.elapsed().as_secs_f64()
         );
-    })
+    });
+
+    Ok(handle)
 }
