@@ -44,7 +44,7 @@
   * M20: UP
   * MSL: UP
   * ING: UP
-* Running connectivity check for the following node pairs:
+* Running connectivity check for the following node pairs (derived from the traffic file):
   * GND (192.168.40.1) <-> ING (192.168.43.2) ... passed (packets arrived after 901200 ms and 901200 ms)
   * MRO (192.168.50.1) <-> MSL (192.168.50.2) ... passed (packets arrived after 6001000 ms and 6001000 ms)
 --- Requests ---

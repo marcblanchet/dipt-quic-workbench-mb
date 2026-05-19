@@ -14,7 +14,7 @@
   * Earth1: UP
   * MoonOrbiter1: UP
   * MoonAsset1: UP
-* Running connectivity check for the following node pairs:
+* Running connectivity check for the following node pairs (derived from the traffic file):
   * Earth1 (192.168.40.1) <-> MoonAsset1 (192.168.41.2) ... passed (packets arrived after 1800 ms and 1800 ms)
 --- Ping ---
 P0 | 0.00s - SENT | 3.60s - RECEIVED | 3.60s - DURATION

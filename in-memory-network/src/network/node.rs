@@ -2,7 +2,7 @@ use crate::network::event::UpdateNodeStatus;
 use crate::network::inbound_queue::InboundQueue;
 use crate::network::link::BufferedPacket;
 use crate::network::outbound_buffer::OutboundBuffer;
-use crate::network::route::Route;
+use crate::network::route::{IpRange, Route};
 use crate::network::spec::NetworkNodeSpec;
 use crate::network::{InMemoryNetwork, PcapOptions};
 use crate::pcap_exporter::{InMemoryKeyLog, PcapExporter};
@@ -60,6 +60,7 @@ pub struct Node {
 impl Node {
     pub(crate) fn new(
         node: &NetworkNodeSpec,
+        links_addr_map: &HashMap<IpAddr, IpAddr>,
         pcap_options: PcapOptions,
     ) -> anyhow::Result<(
         Self,
@@ -74,17 +75,31 @@ impl Node {
 
         let addresses = node.addresses();
         let canonical_address = addresses[0];
-        let mut routes = node
-            .interfaces
-            .iter()
-            .flat_map(|i| {
-                i.routes.iter().flat_map(move |r| {
-                    i.addresses
-                        .iter()
-                        .map(|addr| (IpAddr::V4(addr.address), r.clone()))
-                })
-            })
-            .collect::<Vec<_>>();
+        let mut connected_routes = Vec::new();
+        let mut routes = Vec::new();
+        for interface in &node.interfaces {
+            // Connected routes
+            for addr in &interface.addresses {
+                // Note: some interfaces have a single incoming link, with no outgoing one
+                if let Some(link_target) = links_addr_map.get(&IpAddr::V4(addr.address)) {
+                    connected_routes.push((
+                        IpAddr::V4(addr.address),
+                        Route {
+                            destination: IpRange::from_cidr(addr.clone()),
+                            next: *link_target,
+                            cost: 0,
+                        },
+                    ));
+                }
+            }
+
+            // Other routes
+            for r in &interface.routes {
+                for addr in &interface.addresses {
+                    routes.push((IpAddr::V4(addr.address), r.clone()))
+                }
+            }
+        }
         routes.sort_by(|(dest1, r1), (dest2, r2)| r1.cost.cmp(&r2.cost).then(dest1.cmp(dest2)));
 
         let keylog = Arc::new(InMemoryKeyLog::default());
@@ -99,7 +114,7 @@ impl Node {
             id: node.id.clone(),
             canonical_address,
             addresses,
-            routes,
+            routes: connected_routes.into_iter().chain(routes).collect(),
             outbound_buffer: Arc::new(OutboundBuffer::new(node.buffer_size_bytes as usize)),
             udp_endpoints: Default::default(),
             outbound_tx: tx,

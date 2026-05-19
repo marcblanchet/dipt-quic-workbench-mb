@@ -14,7 +14,7 @@
   * Earth1: UP
   * MoonOrbiter1: DOWN
   * MoonAsset1: UP
-* Running connectivity check for the following node pairs:
+* Running connectivity check for the following node pairs (derived from the traffic file):
   * Earth1 (192.168.40.1) <-> MoonAsset1 (192.168.41.2) ... passed (packets arrived after 61800 ms and 61800 ms)
 --- Ping ---
 3.90s WARN no more network events left to process. Did the simulation keep running indefinitely?

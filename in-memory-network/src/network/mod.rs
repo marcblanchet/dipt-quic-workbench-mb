@@ -87,11 +87,13 @@ impl InMemoryNetwork {
         }
 
         let mut links_by_addr = HashMap::new();
+        let mut links_addr_map = HashMap::new();
         let mut links_by_id = HashMap::new();
         for l in network_spec.links {
             let id = l.id.clone();
             let source = l.source;
             let target = l.target;
+            links_addr_map.insert(source, target);
 
             let (l, rx) = NetworkLink::new(l, tracer.clone());
             let l = Arc::new(Mutex::new(l));
@@ -127,7 +129,7 @@ impl InMemoryNetwork {
         let mut nodes_by_id = HashMap::new();
         let mut nodes_and_outbound_rx = Vec::new();
         for n in &network_spec.nodes {
-            let (node, outbound_rx) = Node::new(n, pcap_opts)?;
+            let (node, outbound_rx) = Node::new(n, &links_addr_map, pcap_opts)?;
             let node = Arc::new(node);
 
             for &address in &node.addresses {
@@ -464,9 +466,9 @@ impl InMemoryNetwork {
 
     /// Returns true if there is a route from `node` to `dest`, even if the route is inactive at the
     /// moment because the link is down
-    fn has_route_to(&self, node: &Node, dest: IpAddr) -> bool {
+    fn has_route_to(&self, node: &Node, dest: IpAddr) -> anyhow::Result<bool> {
         self.walk_links(node, dest, |_link| ControlFlow::Break(true))
-            .unwrap_or(false)
+            .map(|o| o.is_some())
     }
 
     /// Walk links that could potentially route a packet from `node` to `dest`
@@ -478,29 +480,24 @@ impl InMemoryNetwork {
         node: &Node,
         dest: IpAddr,
         mut walk_fn: impl FnMut(&Arc<Mutex<NetworkLink>>) -> ControlFlow<T>,
-    ) -> Option<T> {
-        // Prefer direct links if available
-        for node_addr in node.addresses() {
-            if let Some(link) = self.links_by_addr.get(&(node_addr, dest))
-                && let ControlFlow::Break(value) = walk_fn(link)
-            {
-                return Some(value);
-            }
-        }
-
-        // Use routing when no direct links are available
+    ) -> anyhow::Result<Option<T>> {
         for (node_addr, route) in &node.routes {
-            if let Some(next_hop_addr) = route.next_hop_towards_destination(dest)
-                && let Some(link) = self.links_by_addr.get(&(*node_addr, next_hop_addr))
-            {
+            if let Some(next_hop_addr) = route.next_hop_towards_destination(dest) {
+                let link = self
+                    .links_by_addr
+                    .get(&(*node_addr, next_hop_addr))
+                    .ok_or(anyhow!(
+                        "route expects a link to exist between {node_addr} and {next_hop_addr}, but there is no link!"
+                    ))?;
+
                 let walk_fn_result = walk_fn(link);
                 if let ControlFlow::Break(value) = walk_fn_result {
-                    return Some(value);
+                    return Ok(Some(value));
                 }
             }
         }
 
-        None
+        Ok(None)
     }
 
     pub(crate) fn in_transit_data(
@@ -634,7 +631,12 @@ fn spawn_node_buffer_processors(
 ) {
     for (node, outbound_rx) in nodes {
         let network = network.clone();
-        async_rt::spawn(async move { process_buffer_for_node(network, node, outbound_rx).await });
+        async_rt::spawn(async move {
+            let result = process_buffer_for_node(network, node.clone(), outbound_rx).await;
+            if let Err(e) = result {
+                println!("Buffer processor crashed for node {}\n{e:?}", node.id)
+            }
+        });
     }
 }
 
@@ -642,19 +644,17 @@ async fn process_buffer_for_node(
     network: Arc<InMemoryNetwork>,
     node: Arc<Node>,
     mut outbound_rx: futures::channel::mpsc::UnboundedReceiver<BufferedPacket>,
-) {
+) -> anyhow::Result<()> {
     while let Some(packet) = outbound_rx.next().await {
-        if !network.has_route_to(&node, packet.data.transmit.destination.ip()) {
+        if !network.has_route_to(&node, packet.data.transmit.destination.ip())? {
             // Fatal error: there is no route to the destination!
             let nodes = network.tracer.stepper().get_packet_path(packet.data.id);
             let mut path = nodes.join(" -> ");
             path.push_str(" -> ?");
-
-            println!(
+            bail!(
                 "Fatal network error: missing route to {} ({path})",
                 packet.data.transmit.destination
             );
-            return;
         }
 
         let (sent_tx, sent_rx) = tokio::sync::watch::channel(false);
@@ -665,7 +665,7 @@ async fn process_buffer_for_node(
         network.walk_links(&node, packet.data.transmit.destination.ip(), |link| {
             links.push_back(link.clone());
             ControlFlow::Continue::<(), ()>(())
-        });
+        })?;
 
         for link in links.clone() {
             let anomalies = network.generate_packet_anomalies(&link);
@@ -683,6 +683,8 @@ async fn process_buffer_for_node(
                 .expect("the receiver end is active until all senders are dropped");
         }
     }
+
+    Ok(())
 }
 
 async fn process_link_queue(
