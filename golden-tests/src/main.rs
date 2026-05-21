@@ -9,6 +9,8 @@ struct Cli {
     test_name: Option<String>,
     #[arg(short, long, action = clap::ArgAction::Count)]
     quiet: u8,
+    #[arg(long)]
+    override_stdout: bool,
 }
 
 struct TestCase {
@@ -69,7 +71,7 @@ fn main() -> anyhow::Result<()> {
             .with_context(|| format!("no `args` file found at `{}`", args_path.display()))?;
 
         let stdout_path = path.join(&expected_stdout_file);
-        let stdout = if stdout_path.is_file() {
+        let stdout = if stdout_path.is_file() && !cli.override_stdout {
             Some(std::fs::read_to_string(&stdout_path).with_context(|| {
                 format!(
                     "no `{expected_stdout_file}` file found at `{}`",
@@ -184,7 +186,9 @@ fn run_quinn_workbench(
             }
         }
         None => {
-            println!("... expected stdout not found, persisting the current one for future tests");
+            println!(
+                "... expected stdout not found or overridden, persisting the current one for future tests"
+            );
             std::fs::write(test_case.dir.join(expected_stdout_file), stdout.as_bytes())
                 .context("failed to persist stdout")
                 .map_err(TestError::Internal)?;
