@@ -105,7 +105,9 @@ impl Node {
         let keylog = Arc::new(InMemoryKeyLog::default());
         let pcap_exporter = match pcap_options {
             PcapOptions::Disabled => PcapExporter::noop(),
-            PcapOptions::WithTlsKeys => PcapExporter::for_node(&node.id, Some(keylog.clone()))?,
+            PcapOptions::WithTlsKeys => {
+                PcapExporter::for_node(node.id.clone(), Some(keylog.clone()))?
+            }
         };
 
         let (tx, rx) = futures::channel::mpsc::unbounded();
