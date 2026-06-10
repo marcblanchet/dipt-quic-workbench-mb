@@ -12,11 +12,13 @@ use crate::config::cli::{Command, DebugCommand, NetworkOpt, SimulateOpt};
 use crate::config::network::NetworkEventsJson;
 use crate::config::traffic::TrafficJson;
 use crate::udp::throughput;
-use anyhow::Context;
+use anyhow::{Context, bail};
 use clap::Parser;
 use config::cli::CliOpt;
+use config::traffic;
 use in_memory_network::async_rt;
 use in_memory_network::async_rt::DelayMode;
+use in_memory_network::network::spec::NetworkSpec;
 use serde::de::DeserializeOwned;
 use std::collections::HashSet;
 use std::fs::File;
@@ -47,8 +49,13 @@ fn main() -> anyhow::Result<()> {
             command: DebugCommand::Throughput(throughput_opt),
         } => {
             let network_config = load_network_config(&throughput_opt.network)?;
+            let network_spec = network_config.network_graph.into();
             let rt = async_rt::new_rt(DelayMode::TimeWarp);
-            rt.block_on(throughput::run(throughput_opt, network_config))
+            rt.block_on(throughput::run(
+                throughput_opt,
+                network_spec,
+                network_config.network_events,
+            ))
         }
         Command::Rt => {
             println!("tokio");
@@ -57,8 +64,30 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-fn load_traffic(cli: &SimulateOpt) -> anyhow::Result<TrafficJson> {
-    load_json(&cli.traffic)
+fn load_traffic(cli: &SimulateOpt, network_spec: &NetworkSpec) -> anyhow::Result<TrafficJson> {
+    if let Some(traffic) = cli.traffic_path() {
+        return load_json(traffic);
+    };
+
+    // No traffic file specified, attempt to infer the pattern instead
+    if network_spec.nodes.len() != 2 {
+        bail!(
+            "attempted to infer traffic pattern based on the network topology, but this can only succeed when the network consists of exactly two nodes! (We are attempting to infer the traffic pattern instead of loading it from disk, because no path was specified through the CLI, and no `traffic.json` file was present at the current working directory)"
+        );
+    }
+
+    let ips: Vec<_> = network_spec
+        .nodes
+        .iter()
+        .flat_map(|node| node.addresses().into_iter().next())
+        .collect();
+    if ips.len() != 2 {
+        bail!(
+            "attempted to infer traffic pattern based on the network topology, but at least one of the nodes has no IP address! (We are attempting to infer the traffic pattern instead of loading it from disk, because no path was specified through the CLI, and no `traffic.json` file was present at the current working directory)"
+        );
+    }
+
+    Ok(traffic::default_request_response_traffic(ips[0], ips[1]))
 }
 
 fn load_network_config(cli: &NetworkOpt) -> anyhow::Result<NetworkConfig> {

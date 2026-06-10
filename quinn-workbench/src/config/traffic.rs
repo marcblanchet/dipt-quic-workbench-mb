@@ -1,5 +1,6 @@
 use serde::de::Error;
 use serde::{Deserialize, Deserializer};
+use serde_json::json;
 use std::net::{IpAddr, SocketAddr};
 
 #[derive(Deserialize)]
@@ -139,9 +140,42 @@ fn deserialize_socket_addr<'de, D: Deserializer<'de>>(d: D) -> Result<SocketAddr
     }
 }
 
+// It would be nice to avoid parsing from JSON here, but since the defaults are specified through
+// serde we _have_ to parse (unless we want to build the struct by hand and manually specify the
+// default values)
+pub fn default_request_response_traffic(source_ip: IpAddr, target_ip: IpAddr) -> TrafficJson {
+    let json = json!({
+      "traffic_patterns": [
+        {
+          "type": "quic_request_response",
+          "client": source_ip.to_string(),
+          "server": target_ip.to_string(),
+        }
+      ]
+    });
+
+    serde_json::from_value(json).unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_default_request_response_traffic() {
+        let client = "127.0.0.1".parse().unwrap();
+        let server = "127.0.0.2".parse().unwrap();
+        let traffic = default_request_response_traffic(client, server);
+        assert_eq!(traffic.traffic_patterns.len(), 1);
+        let TrafficKind::QuicRequestResponse(traffic) = &traffic.traffic_patterns[0] else {
+            unreachable!()
+        };
+
+        assert_eq!(traffic.client.ip(), client);
+        assert_eq!(traffic.client.port(), 8080);
+        assert_eq!(traffic.server.ip(), server);
+        assert_eq!(traffic.server.port(), 8080);
+    }
 
     #[test]
     fn test_deserialize_addr_wrong_type() {

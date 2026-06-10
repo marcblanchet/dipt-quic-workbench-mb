@@ -99,15 +99,32 @@ pub struct RtOpt {
 
 #[derive(Parser, Debug, Clone)]
 pub struct SimulateOpt {
-    /// Path to the JSON file containing the traffic specification
-    #[arg(long, default_value = "traffic.json")]
-    pub traffic: PathBuf,
+    /// Path to the JSON file containing the traffic specification (defaults to `traffic.json`,
+    /// unless the file is absent _and_ the network graph consists of merely two nodes, in which
+    /// case a traffic configuration with a single `quic_request_response` between the nodes is
+    /// used).
+    #[arg(long)]
+    traffic: Option<PathBuf>,
 
     #[command(flatten)]
     pub rt: RtOpt,
 
     #[command(flatten)]
     pub network: NetworkOpt,
+}
+
+const DEFAULT_TRAFFIC_PATH: &str = "traffic.json";
+
+impl SimulateOpt {
+    pub fn traffic_path(&self) -> Option<&Path> {
+        if let Some(path) = self.traffic.as_ref() {
+            Some(path)
+        } else if fs::exists(DEFAULT_TRAFFIC_PATH).is_ok_and(|exists| exists) {
+            Some(Path::new(DEFAULT_TRAFFIC_PATH))
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(Parser, Debug, Clone)]

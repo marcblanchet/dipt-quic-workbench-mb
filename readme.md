@@ -236,7 +236,7 @@ command line arguments.
   - `debug`: additional commands for debugging the workbench
 
 - `cargo run --release -- simulate --help` shows arguments for the simulation.
-   - `--traffic <TRAFFIC>`: Path to the JSON file containing the traffic specification [default: traffic.json]
+   - `--traffic <TRAFFIC>`: Path to the JSON file containing the traffic specification [default: traffic.json (only if the file is present, otherwise we will attempt to infer a traffic pattern consisting of a single `quic_request_response`)]
    - `--network-graph <NETWORK_GRAPH>`:
           Path to the JSON file containing the network graph [default: topology.json]
    - `--network-events <NETWORK_EVENTS>`:
