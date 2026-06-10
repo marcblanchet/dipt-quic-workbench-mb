@@ -1,5 +1,5 @@
-use crate::config::NetworkConfig;
 use crate::config::cli::ThroughputOpt;
+use crate::config::network::NetworkEventJson;
 use crate::util::{
     CancellationToken, print_link_stats, print_max_buffer_usage_per_node, print_node_stats,
 };
@@ -22,19 +22,14 @@ use std::{cmp, fs};
 
 pub async fn run(
     throughput_opt: &ThroughputOpt,
-    network_config: NetworkConfig,
+    network_spec: NetworkSpec,
+    network_events: Vec<NetworkEventJson>,
 ) -> anyhow::Result<()> {
     let simulation_start = Instant::now();
 
     // Network
-    let network_spec: NetworkSpec = network_config.network_graph.into();
     let network_events = NetworkEvents::new(
-        network_config
-            .network_events
-            .clone()
-            .into_iter()
-            .map(|e| e.into())
-            .collect(),
+        network_events.into_iter().map(|e| e.into()).collect(),
         &network_spec.nodes,
         &network_spec.links,
     );

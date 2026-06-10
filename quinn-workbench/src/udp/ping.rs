@@ -7,22 +7,22 @@ use parking_lot::Mutex;
 use quinn::udp::Transmit;
 use std::collections::HashMap;
 use std::io::Write;
-use std::net::{IpAddr, SocketAddr};
+use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
-pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_ip: IpAddr) {
+pub fn run_server_forever(server_socket: InMemoryUdpSocket, client_socket: SocketAddr) {
     async_rt::spawn(async move {
         let mut bufs_and_meta = BufsAndMeta::new(1200, 5);
 
         loop {
             // Receive next transmits
             for packet in server_socket.receive(&mut bufs_and_meta).await.unwrap() {
-                assert_eq!(packet.source_addr.ip(), client_ip);
+                assert_eq!(packet.source_addr, client_socket);
 
                 // Echo transmit
                 server_socket.send(&Transmit {
-                    destination: SocketAddr::new(client_ip, 8080),
+                    destination: client_socket,
                     ecn: None,
                     contents: packet.payload,
                     segment_size: None,

@@ -1,5 +1,5 @@
-use crate::config::NetworkConfig;
 use crate::config::cli::SimulateOpt;
+use crate::config::quinn::QuinnJsonConfig;
 use crate::config::traffic::{QuicRequestResponseTraffic, TrafficJson, TrafficKind};
 use crate::udp::ping;
 use crate::util::{print_link_stats, print_max_buffer_usage_per_node, print_node_stats};
@@ -34,7 +34,9 @@ fn validate_traffic(opts: &QuicRequestResponseTraffic) -> anyhow::Result<()> {
 
 pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<()> {
     let network_config = load_network_config(&cli_options.network)?;
-    let traffic = load_traffic(cli_options)?;
+    let quic_configs = network_config.network_graph.quic_configs();
+    let network_spec = network_config.network_graph.into();
+    let traffic = load_traffic(cli_options, &network_spec)?;
 
     // Necessary for reporting
     let mut node_ips_by_role = HashMap::<_, Vec<_>>::new();
@@ -89,8 +91,24 @@ pub async fn run_and_report_stats(cli_options: &SimulateOpt) -> anyhow::Result<(
         .all(|t| matches!(t, TrafficKind::UdpOneDirection(_)));
 
     let mut simulation = Simulation::new();
+    let network_events = NetworkEvents::new(
+        network_config
+            .network_events
+            .into_iter()
+            .map(|e| e.into())
+            .collect(),
+        &network_spec.nodes,
+        &network_spec.links,
+    );
     let result = simulation
-        .run(cli_options, network_config, traffic, main_traffic_name)
+        .run(
+            cli_options,
+            network_spec,
+            network_events,
+            quic_configs,
+            traffic,
+            main_traffic_name,
+        )
         .await;
 
     let Some((tracer, network)) = simulation.tracer_and_network else {
@@ -181,7 +199,9 @@ impl Simulation {
     pub async fn run(
         &mut self,
         cli_options: &SimulateOpt,
-        network_config: NetworkConfig,
+        network_spec: NetworkSpec,
+        network_events: NetworkEvents,
+        quic_configs: HashMap<String, QuinnJsonConfig>,
         traffic: TrafficJson,
         main_traffic_pattern: &str,
     ) -> anyhow::Result<()> {
@@ -211,26 +231,18 @@ impl Simulation {
             .map(|p| p.display().to_string())
             .unwrap_or_else(|| "<none>".to_string());
         println!("* Network events path: {network_events_path}");
-        println!("* Traffic patterns path: {}", cli_options.traffic.display(),);
+        println!(
+            "* Traffic patterns path: {}",
+            cli_options
+                .traffic_path()
+                .map(|p| p.display().to_string())
+                .unwrap_or_else(|| "<none>".to_string())
+        );
 
         let start = Instant::now();
-
-        let quic_configs = network_config.network_graph.quic_configs();
         let mut quinn_rng = Rng::with_seed(quinn_rng_seed);
 
         // Network check
-        let network_spec: NetworkSpec = network_config.network_graph.into();
-        let network_events = NetworkEvents::new(
-            network_config
-                .network_events
-                .clone()
-                .into_iter()
-                .map(|e| e.into())
-                .collect(),
-            &network_spec.nodes,
-            &network_spec.links,
-        );
-
         // Mute warnings during the connectivity check to avoid spamming the console
         let connectivity_check_tracer =
             SimulationStepTracer::new(network_spec.clone()).mute_warnings();
@@ -345,7 +357,7 @@ impl Simulation {
                     let server_socket = network
                         .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
-                    ping::run_server_forever(server_socket, t.client.ip());
+                    ping::run_server_forever(server_socket, t.client);
                 }
                 TrafficKind::UdpOneDirection(_) => {
                     // No background server is used with unidirectional UDP traffic

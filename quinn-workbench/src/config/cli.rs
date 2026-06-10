@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use std::fs;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 
@@ -59,21 +60,28 @@ pub struct NetworkOpt {
     #[arg(long, default_value = "topology.json")]
     pub network_graph: PathBuf,
 
-    /// Path to the JSON file containing the network events
-    #[arg(long, default_value = "events.json")]
-    network_events: PathBuf,
+    /// Path to the JSON file containing the network events (defaults to `events.json` if there is a
+    /// file at that path, otherwise the simulation runs with no network events)
+    #[arg(long)]
+    network_events: Option<PathBuf>,
 
     /// Run the simulation without loading any network events file
     #[arg(long, conflicts_with = "network_events")]
     no_network_events: bool,
 }
 
+static DEFAULT_NETWORK_EVENTS_PATH: &str = "events.json";
+
 impl NetworkOpt {
     pub fn network_events(&self) -> Option<&Path> {
         if self.no_network_events {
             None
+        } else if let Some(network_events_path) = self.network_events.as_ref() {
+            Some(network_events_path)
+        } else if fs::exists(DEFAULT_NETWORK_EVENTS_PATH).is_ok_and(|exists| exists) {
+            Some(Path::new(DEFAULT_NETWORK_EVENTS_PATH))
         } else {
-            Some(&self.network_events)
+            None
         }
     }
 }
@@ -91,15 +99,32 @@ pub struct RtOpt {
 
 #[derive(Parser, Debug, Clone)]
 pub struct SimulateOpt {
-    /// Path to the JSON file containing the traffic specification
-    #[arg(long, default_value = "traffic.json")]
-    pub traffic: PathBuf,
+    /// Path to the JSON file containing the traffic specification (defaults to `traffic.json`,
+    /// unless the file is absent _and_ the network graph consists of merely two nodes, in which
+    /// case a traffic configuration with a single `quic_request_response` between the nodes is
+    /// used).
+    #[arg(long)]
+    traffic: Option<PathBuf>,
 
     #[command(flatten)]
     pub rt: RtOpt,
 
     #[command(flatten)]
     pub network: NetworkOpt,
+}
+
+const DEFAULT_TRAFFIC_PATH: &str = "traffic.json";
+
+impl SimulateOpt {
+    pub fn traffic_path(&self) -> Option<&Path> {
+        if let Some(path) = self.traffic.as_ref() {
+            Some(path)
+        } else if fs::exists(DEFAULT_TRAFFIC_PATH).is_ok_and(|exists| exists) {
+            Some(Path::new(DEFAULT_TRAFFIC_PATH))
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(Parser, Debug, Clone)]
