@@ -193,8 +193,8 @@ The top JSON object has a single `traffic_patterns` property, which is an array.
 Sends UDP traffic in a single direction from a source node to a target node, at a configurable interval. The following properties are available:
 
 - `type` (required): must be set to `udp_one_direction`
-- `client` (required): the socket address (IP and port) of the sender (we use the name `client` for consistency with other traffic patterns). Must correspond to an address defined in the network graph.
-- `server` (required): the socket address (IP and port) of the receiver (we use the name `server` for consistency with other traffic patterns). Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the sender (we use the name `client` for consistency with other traffic patterns). Must correspond to an address defined in the network graph. If the port is omitted, it will default to `8080`.
+- `server` (required): the socket address (IP and port) of the receiver (we use the name `server` for consistency with other traffic patterns). Must correspond to an address defined in the network graph.  If the port is omitted, it will default to `8080`.
 - `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `payload_bytes` (required): the size of the payload, which will potentially be split across multiple UDP packets [default: 10 KiB].
 - `send_interval_ms` (required): the interval at which the payload should be sent [default: 10000 (10 seconds)].
@@ -205,8 +205,8 @@ Sends UDP traffic in a single direction from a source node to a target node, at 
 Sends ping packets from a client node to a server node. Upon receiving such packets, the server node sends a reply packet back to the client. This is mostly useful to check connectivity over time, for debugging. The following properties are available:
 
 - `type` (required): must be set to `udp_ping`
-- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.
-- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.  If the port is omitted, it will default to `8080`.
+- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.  If the port is omitted, it will default to `8080`.
 - `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `duration_ms` (required): the duration of the run, after which we will stop sending pings and listening to their responses.
 - `interval_ms` (required): the interval at which ping packets will be sent
@@ -217,8 +217,8 @@ Sends ping packets from a client node to a server node. Upon receiving such pack
 Issues HTTP-like requests over QUIC from a client node to a server node. The following properties are available:
 
 - `type` (required): must be set to `quic_request_response`
-- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.
-- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.
+- `client` (required): the socket address (IP and port) of the node used as a client. Must correspond to an address defined in the network graph.  If the port is omitted, it will default to `8080`.
+- `server` (required): the socket address (IP and port) of the node used as a server. Must correspond to an address defined in the network graph.  If the port is omitted, it will default to `8080`.
 - `start_at_ms`: the simulation time (in ms) at which this traffic should start [default: 0].
 - `requests`: the number of requests that should be made [default: 10]. Requests are sent sequentially, so each new request is sent when the response of the previous one is received.
 - `concurrent_connections`: the number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
