@@ -357,7 +357,7 @@ impl Simulation {
                     let server_socket = network
                         .udp_socket_for_node(server_node.clone(), t.server.port())
                         .unwrap();
-                    ping::run_server_forever(server_socket, t.client.ip());
+                    ping::run_server_forever(server_socket, t.client);
                 }
                 TrafficKind::UdpOneDirection(_) => {
                     // No background server is used with unidirectional UDP traffic
