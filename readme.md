@@ -136,6 +136,7 @@ Here's the meaning of the different parameters:
   times the base datagram size (1200 bytes). The default depends on the congestion control
   algorithm. For `no_cc`, the default is effectively unlimited. For other algorithms, the default is
   a value suitable for terrestrial communication.
+- `pad_to_mtu`: Boolean flag to add padding up to MTU to make traffic analysis more difficult. Default is `false`.
 
 ###### Links
 
@@ -154,7 +155,6 @@ Each link is defined with the following properties:
   artificially introduce packet reordering (the value must be between 0 and 1). Default is 0. This is similar to [tc netem reorder parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html).
 - `congestion_event_ratio`: The ratio of packets that will be marked with a CE ECN codepoint
   (the value must be between 0 and 1). Default is 0.
-
 
 ## Network events configuration
 
