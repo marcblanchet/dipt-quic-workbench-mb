@@ -57,6 +57,10 @@ fn transport_config(
         config.time_threshold(time_threshold);
     }
 
+    if let Some(pad_to_mtu) = quinn_config.pad_to_mtu {
+        config.pad_to_mtu(pad_to_mtu);
+    }
+
     let get_congestion_window_bytes = |packets: u64| packets * BASE_DATAGRAM_SIZE;
     let cc_factory: Arc<dyn quinn_proto::congestion::ControllerFactory + Send + Sync> =
         match quinn_config

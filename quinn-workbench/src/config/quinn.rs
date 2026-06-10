@@ -66,6 +66,10 @@ pub struct QuinnJsonConfig {
     ///
     /// Defaults to 9/8 (in RFC9002)
     pub time_threshold: Option<f32>,
+    /// Whether to add padding to every packet to make trafic analysis more difficult
+    /// see RFC9002 section 8.2
+    /// default is off
+    pub pad_to_mtu: Option<bool>,
 }
 
 #[derive(Deserialize, Clone, Default)]
