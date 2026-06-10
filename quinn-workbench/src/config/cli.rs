@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use std::fs;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 
@@ -59,21 +60,28 @@ pub struct NetworkOpt {
     #[arg(long, default_value = "topology.json")]
     pub network_graph: PathBuf,
 
-    /// Path to the JSON file containing the network events
-    #[arg(long, default_value = "events.json")]
-    network_events: PathBuf,
+    /// Path to the JSON file containing the network events (defaults to `events.json` if there is a
+    /// file at that path, otherwise the simulation runs with no network events)
+    #[arg(long)]
+    network_events: Option<PathBuf>,
 
     /// Run the simulation without loading any network events file
     #[arg(long, conflicts_with = "network_events")]
     no_network_events: bool,
 }
 
+static DEFAULT_NETWORK_EVENTS_PATH: &str = "events.json";
+
 impl NetworkOpt {
     pub fn network_events(&self) -> Option<&Path> {
         if self.no_network_events {
             None
+        } else if let Some(network_events_path) = self.network_events.as_ref() {
+            Some(network_events_path)
+        } else if fs::exists(DEFAULT_NETWORK_EVENTS_PATH).is_ok_and(|exists| exists) {
+            Some(Path::new(DEFAULT_NETWORK_EVENTS_PATH))
         } else {
-            Some(&self.network_events)
+            None
         }
     }
 }

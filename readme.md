@@ -240,7 +240,7 @@ command line arguments.
    - `--network-graph <NETWORK_GRAPH>`:
           Path to the JSON file containing the network graph [default: topology.json]
    - `--network-events <NETWORK_EVENTS>`:
-          Path to the JSON file containing the network events [default: events.json]
+          Path to the JSON file containing the network events [default: events.json (only if the file is present, otherwise the simulation runs as if the `--no-network-events` flag had been passed)]
    - `--no-network-events`:
           Run the simulation without loading any network events file (mutually exclusive with `--network-events`)
    - `--disable-time-warping`: Disables time-warping (making the simulation use real-world delays)
