@@ -18,7 +18,15 @@ A command-line application written in Rust to simulate QUIC connections in diffe
 
 ## Getting started
 
-After [installing Rust](https://rustup.rs/), you can get started with:
+After [installing Rust](https://rustup.rs/), you can get started:
+
+```bash
+cd test-data/earth-spacecraft
+cargo run --release -- simulate 
+```
+By default, the tool uses the topology.json file in the current directory, implies that there are no events (interface up/down) and if no traffic.json file is specified, assumes a two nodes network with one link in between and tests a QUIC connection with 10 HTTP requests between the two nodes.
+
+Here is an example of specifying the JSON files:
 
 ```bash
 cargo run --release -- \
@@ -83,7 +91,7 @@ Each node is defined with the following properties:
 - `packet_loss_ratio`: The ratio of ingress lost packets (the
   value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 
-###### QUIC config
+##### QUIC config
 
 This workbench uses the [Quinn QUIC stack](https://github.com/quinn-rs/quinn). Each node in a network graph's json file may have a `quic` field, specifying the QUIC
 parameters used by that node. All fields are optional and fall back to the Quinn implementation's defaults (documented below), most are defined in its [transport.rs config file](https://github.com/quinn-rs/quinn/blob/main/quinn-proto/src/config/transport.rs). **Important**: Quinn stack defaults assume a terrestrial communication scenario. For how to configure for deepspace simulation, see [draft-many-tiptop-quic-profile](https://datatracker.ietf.org/doc/draft-many-tiptop-quic-profile/)
@@ -102,7 +110,8 @@ Consider the following example in which all parameters are specified:
     "ack_eliciting_threshold": 10
   },
   "congestion_controller": "no_cc",
-  "initial_congestion_window_packets": 200000
+  "initial_congestion_window_packets": 200000,
+  "pad_to_mtu": false
 }
 ```
 
@@ -114,7 +123,7 @@ Here's the meaning of the different parameters:
 - `maximum_idle_timeout_ms`: The maximum idle timeout of the QUIC connection in milliseconds.
   For continuous information exchange, use a small value to detect connection loss quickly. For
   delay-tolerant networking, use a very high value to prevent connection loss due to unexpected
-  delays. Defaults to `30000` (30 seconds).
+  delays. Defaults to `30000` (30 seconds). Idle timeout is disabled when both endpoints omit this transport parameter or specify a value of 0.
 - `packet_threshold`: Maximum reordering in packet numbers before considering a packet lost.
   Should not be less than 3, as per RFC5681. Defaults to `3`.
 - `time_threshold`: Maximum time for a packet to be declared lost when a later packet has been acknowledged. See RFC9002 section 6.1.2. It is expressed as an RTT multiplier. Defaults to 9/8
@@ -124,8 +133,8 @@ Here's the meaning of the different parameters:
 - `ack_frequency_config`: Configures the ACK Frequency QUIC extension. When omitted, the ACK
   Frequency extension is disabled. Contains the following sub-fields:
   - `max_ack_delay_ms`: The maximum amount of time, in milliseconds, that an endpoint waits
-  before sending an ACK when the ACK-eliciting threshold hasn't been reached. Setting this to a high
-  value is useful in combination with a high ACK-eliciting threshold. When omitted, the
+  before sending an ACK when the ACK-eliciting threshold hasn't been reached [default for max_ack_delay_ms: 25]. Setting this to a high
+  value is useful in combination with a high ACK-eliciting threshold to decrease bandwidth usage. When omitted, the
     peer's original `max_ack_delay` will be used, as obtained from its transport parameters.
   - `ack_eliciting_threshold`: The number of ACK-eliciting packets an endpoint may receive
     without immediately sending an ACK. A high value is useful when expecting long streams of
@@ -138,7 +147,7 @@ Here's the meaning of the different parameters:
   a value suitable for terrestrial communication.
 - `pad_to_mtu`: Boolean flag to add padding up to MTU to make traffic analysis more difficult. Default is `false`.
 
-###### Links
+### Links
 
 Links are point to point and uni-directional, so two entries are necessary to describe a bidirectional link.
 Each link is defined with the following properties:
@@ -224,7 +233,7 @@ Issues HTTP-like requests over QUIC from a client node to a server node. The fol
 - `concurrent_connections`: the number of concurrent connections used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those connections.
 - `concurrent_streams_per_connection`: the number of concurrent streams per connection used when making the requests [default: 1]. If set to > 1, then requests are sent in parallel on those streams.
 - `response_size_bytes`: the size of each response, in bytes [default: 1024]. The response is synthesized by adding "Lorem ipsum" strings up to the size.
-- `request_interval_ms`: the number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle). When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). If set to something other than `0`, requires that `concurrent_streams_per_connection` is `1`. [default: 0]
+- `request_interval_ms`: the number of milliseconds to wait between receiving a request's response and sending the next request (useful for checking if the connection gets terminated due to being idle) [default: 0]. When multiple connections are used, this interval is applied per connection (e.g., if two connections are active, two requests will be sent in parallel, then each connection will independently wait for the interval to elapse). If set to something other than `0`, requires that `concurrent_streams_per_connection` is `1`. 
 
 ## Command line arguments
 
