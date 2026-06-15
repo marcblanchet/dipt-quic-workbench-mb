@@ -72,7 +72,8 @@ pub struct QuinnJsonConfig {
     /// Defaults to `false`
     pub pad_to_mtu: Option<bool>,
     /// Period of inactivity before sending a keep-alive packet
-    /// Defaults to None which disables it
+    ///
+    /// Defaults to `None` (no keep-alive packets are sent at all)
     pub keep_alive_interval_ms: Option<u64>,
 }
 
