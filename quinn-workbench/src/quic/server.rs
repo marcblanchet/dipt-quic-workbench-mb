@@ -278,7 +278,7 @@ pub fn server_endpoint(
     Endpoint::new_with_abstract_socket(
         crate::quic::endpoint_config(seed),
         Some(server_config),
-        Arc::new(server_socket),
+        Box::new(server_socket),
         async_rt::active_rt(),
     )
     .context("failed to create server endpoint")

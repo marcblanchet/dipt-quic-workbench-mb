@@ -151,7 +151,7 @@ impl Node {
             .clone()
     }
 
-    pub(crate) fn enqueue_outbound(&self, network: &Arc<InMemoryNetwork>, packet: BufferedPacket) {
+    pub(crate) fn enqueue_outbound(&self, network: &InMemoryNetwork, packet: BufferedPacket) {
         // Try to enqueue the data on the node's outbound buffer for later sending
         let outbound_buffer = self.outbound_buffer();
         let data_len = packet.data.transmit.packet_size();

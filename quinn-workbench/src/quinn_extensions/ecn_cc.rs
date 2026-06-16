@@ -39,12 +39,13 @@ impl Controller for EcnCc {
         now: Instant,
         sent: Instant,
         is_persistent_congestion: bool,
+        is_ecn: bool,
         lost_bytes: u64,
     ) {
-        // We ignore congestion events triggered by packet loss, forwarding only those triggered by ECN
-        if lost_bytes == 0 {
+        // Ignore congestion events triggered by packet loss, forward only those triggered by ECN
+        if is_ecn {
             self.0
-                .on_congestion_event(now, sent, is_persistent_congestion, lost_bytes)
+                .on_congestion_event(now, sent, is_persistent_congestion, is_ecn, lost_bytes)
         }
     }
 
