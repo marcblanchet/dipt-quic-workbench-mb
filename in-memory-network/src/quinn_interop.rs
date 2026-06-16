@@ -107,6 +107,10 @@ impl AsyncUdpSocket for InMemoryUdpSocket {
     fn local_addr(&self) -> io::Result<SocketAddr> {
         Ok(self.endpoint.addr)
     }
+
+    fn may_fragment(&self) -> bool {
+        false
+    }
 }
 
 impl InMemoryUdpSocket {

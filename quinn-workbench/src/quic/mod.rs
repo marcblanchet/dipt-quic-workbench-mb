@@ -62,7 +62,7 @@ fn transport_config(
     }
 
     if let Some(keep_alive) = quinn_config.keep_alive_interval_ms {
-        config.keep_alive_interval(Some(Duration::from_millis(keep_alive).try_into().unwrap()));
+        config.keep_alive_interval(Some(Duration::from_millis(keep_alive)));
     }
 
     let get_congestion_window_bytes = |packets: u64| packets * BASE_DATAGRAM_SIZE;
