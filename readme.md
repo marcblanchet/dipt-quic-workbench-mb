@@ -104,14 +104,15 @@ Consider the following example in which all parameters are specified:
   "maximum_idle_timeout_ms": 100000000000,
   "packet_threshold": 4294967295,
   "mtu_discovery": false,
+  "initial_mtu": 1450,
+  "pad_to_mtu": false,
   "maximize_send_and_receive_windows": true,
   "ack_frequency_config": {
     "max_ack_delay_ms": 18446744073709551615,
     "ack_eliciting_threshold": 10
   },
   "congestion_controller": "no_cc",
-  "initial_congestion_window_packets": 200000,
-  "pad_to_mtu": false
+  "initial_congestion_window_packets": 200000
 }
 ```
 
@@ -130,6 +131,8 @@ Here's the meaning of the different parameters:
   Should not be less than 3, as per RFC5681. Defaults to `3`.
 - `time_threshold`: Maximum time for a packet to be declared lost when a later packet has been acknowledged. See RFC9002 section 6.1.2. It is expressed as an RTT multiplier. Defaults to 9/8
 - `mtu_discovery`: Boolean flag to enable or disable MTU discovery. Defaults to `true`.
+- `initial_mtu`: The initial value to be used as the maximum UDP payload size before running MTU discovery. Defaults to `1200`.
+- `pad_to_mtu`: Boolean flag to add padding up to MTU to make traffic analysis more difficult. Default is `false`.
 - `maximize_send_and_receive_windows`: Boolean flag to maximize send and receive windows,
   allowing an unlimited number of unacknowledged in-flight packets. Defaults to `false`.
 - `ack_frequency_config`: Configures the ACK Frequency QUIC extension. When omitted, the ACK
@@ -147,7 +150,6 @@ Here's the meaning of the different parameters:
   times the base datagram size (1200 bytes). The default depends on the congestion control
   algorithm. For `no_cc`, the default is effectively unlimited. For other algorithms, the default is
   a value suitable for terrestrial communication.
-- `pad_to_mtu`: Boolean flag to add padding up to MTU to make traffic analysis more difficult. Default is `false`.
 
 ### Links
 

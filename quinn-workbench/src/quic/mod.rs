@@ -63,6 +63,10 @@ fn transport_config(
         config.pad_to_mtu(pad_to_mtu);
     }
 
+    if let Some(mtu) = quinn_config.initial_mtu {
+        config.initial_mtu(mtu);
+    }
+
     if let Some(keep_alive) = quinn_config.keep_alive_interval_ms {
         config.keep_alive_interval(Some(Duration::from_millis(keep_alive)));
     }

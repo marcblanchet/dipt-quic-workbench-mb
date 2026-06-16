@@ -46,6 +46,14 @@ pub struct QuinnJsonConfig {
     ///
     /// Defaults to `true`
     pub mtu_discovery: Option<bool>,
+    /// Sets the initial MTU
+    /// Defaults to 1200 as per RFC9000
+    pub initial_mtu: Option<u16>,
+    /// Whether to add padding to every packet to make trafic analysis more difficult
+    /// see RFC9002 section 8.2
+    ///
+    /// Defaults to `false`
+    pub pad_to_mtu: Option<bool>,
     /// Whether the send and receive windows should be maximized, allowing an unbounded number of
     /// unacknowledged in-flight packets
     ///
@@ -70,11 +78,6 @@ pub struct QuinnJsonConfig {
     ///
     /// Defaults to 9/8 (in RFC9002)
     pub time_threshold: Option<f32>,
-    /// Whether to add padding to every packet to make trafic analysis more difficult
-    /// see RFC9002 section 8.2
-    ///
-    /// Defaults to `false`
-    pub pad_to_mtu: Option<bool>,
     /// Period of inactivity before sending a keep-alive packet
     ///
     /// Defaults to `None` (no keep-alive packets are sent at all)
