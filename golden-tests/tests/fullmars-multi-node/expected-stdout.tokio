@@ -67,11 +67,11 @@
 * Replay log available at replay-log.json
 --- Node stats ---
 * MSL (quic client)
-  * Sent packets: 26 (4180 bytes)
+  * Sent packets: 26 (4199 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
-  * Received packets: 28 (16063 bytes)
+  * Received packets: 26 (13683 bytes)
     | 0 packets received out of order (0 bytes)
 * GND (quic client)
   * Sent packets: 24 (4082 bytes)
@@ -81,11 +81,11 @@
   * Received packets: 25 (13632 bytes)
     | 0 packets received out of order (0 bytes)
 * MRO (quic server)
-  * Sent packets: 28 (16063 bytes)
+  * Sent packets: 26 (13683 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
-  * Received packets: 28 (4310 bytes)
+  * Received packets: 28 (4329 bytes)
     | 0 packets received out of order (0 bytes)
 * ING (quic server)
   * Sent packets: 26 (13698 bytes)
@@ -149,7 +149,7 @@
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
 * MRO-MSL:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 33072 (0.33% of the link's bandwidth)
+|-> Max used bandwidth (bps): 13920 (0.14% of the link's bandwidth)
 * MSL-MRO:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 11728 (1.17% of the link's bandwidth)
