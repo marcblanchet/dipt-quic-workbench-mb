@@ -50,8 +50,8 @@
 0.00s CONNECT (conn = A)
 1802.40s CONNECTED (conn = A)
 1802.40s GET /index.html (stream = A1)
-5407.20s DONE (conn = A, request/response amount = 1)
-5407.20s All connections closed
+3634.75s DONE (conn = A, request/response amount = 1)
+3634.75s All connections closed
 --- Replay log ---
 * Replay log available at replay-log.json
 --- Node stats ---
@@ -60,10 +60,10 @@
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
-  * Received packets: 8991 (11035914 bytes)
+  * Received packets: 8990 (11035848 bytes)
     | 0 packets received out of order (0 bytes)
 * ING (quic server)
-  * Sent packets: 8993 (11036077 bytes)
+  * Sent packets: 8992 (11035996 bytes)
     | 0 packets duplicated (0 bytes)
     | 0 packets marked with the CE ECN codepoint (0 bytes)
     | 0 packets dropped (0 bytes)
@@ -72,7 +72,7 @@
 --- Max buffer usage per node ---
 * ING: 11009193 bytes (0 packets dropped due to buffer being full)
 * M20: 10702193 bytes (0 packets dropped due to buffer being full)
-* DSN: 50828 bytes (0 packets dropped due to buffer being full)
+* DSN: 50919 bytes (0 packets dropped due to buffer being full)
 * GND: 0 bytes (0 packets dropped due to buffer being full)
 * MRO: 0 bytes (0 packets dropped due to buffer being full)
 * MSL: 0 bytes (0 packets dropped due to buffer being full)
@@ -97,7 +97,7 @@
 |-> Max used bandwidth (bps): 1068 (106.80% of the link's bandwidth)
 * GND-DSN:
 |-> Lost in transit 0 packets (0 bytes)
-|-> Max used bandwidth (bps): 18304 (0.00% of the link's bandwidth)
+|-> Max used bandwidth (bps): 18328 (0.00% of the link's bandwidth)
 * ING-M20:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 88272864 (88.27% of the link's bandwidth)
@@ -164,7 +164,7 @@
 * TGO-MSL:
 |-> Lost in transit 0 packets (0 bytes)
 |-> Max used bandwidth (bps): 0 (0.00% of the link's bandwidth)
---- Internal errors (showing 10 of 698) ---
+--- Internal errors (showing 10 of 699) ---
 (These errors might indicate a bug in the workbench, please report them to the project's maintainers.)
 * network node `DSN` sent packet `32a6b34f-3933-0c60-52bd-09b9e6415916` through link `DSN-MVN`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1028 bps)
 * network node `DSN` sent packet `d0e24a47-de37-a17e-a69e-f414ed33a276` through link `DSN-ODY`, but the link didn't have enough available bandwidth (link bandwidth is 1000 bps, but used bandwidth was 1030 bps)

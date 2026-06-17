@@ -210,7 +210,6 @@ pub fn server_listen(
                         // Respond
                         tx.write_all(&response).await?;
                         tx.finish()?;
-                        tx.stopped().await?;
 
                         Result::<_, anyhow::Error>::Ok(())
                     });
