@@ -11,6 +11,8 @@ struct Cli {
     quiet: u8,
     #[arg(long)]
     override_stdout: bool,
+    #[arg(long)]
+    override_replay_log: bool,
 }
 
 struct TestCase {
@@ -83,7 +85,7 @@ fn main() -> anyhow::Result<()> {
         };
 
         let replay_log_path = path.join(&expected_replay_log_file);
-        let replay_log = if replay_log_path.is_file() {
+        let replay_log = if replay_log_path.is_file() && !cli.override_replay_log {
             Some(std::fs::read_to_string(&replay_log_path).with_context(|| {
                 format!(
                     "no `{expected_replay_log_file}` file found at `{}`",

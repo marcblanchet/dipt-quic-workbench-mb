@@ -156,7 +156,6 @@ pub async fn run_connection(
             let (mut tx, mut rx) = connection.open_bi().await?;
             tx.write_all(request.as_bytes()).await?;
             tx.finish()?;
-            tx.stopped().await?;
 
             rx.read_to_end(usize::MAX).await.with_context(|| {
                 format!(
