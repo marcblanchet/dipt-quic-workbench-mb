@@ -87,8 +87,8 @@ Each node is defined with the following properties:
 - `buffer_size_bytes` (required): is the storage size of packets in transit while waiting for a link up event. This implements IP the store and forward capability as defined in [draft-many-tiptop-ip-architecture](https://datatracker.ietf.org/doc/draft-many-tiptop-ip-architecture/). Mandatory property.
 - `interfaces` (required): is an array of network interfaces of this node. Each interface has an array of IP addresses and an array of routes. Mandatory property.
 - `quic` (optional): the QUIC stack configuration of the node, as described below. Optional property.
-- `packet_duplication_ratio`: The ratio of ingress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
-- `packet_loss_ratio`: The ratio of ingress lost packets (the
+- `packet_duplication_ratio`: The ratio of egress duplicated packets (the value must be between 0 and 1). This is similar to [tc netem duplicate parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
+- `packet_loss_ratio`: The ratio of egress lost packets (the
   value must be between 0 and 1). This is similar to [tc netem loss parameter](https://man7.org/linux/man-pages/man8/tc-netem.8.html). Optional property. Default is 0.
 
 ##### QUIC config
