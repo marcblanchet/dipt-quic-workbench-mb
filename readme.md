@@ -157,7 +157,8 @@ Here's the meaning of the different parameters:
   derive new traffic secrets from a fresh (EC)DHE exchange (forward secrecy) instead of the
   RFC 9001 key ratchet. Both peers must enable it for it to be used. Defaults to `false`.
   See [networkgraph-fullmars-extended-key-update.json](test-data/earth-mars/networkgraph-fullmars-extended-key-update.json)
-  for an example.
+  for an example, and [docs/extended-key-update-evidence.md](docs/extended-key-update-evidence.md)
+  for decrypted-pcap evidence that the keys are actually updated.
 - `extended_key_update_interval_ms`: When `extended_key_update` is enabled and negotiated, the
   endpoint initiates a routine extended key update this often (in milliseconds) to refresh forward
   secrecy. Defaults to `None` (no routine updates; updates can still occur on demand and on key
