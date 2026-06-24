@@ -1000,6 +1000,7 @@ dependencies = [
 [[package]]
 name = "quinn"
 version = "0.12.0"
+source = "git+https://github.com/Viagenie/quinn-vg.git?branch=extended-key-update#b52cb4e6d0f31248f610b98765be09f322d5ddb5"
 dependencies = [
  "bytes",
  "cfg_aliases",
@@ -1018,6 +1019,7 @@ dependencies = [
 [[package]]
 name = "quinn-proto"
 version = "0.12.0"
+source = "git+https://github.com/Viagenie/quinn-vg.git?branch=extended-key-update#b52cb4e6d0f31248f610b98765be09f322d5ddb5"
 dependencies = [
  "bytes",
  "fastbloom",
@@ -1041,12 +1043,13 @@ dependencies = [
 [[package]]
 name = "quinn-udp"
 version = "0.6.1"
+source = "git+https://github.com/Viagenie/quinn-vg.git?branch=extended-key-update#b52cb4e6d0f31248f610b98765be09f322d5ddb5"
 dependencies = [
  "cfg_aliases",
  "libc",
  "socket2",
  "tracing",
- "windows-sys 0.59.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1216,6 +1219,7 @@ dependencies = [
 [[package]]
 name = "rustls"
 version = "0.23.38"
+source = "git+https://github.com/marcblanchet/rustls-mb.git?branch=quinn-tls-eku#3f256257b3ee3413d930b667a0ec2b652962ae03"
 dependencies = [
  "once_cell",
  "ring",
@@ -1265,7 +1269,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.59.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
