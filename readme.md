@@ -161,8 +161,9 @@ Here's the meaning of the different parameters:
 - `extended_key_update_interval_ms`: When `extended_key_update` is enabled and negotiated, the
   endpoint initiates a routine extended key update this often (in milliseconds) to refresh forward
   secrecy. Defaults to `None` (no routine updates; updates can still occur on demand and on key
-  exhaustion). Note: to avoid a simultaneous-initiation clash, configure the routine interval on
-  only one of the two peers.
+  exhaustion). It may be set on one or both peers: if both initiate at the same time, the crossing
+  requests are resolved by the protocol's lexicographic clash tie-break and the keys still advance
+  by a single generation. Setting it on only one peer avoids redundant updates.
 
 ### Links
 
