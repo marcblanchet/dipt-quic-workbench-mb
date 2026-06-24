@@ -71,6 +71,10 @@ fn transport_config(
         config.keep_alive_interval(Some(Duration::from_millis(keep_alive)));
     }
 
+    if let Some(interval) = quinn_config.extended_key_update_interval_ms {
+        config.extended_key_update_interval(Some(Duration::from_millis(interval)));
+    }
+
     let get_congestion_window_bytes = |packets: u64| packets * BASE_DATAGRAM_SIZE;
     let cc_factory: Arc<dyn quinn_proto::congestion::ControllerFactory + Send + Sync> =
         match quinn_config

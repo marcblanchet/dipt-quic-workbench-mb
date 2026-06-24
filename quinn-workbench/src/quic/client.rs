@@ -110,8 +110,13 @@ pub async fn run_connection(
         .context("client failed to connect to server")?;
     _ = writeln!(
         log_writer.lock(),
-        "{:.2}s CONNECTED (conn = {connection_name})",
-        start.elapsed().as_secs_f64()
+        "{:.2}s CONNECTED (conn = {connection_name}){}",
+        start.elapsed().as_secs_f64(),
+        if connection.extended_key_update_negotiated() {
+            " [extended key update negotiated]"
+        } else {
+            ""
+        },
     );
 
     let requests_semaphore = Arc::new(Semaphore::new(concurrent_streams as usize));
@@ -241,6 +246,11 @@ fn client_config(
         .with_no_client_auth();
 
     crypto.key_log = keylog;
+
+    // Offer the QUIC/TLS Extended Key Update extension if enabled.
+    if quinn_config.extended_key_update.unwrap_or(false) {
+        crypto.extended_key_update = true;
+    }
 
     let mut client_config = ClientConfig::new(Arc::new(QuicClientConfig::try_from(crypto)?));
     client_config.transport_config(Arc::new(crate::quic::transport_config(

@@ -82,6 +82,26 @@ pub struct QuinnJsonConfig {
     ///
     /// Defaults to `None` (no keep-alive packets are sent at all)
     pub keep_alive_interval_ms: Option<u64>,
+    /// Whether to enable the QUIC Extended Key Update extension
+    /// ([draft-ietf-quic-extended-key-update]).
+    ///
+    /// When enabled, the endpoint offers/accepts the `extended_key_update` TLS flag during the
+    /// handshake. Once negotiated, key updates are performed as coordinated extended key updates
+    /// that derive new traffic secrets from a fresh (EC)DHE exchange (forward secrecy), instead of
+    /// the RFC 9001 key ratchet. Both peers must enable it for it to be used.
+    ///
+    /// Defaults to `false`
+    ///
+    /// [draft-ietf-quic-extended-key-update]: https://datatracker.ietf.org/doc/draft-ietf-quic-extended-key-update/
+    pub extended_key_update: Option<bool>,
+    /// Interval, in milliseconds, at which to perform a routine extended key update for forward
+    /// secrecy.
+    ///
+    /// Has effect only when `extended_key_update` is enabled and the extension was negotiated with
+    /// the peer. Updates can still be triggered on demand and by key exhaustion regardless.
+    ///
+    /// Defaults to `None` (no routine extended key updates)
+    pub extended_key_update_interval_ms: Option<u64>,
 }
 
 #[derive(Deserialize, Clone, Default)]

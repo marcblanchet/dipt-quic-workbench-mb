@@ -150,6 +150,19 @@ Here's the meaning of the different parameters:
   times the base datagram size (1200 bytes). The default depends on the congestion control
   algorithm. For `no_cc`, the default is effectively unlimited. For other algorithms, the default is
   a value suitable for terrestrial communication.
+- `extended_key_update`: Enables the QUIC Extended Key Update extension
+  ([draft-ietf-quic-extended-key-update](https://datatracker.ietf.org/doc/draft-ietf-quic-extended-key-update/)).
+  When enabled on both peers, the endpoints negotiate the `extended_key_update` TLS flag during the
+  handshake and, once negotiated, perform key updates as coordinated extended key updates that
+  derive new traffic secrets from a fresh (EC)DHE exchange (forward secrecy) instead of the
+  RFC 9001 key ratchet. Both peers must enable it for it to be used. Defaults to `false`.
+  See [networkgraph-fullmars-extended-key-update.json](test-data/earth-mars/networkgraph-fullmars-extended-key-update.json)
+  for an example.
+- `extended_key_update_interval_ms`: When `extended_key_update` is enabled and negotiated, the
+  endpoint initiates a routine extended key update this often (in milliseconds) to refresh forward
+  secrecy. Defaults to `None` (no routine updates; updates can still occur on demand and on key
+  exhaustion). Note: to avoid a simultaneous-initiation clash, configure the routine interval on
+  only one of the two peers.
 
 ### Links
 

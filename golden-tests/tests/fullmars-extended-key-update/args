@@ -1,0 +1,4 @@
+simulate
+--network-graph test-data/earth-mars/networkgraph-fullmars-extended-key-update.json
+--network-events test-data/earth-mars/events.json
+--traffic test-data/earth-mars/request-response.traffic.json

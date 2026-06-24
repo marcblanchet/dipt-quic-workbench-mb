@@ -40,5 +40,10 @@ inherits = "release"
 debug = true
 
 [patch.crates-io]
-quinn = { git = "https://github.com/quinn-rs/quinn.git", rev = "dc8640052a64eb05b463b490b0a0a0f4b0cef9a6" }
-quinn-proto = { git = "https://github.com/quinn-rs/quinn.git", rev = "dc8640052a64eb05b463b490b0a0a0f4b0cef9a6" }
+# Local quinn + rustls checkouts implementing the QUIC/TLS Extended Key Update
+# (draft-ietf-quic-extended-key-update / draft-ietf-tls-extended-key-update), which the
+# workbench's `extended_key_update` config exercises. rustls must be patched too because the
+# quinn extended key update glue depends on the local rustls Extended Key Update API.
+quinn = { path = "/Users/blanchet/public-repos/quinn-vg/quinn" }
+quinn-proto = { path = "/Users/blanchet/public-repos/quinn-vg/quinn-proto" }
+rustls = { path = "/Users/blanchet/public-repos/rustls/rustls" }

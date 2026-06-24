@@ -266,6 +266,11 @@ pub fn server_endpoint(
     crypto.max_early_data_size = u32::MAX;
     crypto.key_log = keylog;
 
+    // Accept the QUIC/TLS Extended Key Update extension if enabled.
+    if quinn_config.extended_key_update.unwrap_or(false) {
+        crypto.extended_key_update = true;
+    }
+
     let qlog_file = File::create(format!("{}.qlog", server_socket.node_id()))?;
     let mut server_config =
         quinn::ServerConfig::with_crypto(Arc::new(QuicServerConfig::try_from(crypto).unwrap()));
